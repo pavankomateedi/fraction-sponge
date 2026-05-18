@@ -1,0 +1,247 @@
+{
+  "version": 1,
+  "description": "Golden dataset for the Fraction Sponge tutor (/api/tutor). Each case is a (qId, prompt, studentAnswer, attemptNumber, mode) tuple the production endpoint sees, along with hand-written notes about what makes a good Pip response for that case. The harness applies rule-based checks (always) and an optional Claude-as-judge layer (when JUDGE=1).",
+  "lastUpdated": "2026-05-18",
+  "cases": [
+    {
+      "id": "q1-bigger-half-a1",
+      "input": {
+        "qId": "q1",
+        "prompt": "Quick question — which is bigger: 1/2 or 2/4?",
+        "studentAnswer": "1/2 is bigger",
+        "attemptNumber": 1,
+        "mode": "hint"
+      },
+      "tags": ["compare", "common-misconception", "denominator-bigger-fraction"],
+      "notes": "Classic misconception — kid thinks bigger numerator means bigger fraction. Pip should reference the smash they just watched. Do NOT say 'same' verbatim."
+    },
+    {
+      "id": "q1-bigger-2-4-a1",
+      "input": {
+        "qId": "q1",
+        "prompt": "Quick question — which is bigger: 1/2 or 2/4?",
+        "studentAnswer": "2/4 is bigger",
+        "attemptNumber": 1,
+        "mode": "hint"
+      },
+      "tags": ["compare", "wrong-pick"],
+      "notes": "Less common but possible — opposite of the first misconception. Same redirect pattern applies."
+    },
+    {
+      "id": "q1-rephrase-a2",
+      "input": {
+        "qId": "q1",
+        "prompt": "Quick question — which is bigger: 1/2 or 2/4?",
+        "studentAnswer": "1/2 is bigger",
+        "attemptNumber": 2,
+        "mode": "rephrase"
+      },
+      "tags": ["rephrase", "compare"],
+      "notes": "Second wrong attempt — Pip should rephrase the question in different words. Must still be a question. Must NOT just re-read the original prompt verbatim."
+    },
+    {
+      "id": "q2-one-fourth-a1",
+      "input": {
+        "qId": "q2",
+        "prompt": "Nice. Now look — how many one-fourth blocks fit inside one half?",
+        "studentAnswer": "1 fourth",
+        "attemptNumber": 1,
+        "mode": "hint"
+      },
+      "tags": ["count", "off-by-one"],
+      "notes": "Kid undercounted. Pip should point them to the SMASH they did — two pieces snapped into one half."
+    },
+    {
+      "id": "q2-four-fourths-a1",
+      "input": {
+        "qId": "q2",
+        "prompt": "Nice. Now look — how many one-fourth blocks fit inside one half?",
+        "studentAnswer": "4 fourths",
+        "attemptNumber": 1,
+        "mode": "hint"
+      },
+      "tags": ["count", "off-by-two"],
+      "notes": "Kid is thinking of the whole, not the half. Pip can point at the reference bar — the orange section is HALF, not the whole."
+    },
+    {
+      "id": "q2-rephrase-a2",
+      "input": {
+        "qId": "q2",
+        "prompt": "Nice. Now look — how many one-fourth blocks fit inside one half?",
+        "studentAnswer": "1 fourth",
+        "attemptNumber": 2,
+        "mode": "rephrase"
+      },
+      "tags": ["rephrase", "count"],
+      "notes": "Rephrase the count question gently. Stay a question."
+    },
+    {
+      "id": "q3-different-a1",
+      "input": {
+        "qId": "q3",
+        "prompt": "Cool. New one — is 3/6 the same as 1/2?",
+        "studentAnswer": "No, totally different",
+        "attemptNumber": 1,
+        "mode": "hint"
+      },
+      "tags": ["apply", "new-equivalent"],
+      "notes": "Kid hasn't transferred yet — sees 3 and 6 as 'totally new'. Pip should connect it back to the smash pattern: same fraction, smaller pieces."
+    },
+    {
+      "id": "q3-not-sure-a1",
+      "input": {
+        "qId": "q3",
+        "prompt": "Cool. New one — is 3/6 the same as 1/2?",
+        "studentAnswer": "Not sure",
+        "attemptNumber": 1,
+        "mode": "hint"
+      },
+      "tags": ["apply", "hesitant"],
+      "notes": "Kid is unsure — Pip's hint should give them confidence by pointing back to evidence, not by telling them the answer."
+    },
+    {
+      "id": "q4-two-sixths-a1",
+      "input": {
+        "qId": "q4",
+        "prompt": "Then how many one-sixth pieces fit inside one half?",
+        "studentAnswer": "2 sixths",
+        "attemptNumber": 1,
+        "mode": "hint"
+      },
+      "tags": ["count", "carryover-wrong"],
+      "notes": "Kid is reusing the '2' answer from Q2 — Pip should redirect to the fact that sixths are smaller so MORE fit."
+    },
+    {
+      "id": "q4-six-sixths-a1",
+      "input": {
+        "qId": "q4",
+        "prompt": "Then how many one-sixth pieces fit inside one half?",
+        "studentAnswer": "6 sixths",
+        "attemptNumber": 1,
+        "mode": "hint"
+      },
+      "tags": ["count", "whole-vs-half"],
+      "notes": "Kid is counting the WHOLE bar, not the half. Reference bar shows the half clearly — Pip should point at it."
+    },
+    {
+      "id": "q4-rephrase-a3",
+      "input": {
+        "qId": "q4",
+        "prompt": "Then how many one-sixth pieces fit inside one half?",
+        "studentAnswer": "2 sixths",
+        "attemptNumber": 3,
+        "mode": "rephrase"
+      },
+      "tags": ["rephrase", "third-attempt"],
+      "notes": "Third attempt — Pip should rephrase even more gently. Don't give the answer."
+    },
+    {
+      "id": "q5-no-way-a1",
+      "input": {
+        "qId": "q5",
+        "prompt": "Brand-new fraction time — is 1/3 the same as 2/6?",
+        "studentAnswer": "No way",
+        "attemptNumber": 1,
+        "mode": "hint"
+      },
+      "tags": ["transfer", "new-base-fraction"],
+      "notes": "Pip should connect this to the 1/2 = 2/4 trick — same pattern, different starting fraction."
+    },
+    {
+      "id": "q5-maybe-a1",
+      "input": {
+        "qId": "q5",
+        "prompt": "Brand-new fraction time — is 1/3 the same as 2/6?",
+        "studentAnswer": "Maybe?",
+        "attemptNumber": 1,
+        "mode": "hint"
+      },
+      "tags": ["transfer", "hesitant"],
+      "notes": "Tentative — Pip should validate the uncertainty and nudge toward the pattern."
+    },
+    {
+      "id": "q6-look-equal-a1",
+      "input": {
+        "qId": "q6",
+        "prompt": "Careful — is 1/2 the same as 1/3?",
+        "studentAnswer": "Yes — they look equal",
+        "attemptNumber": 1,
+        "mode": "hint"
+      },
+      "tags": ["discriminate", "over-generalization"],
+      "notes": "CRITICAL: Kid has over-generalized the equivalence pattern. Pip must NOT affirm — must redirect to size comparison. The hint should reference how splitting into 3 makes SMALLER pieces than splitting into 2."
+    },
+    {
+      "id": "q6-not-sure-a1",
+      "input": {
+        "qId": "q6",
+        "prompt": "Careful — is 1/2 the same as 1/3?",
+        "studentAnswer": "Not sure",
+        "attemptNumber": 1,
+        "mode": "hint"
+      },
+      "tags": ["discriminate", "hesitant"],
+      "notes": "Kid is unsure — Pip should ask them to compare piece SIZES, not just numbers."
+    },
+    {
+      "id": "q6-rephrase-a2",
+      "input": {
+        "qId": "q6",
+        "prompt": "Careful — is 1/2 the same as 1/3?",
+        "studentAnswer": "Yes — they look equal",
+        "attemptNumber": 2,
+        "mode": "rephrase"
+      },
+      "tags": ["rephrase", "discriminate"],
+      "notes": "Rephrase the discrimination question. Must keep the kid skeptical without leading them to the wrong answer."
+    },
+    {
+      "id": "q7-four-eights-more-a1",
+      "input": {
+        "qId": "q7",
+        "prompt": "Last one! Is 4/8 the same as 1/2?",
+        "studentAnswer": "No, 4/8 is more",
+        "attemptNumber": 1,
+        "mode": "hint"
+      },
+      "tags": ["capstone", "big-numbers-bigger"],
+      "notes": "Kid sees 4 and 8 and thinks bigger numbers = bigger fraction. Pip should connect to the pattern: half of 8 is 4."
+    },
+    {
+      "id": "q7-one-half-more-a1",
+      "input": {
+        "qId": "q7",
+        "prompt": "Last one! Is 4/8 the same as 1/2?",
+        "studentAnswer": "No, 1/2 is more",
+        "attemptNumber": 1,
+        "mode": "hint"
+      },
+      "tags": ["capstone", "opposite-misconception"],
+      "notes": "Opposite misconception — kid is sticking with the small-fraction-name. Same redirect needed."
+    },
+    {
+      "id": "q7-rephrase-a2",
+      "input": {
+        "qId": "q7",
+        "prompt": "Last one! Is 4/8 the same as 1/2?",
+        "studentAnswer": "No, 4/8 is more",
+        "attemptNumber": 2,
+        "mode": "rephrase"
+      },
+      "tags": ["rephrase", "capstone"],
+      "notes": "Final question, second attempt. Rephrase with the equivalence pattern in mind."
+    },
+    {
+      "id": "q1-empty-answer-a1",
+      "input": {
+        "qId": "q1",
+        "prompt": "Quick question — which is bigger: 1/2 or 2/4?",
+        "studentAnswer": "",
+        "attemptNumber": 1,
+        "mode": "hint"
+      },
+      "tags": ["edge", "empty-answer"],
+      "notes": "Edge case: empty student answer (shouldn't happen in the UI but tests robustness). Pip should still produce a helpful hint."
+    }
+  ]
+}

@@ -1,8 +1,14 @@
 # Fraction Sponge 🧽
 
-A one-lesson, iPad-first web tutor that teaches **fraction equivalence** (`1/2 = 2/4`) to 9-year-olds. The kid splits a half into two fourths, smashes them back together, and watches the same shape reappear — Pip the sponge guides the discovery and then runs a quick three-question check for understanding.
+A one-lesson, iPad-first web tutor that teaches **fraction equivalence** (`1/2 = 2/4`) to 9-year-olds. The kid splits a half into two fourths, smashes them back together, and watches the same shape reappear — Pip the sponge guides the discovery and then runs a quick seven-question check for understanding.
 
 Built for the Synthesis Tutor 1-week challenge (Week 4).
+
+## Demo
+
+🧽 **Live app:** <https://web-production-44b1.up.railway.app>
+
+Open the URL on an iPad in Safari (or Chrome DevTools → device mode → iPad) for the intended experience.
 
 ---
 

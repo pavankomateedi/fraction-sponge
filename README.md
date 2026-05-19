@@ -1,6 +1,12 @@
 # Fraction Fruit Lab 🍎
 
-A one-lesson, iPad-first web tutor that teaches **fraction equivalence** (`1/2 = 2/4`) to 9-year-olds. The kid slices a half-apple into two quarters, squishes them back together, and watches the same half re-form — then Pip (the apple seed) carries the idea across pizza, banana, and orange so the kid learns equivalence is a property of *the math*, not the fruit.
+An iPad-first web tutor that teaches fractions to 9-year-olds through hands-on fruit manipulatives, hosted by **Pip the apple seed**. From a lesson hub, the kid picks one of **three lessons**:
+
+1. **Same Size, New Name** 🍎 — fraction *equivalence* (`1/2 = 2/4`). Slice a half-apple into two quarters, squish them back, and watch the same half re-form. The idea then carries across watermelon, banana, and orange so the kid learns equivalence is a property of *the math*, not the fruit.
+2. **Which is Bigger?** ⚖️ — *comparing* fractions. A half-apple shown next to a smaller quarter teaches that more pieces means each piece is smaller (`1/2 > 1/4`).
+3. **Adding Fractions** ➕ — *adding* same-denominator fractions. Two quarter-pieces combine into `2/4` — add the tops, keep the bottom.
+
+Each lesson follows the same explore → instruct → check arc. Completed lessons get a ✓ on the hub.
 
 Built for the Synthesis Tutor 1-week challenge (Week 4).
 
@@ -53,7 +59,7 @@ app.js  ──renders Pip + choices ◀──┘
 ```
 
 - **`public/manipulative.js`** — the workspace. Knows the visual states (`half`, `quarters`, `merged`) and exposes `split()` / `smash()` / `reset()` / `celebrate()` as promise-returning calls so the tutor can sequence them.
-- **`public/tutorScript.js`** — the lesson script as a state machine: `idle → split → smash → check → win`, where `check` iterates through a 7-question bank. Pure logic, no DOM access.
+- **`public/tutorScript.js`** — a **registry of all three lessons**, each a self-contained object with `stages` + `checkQuestions`. A lesson runner tracks the active lesson and walks it through `idle → … → check → win`, where `check` iterates that lesson's question bank. The hub calls `loadLesson(id)`. Pure logic, no DOM access.
 - **`public/app.js`** — the glue. Renders Pip's messages, answer-choice buttons, drives transitions, calls `/api/tutor` for hints, falls back to scripted text on failure.
 - **`server.js`** — Express server serving `public/` plus a single `POST /api/tutor` endpoint that proxies to Claude. The Anthropic key never reaches the client.
 
@@ -67,6 +73,8 @@ The happy path is fully scripted — fast, predictable, and works offline. The C
 `max_tokens: 80`, system prompt enforces Pip's persona (never says "wrong," always references what the student did).
 
 ### Lesson flow
+
+> Shown for Lesson 1 (Same Size, New Name). Lessons 2 and 3 follow the same explore → instruct → check arc with their own manipulative and questions.
 
 1. **Explore** — Pip greets, kid taps **🔪 Slice it!** → the half-apple splits into two quarter-pieces (inline SVG with seeds, cut-face, stem, leaf).
 2. **Squish** — Kid taps **🤲 Squish them together!** → pieces shake, flash, merge. Equation `1/2 = 2/4` appears with apple visuals.

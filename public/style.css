@@ -435,6 +435,29 @@ button {
   height: 145px;
 }
 
+/* New fruit visualizations (Q3-Q7). These are wider single blocks
+   that swap in via manipulative.showFruit(). */
+.frac-block.fruit-pizza,
+.frac-block.fruit-banana,
+.frac-block.fruit-orange {
+  width: 280px;
+  height: 165px;
+}
+
+.frac-block.fruit-compare {
+  width: 320px;
+  height: 165px;
+}
+
+.frac-block.fruit-pizza .fruit-svg,
+.frac-block.fruit-banana .fruit-svg,
+.frac-block.fruit-orange .fruit-svg,
+.frac-block.fruit-compare .fruit-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
 .fruit-svg {
   width: 100%;
   height: 100%;

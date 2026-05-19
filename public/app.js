@@ -218,10 +218,13 @@
       const hadMore = tutorScript.nextQuestion();
       if (hadMore) {
         // If the new question introduces a different fruit, mark the
-        // chapter change with a brief upward sweep.
+        // chapter change with a brief upward sweep AND swap the
+        // workspace visual so the right side follows the chat.
         const next = tutorScript.currentQuestion();
         if (next && next.fruit && next.fruit !== question.fruit) {
           manipulative.playSound('transition');
+          const newKey = fruitKeyFromEmoji(next.fruit);
+          if (newKey) manipulative.showFruit(newKey);
         }
         busy = false;
         renderStage();
@@ -292,6 +295,19 @@
   // ── Utilities ──
   function pause(ms) {
     return new Promise((r) => setTimeout(r, ms));
+  }
+
+  // Maps a check-question's `fruit` emoji to the manipulative.showFruit() key.
+  // The discriminate question (Q6) uses BOTH apple + banana emoji, so check
+  // that combo first.
+  function fruitKeyFromEmoji(emoji) {
+    if (!emoji) return null;
+    if (emoji.includes('🍎') && emoji.includes('🍌')) return 'compare';
+    if (emoji.includes('🍕')) return 'pizza';
+    if (emoji.includes('🍌')) return 'banana';
+    if (emoji.includes('🍊')) return 'orange';
+    if (emoji.includes('🍎')) return 'apple';
+    return null;
   }
 
   // ── Boot ──

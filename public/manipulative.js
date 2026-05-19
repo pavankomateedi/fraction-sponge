@@ -135,6 +135,186 @@
 </svg>`;
   }
 
+  // ── Pizza SVG (Q3-Q4: 3/6 = 1/2) ──────────────────────────────
+  // Top-down view, 6 wedges, left half (3 slices) highlighted with
+  // a saturated sauce overlay so "3/6" reads as "the red half".
+  function pizzaSVG() {
+    return `
+<svg viewBox="0 0 240 160" xmlns="http://www.w3.org/2000/svg" class="fruit-svg fruit-pizza" aria-hidden="true">
+  <defs>
+    <radialGradient id="pizzaCheese" cx="50%" cy="40%">
+      <stop offset="0%" stop-color="#FFE066"/>
+      <stop offset="100%" stop-color="#F9A825"/>
+    </radialGradient>
+    <radialGradient id="pizzaSauce" cx="50%" cy="40%">
+      <stop offset="0%" stop-color="#E04545"/>
+      <stop offset="100%" stop-color="#A82020"/>
+    </radialGradient>
+  </defs>
+  <g transform="translate(120,80)">
+    <!-- Crust ring -->
+    <circle r="70" fill="#C68B4E" stroke="#7A4A20" stroke-width="3"/>
+    <!-- Sauce + cheese inner -->
+    <circle r="60" fill="url(#pizzaCheese)"/>
+    <!-- Left half: SAUCE highlight (3/6 = 1/2 visualization) -->
+    <path d="M 0 -60 A 60 60 0 0 0 0 60 L 0 0 Z" fill="url(#pizzaSauce)" opacity="0.85"/>
+    <!-- Slice dividers (6 wedges from center) -->
+    <g stroke="white" stroke-width="2" stroke-linecap="round">
+      <line x1="0" y1="0" x2="0"   y2="-60"/>
+      <line x1="0" y1="0" x2="52"  y2="-30"/>
+      <line x1="0" y1="0" x2="52"  y2="30"/>
+      <line x1="0" y1="0" x2="0"   y2="60"/>
+      <line x1="0" y1="0" x2="-52" y2="30"/>
+      <line x1="0" y1="0" x2="-52" y2="-30"/>
+    </g>
+    <!-- Pepperoni dots (one in each cheese wedge for fun) -->
+    <circle cx="26"  cy="-26" r="5" fill="#8C1414"/>
+    <circle cx="40"  cy="0"   r="5" fill="#8C1414"/>
+    <circle cx="26"  cy="26"  r="5" fill="#8C1414"/>
+  </g>
+  <!-- Side labels -->
+  <g font-family="Nunito, sans-serif" font-weight="900" text-anchor="middle">
+    <text x="80"  y="148" font-size="14" fill="#8d1414">3/6</text>
+    <text x="160" y="148" font-size="14" fill="#7A4A20">3/6</text>
+  </g>
+</svg>`;
+  }
+
+  // ── Banana SVG (Q5: 1/3 = 2/6) ─────────────────────────────────
+  // Two stacked banana cross-sections — top split into 3 chunks
+  // (one highlighted), bottom split into 6 (two highlighted). The
+  // two highlight bands are the same width so the kid sees 1/3 = 2/6.
+  function bananaSVG() {
+    return `
+<svg viewBox="0 0 240 160" xmlns="http://www.w3.org/2000/svg" class="fruit-svg fruit-banana" aria-hidden="true">
+  <defs>
+    <linearGradient id="bananaSkin" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFEB3B"/>
+      <stop offset="100%" stop-color="#E6A700"/>
+    </linearGradient>
+    <linearGradient id="bananaHi" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFC107"/>
+      <stop offset="100%" stop-color="#FF8F00"/>
+    </linearGradient>
+  </defs>
+  <!-- Top banana: 3 chunks, leftmost highlighted (1/3) -->
+  <g transform="translate(20,28)">
+    <rect x="0"  y="0" width="60" height="36" rx="14" fill="url(#bananaHi)" stroke="#7A5A0E" stroke-width="2"/>
+    <rect x="65" y="0" width="60" height="36" rx="14" fill="url(#bananaSkin)" stroke="#7A5A0E" stroke-width="2"/>
+    <rect x="130" y="0" width="60" height="36" rx="14" fill="url(#bananaSkin)" stroke="#7A5A0E" stroke-width="2"/>
+    <text x="-12" y="22" font-family="Nunito,sans-serif" font-weight="900" font-size="13" fill="#8d4a00">1/3</text>
+  </g>
+  <!-- Bottom banana: 6 chunks, leftmost TWO highlighted (2/6) -->
+  <g transform="translate(20,92)">
+    <rect x="0"  y="0" width="28" height="36" rx="10" fill="url(#bananaHi)" stroke="#7A5A0E" stroke-width="2"/>
+    <rect x="32" y="0" width="28" height="36" rx="10" fill="url(#bananaHi)" stroke="#7A5A0E" stroke-width="2"/>
+    <rect x="64" y="0" width="28" height="36" rx="10" fill="url(#bananaSkin)" stroke="#7A5A0E" stroke-width="2"/>
+    <rect x="96" y="0" width="28" height="36" rx="10" fill="url(#bananaSkin)" stroke="#7A5A0E" stroke-width="2"/>
+    <rect x="128" y="0" width="28" height="36" rx="10" fill="url(#bananaSkin)" stroke="#7A5A0E" stroke-width="2"/>
+    <rect x="160" y="0" width="28" height="36" rx="10" fill="url(#bananaSkin)" stroke="#7A5A0E" stroke-width="2"/>
+    <text x="-12" y="22" font-family="Nunito,sans-serif" font-weight="900" font-size="13" fill="#8d4a00">2/6</text>
+  </g>
+  <!-- Vertical alignment guide showing the highlighted portions are equal -->
+  <line x1="80" y1="20" x2="80" y2="140" stroke="#8d4a00" stroke-width="1.5" stroke-dasharray="3,3" opacity="0.5"/>
+</svg>`;
+  }
+
+  // ── Orange SVG (Q7: 4/8 = 1/2) ─────────────────────────────────
+  // Top-down cross-section, 8 natural segments, 4 highlighted in
+  // deeper tangerine showing 4/8 = half the orange.
+  function orangeSVG() {
+    return `
+<svg viewBox="0 0 240 160" xmlns="http://www.w3.org/2000/svg" class="fruit-svg fruit-orange" aria-hidden="true">
+  <defs>
+    <radialGradient id="orangePeel" cx="50%" cy="40%">
+      <stop offset="0%" stop-color="#FFB74D"/>
+      <stop offset="100%" stop-color="#E65100"/>
+    </radialGradient>
+    <radialGradient id="orangeHi" cx="50%" cy="40%">
+      <stop offset="0%" stop-color="#FF9800"/>
+      <stop offset="100%" stop-color="#BF360C"/>
+    </radialGradient>
+  </defs>
+  <g transform="translate(120,80)">
+    <!-- Outer peel ring -->
+    <circle r="70" fill="#FFE0B2" stroke="#C04C00" stroke-width="4"/>
+    <!-- 8 segments via paths (each 45°) -->
+    <!-- Left half: HIGHLIGHTED segments (4/8) -->
+    <path d="M 0 0 L 0 -65 A 65 65 0 0 0 -46 -46 Z" fill="url(#orangeHi)"/>
+    <path d="M 0 0 L -46 -46 A 65 65 0 0 0 -65 0 Z" fill="url(#orangeHi)"/>
+    <path d="M 0 0 L -65 0 A 65 65 0 0 0 -46 46 Z" fill="url(#orangeHi)"/>
+    <path d="M 0 0 L -46 46 A 65 65 0 0 0 0 65 Z" fill="url(#orangeHi)"/>
+    <!-- Right half: regular peel color (the other 4/8) -->
+    <path d="M 0 0 L 0 65 A 65 65 0 0 0 46 46 Z" fill="url(#orangePeel)"/>
+    <path d="M 0 0 L 46 46 A 65 65 0 0 0 65 0 Z" fill="url(#orangePeel)"/>
+    <path d="M 0 0 L 65 0 A 65 65 0 0 0 46 -46 Z" fill="url(#orangePeel)"/>
+    <path d="M 0 0 L 46 -46 A 65 65 0 0 0 0 -65 Z" fill="url(#orangePeel)"/>
+    <!-- Segment dividers (white membrane) -->
+    <g stroke="white" stroke-width="2.5" stroke-linecap="round">
+      <line x1="0" y1="0" x2="0"   y2="-65"/>
+      <line x1="0" y1="0" x2="46"  y2="-46"/>
+      <line x1="0" y1="0" x2="65"  y2="0"/>
+      <line x1="0" y1="0" x2="46"  y2="46"/>
+      <line x1="0" y1="0" x2="0"   y2="65"/>
+      <line x1="0" y1="0" x2="-46" y2="46"/>
+      <line x1="0" y1="0" x2="-65" y2="0"/>
+      <line x1="0" y1="0" x2="-46" y2="-46"/>
+    </g>
+    <!-- Center pith -->
+    <circle r="6" fill="white" stroke="#C04C00" stroke-width="1.5"/>
+  </g>
+  <g font-family="Nunito, sans-serif" font-weight="900" text-anchor="middle">
+    <text x="80"  y="148" font-size="14" fill="#8d4a00">4/8</text>
+    <text x="160" y="148" font-size="14" fill="#7A4A20">4/8</text>
+  </g>
+</svg>`;
+  }
+
+  // ── Apple + Banana side-by-side (Q6: 1/2 ≠ 1/3) ────────────────
+  // The discriminate question — visually proves 1/2 apple is bigger
+  // than 1/3 banana.
+  function appleBananaCompareSVG() {
+    return `
+<svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg" class="fruit-svg fruit-compare" aria-hidden="true">
+  <defs>
+    <linearGradient id="cmpAppleSkin" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ef5350"/>
+      <stop offset="100%" stop-color="#c62828"/>
+    </linearGradient>
+    <linearGradient id="cmpBanana" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFC107"/>
+      <stop offset="100%" stop-color="#FF8F00"/>
+    </linearGradient>
+  </defs>
+  <!-- LEFT: half-apple, taller -->
+  <g transform="translate(10,20)">
+    <rect x="55" y="6" width="6" height="10" rx="2" fill="#5d4037"/>
+    <ellipse cx="70" cy="14" rx="9" ry="4" fill="#66bb6a" transform="rotate(22 70 14)"/>
+    <path d="M 58 22 Q 18 22 14 60 Q 12 110 58 120 Z"
+          fill="#FFF8E1" stroke="url(#cmpAppleSkin)" stroke-width="7" stroke-linejoin="round"/>
+    <ellipse cx="36" cy="62" rx="3" ry="4" fill="#3e2723"/>
+    <ellipse cx="36" cy="86" rx="3" ry="4" fill="#3e2723"/>
+    <text x="36" y="138" font-family="Nunito,sans-serif" font-weight="900" font-size="14" fill="#8d1414" text-anchor="middle">1/2 🍎</text>
+  </g>
+  <!-- DIVIDER + "vs" -->
+  <g transform="translate(140,80)" font-family="Nunito,sans-serif" font-weight="900">
+    <line x1="0" y1="-50" x2="0" y2="50" stroke="#5a3fc0" stroke-width="2" stroke-dasharray="4,4"/>
+    <circle r="16" fill="#5a3fc0"/>
+    <text y="6" font-size="13" fill="white" text-anchor="middle">vs</text>
+  </g>
+  <!-- RIGHT: third-of-banana, SHORTER chunk -->
+  <g transform="translate(180,38)">
+    <rect x="0" y="44" width="42" height="42" rx="14" fill="url(#cmpBanana)" stroke="#7A5A0E" stroke-width="2"/>
+    <text x="21" y="120" font-family="Nunito,sans-serif" font-weight="900" font-size="14" fill="#8d4a00" text-anchor="middle">1/3 🍌</text>
+    <!-- Show the third is smaller -->
+  </g>
+  <!-- Helper labels showing they're different sizes -->
+  <g font-family="Nunito,sans-serif" font-weight="800" font-size="10" fill="#5a3fc0">
+    <text x="140" y="20" text-anchor="middle">are these the SAME?</text>
+  </g>
+</svg>`;
+  }
+
   function appleQuarterSVG(variant) {
     // Quarter-apple = 90° wedge of cross-section.
     // variant 'a' = left-leaning, variant 'b' = right-leaning (mirror).
@@ -181,6 +361,12 @@
   }
 
   // ── State ──
+  // Visual states:
+  //   'half' / 'quarters' / 'merged' — apple manipulative phase
+  //   'pizza'    — pizza visualization for Q3-Q4 (3/6 vs 1/2)
+  //   'banana'   — banana 1/3 vs 2/6 stacked visualization for Q5
+  //   'compare'  — apple-half vs banana-third for Q6 (1/2 ≠ 1/3)
+  //   'orange'   — orange 4/8 = 1/2 segment visualization for Q7
   let visualState = 'half';
 
   // ── DOM ──
@@ -193,30 +379,58 @@
 
   // ── Renderers ──
   function renderRefBar(mode) {
-    // Reference bar shows the apple-skin red and the fraction proportions.
-    // 'half'      — left half filled red, right half empty (the whole bar = a whole apple worth)
-    // 'quarters'  — left quarter dark-red, next quarter bright-red, right half empty
-    // 'both'      — combined view: the two quarters AND the half overlapping/aligned
-    const FILL_DARK   = 'background:linear-gradient(135deg,#c62828,#8d1414);';
-    const FILL_BRIGHT = 'background:linear-gradient(135deg,#ef5350,#c62828);';
-    const FILL_BLEND  = 'background:linear-gradient(135deg,#ef5350,#c62828);';
+    // Reference bar adapts to the current fruit + question context.
     const BR  = 'border-right:2px solid rgba(255,255,255,0.35);';
     const BD  = 'border-right:2px dashed rgba(255,255,255,0.5);';
 
+    // Apple palette (original manipulative phase + Q1-Q2)
+    const APPLE_DARK   = 'background:linear-gradient(135deg,#c62828,#8d1414);';
+    const APPLE_BRIGHT = 'background:linear-gradient(135deg,#ef5350,#c62828);';
+    // Pizza palette
+    const PIZZA_SAUCE  = 'background:linear-gradient(135deg,#E04545,#A82020);';
+    const PIZZA_CHEESE = 'background:linear-gradient(135deg,#FFD54F,#F9A825);';
+    // Banana palette
+    const BANANA_HI    = 'background:linear-gradient(135deg,#FFC107,#FF8F00);';
+    const BANANA_LITE  = 'background:linear-gradient(135deg,#FFEB3B,#E6A700);';
+    // Orange palette
+    const ORANGE_HI    = 'background:linear-gradient(135deg,#FF9800,#BF360C);';
+    const ORANGE_LITE  = 'background:linear-gradient(135deg,#FFB74D,#E65100);';
+
     if (mode === 'half') {
       refBar.innerHTML =
-        `<div class="ref-seg" style="width:50%;${FILL_BRIGHT}${BR}">1/2 🍎</div>` +
+        `<div class="ref-seg" style="width:50%;${APPLE_BRIGHT}${BR}">1/2 🍎</div>` +
         `<div class="ref-seg empty" style="width:50%;">1/2</div>`;
     } else if (mode === 'quarters') {
       refBar.innerHTML =
-        `<div class="ref-seg" style="width:25%;${FILL_DARK}${BR}">1/4</div>` +
-        `<div class="ref-seg" style="width:25%;${FILL_BRIGHT}${BR}">1/4</div>` +
+        `<div class="ref-seg" style="width:25%;${APPLE_DARK}${BR}">1/4</div>` +
+        `<div class="ref-seg" style="width:25%;${APPLE_BRIGHT}${BR}">1/4</div>` +
         `<div class="ref-seg empty" style="width:50%;">1/2</div>`;
-    } else { // both
+    } else if (mode === 'both') {
       refBar.innerHTML =
-        `<div class="ref-seg" style="width:25%;${FILL_DARK}${BR}">1/4</div>` +
-        `<div class="ref-seg" style="width:25%;${FILL_BRIGHT}${BD}">1/4</div>` +
-        `<div class="ref-seg" style="width:50%;${FILL_BLEND}border-left:2px dashed rgba(255,255,255,0.5);">= 1/2 🍎</div>`;
+        `<div class="ref-seg" style="width:25%;${APPLE_DARK}${BR}">1/4</div>` +
+        `<div class="ref-seg" style="width:25%;${APPLE_BRIGHT}${BD}">1/4</div>` +
+        `<div class="ref-seg" style="width:50%;${APPLE_BRIGHT}border-left:2px dashed rgba(255,255,255,0.5);">= 1/2 🍎</div>`;
+    } else if (mode === 'pizza') {
+      // 6 sixths total — left 3 filled with sauce-red, right 3 filled with cheese-yellow
+      refBar.innerHTML =
+        Array.from({ length: 3 }).map(() => `<div class="ref-seg" style="width:16.66%;${PIZZA_SAUCE}${BR}">1/6</div>`).join('') +
+        Array.from({ length: 3 }).map((_, i) => `<div class="ref-seg" style="width:16.66%;${PIZZA_CHEESE}${i === 2 ? '' : BR}color:#7A4A20">1/6</div>`).join('');
+    } else if (mode === 'banana') {
+      // Left 2 sixths highlighted = 2/6 = 1/3; right 4 sixths lighter
+      refBar.innerHTML =
+        Array.from({ length: 2 }).map(() => `<div class="ref-seg" style="width:16.66%;${BANANA_HI}${BR}">1/6</div>`).join('') +
+        Array.from({ length: 4 }).map((_, i) => `<div class="ref-seg" style="width:16.66%;${BANANA_LITE}${i === 3 ? '' : BR}color:#7A5A0E">1/6</div>`).join('');
+    } else if (mode === 'compare') {
+      // Half-apple-red vs third-banana-yellow at proportional widths
+      refBar.innerHTML =
+        `<div class="ref-seg" style="width:50%;${APPLE_BRIGHT}${BR}">1/2 🍎</div>` +
+        `<div class="ref-seg" style="width:33.33%;${BANANA_HI}${BR}">1/3 🍌</div>` +
+        `<div class="ref-seg empty" style="width:16.66%;"></div>`;
+    } else if (mode === 'orange') {
+      // 4 eighths highlighted + 4 eighths lighter
+      refBar.innerHTML =
+        Array.from({ length: 4 }).map(() => `<div class="ref-seg" style="width:12.5%;${ORANGE_HI}${BR}">1/8</div>`).join('') +
+        Array.from({ length: 4 }).map((_, i) => `<div class="ref-seg" style="width:12.5%;${ORANGE_LITE}${i === 3 ? '' : BR}color:#7A4A20">1/8</div>`).join('');
     }
   }
 
@@ -320,6 +534,46 @@
     return wait(600);
   }
 
+  // Swap the workspace to a different fruit visual.
+  // Used by app.js when the check phase moves from one fruit to another.
+  // `key` ∈ { 'apple', 'pizza', 'banana', 'compare', 'orange' }.
+  function showFruit(key) {
+    if (!piecesArea) return;
+    // Hide the apple's smash-equation overlay — only relevant during the
+    // apple manipulative phase.
+    equation.classList.remove('show');
+
+    if (key === 'apple') {
+      // Restore the post-smash "both" view: half + 2 quarters + equation.
+      clearPieces();
+      const q1 = makeFruitBlock('quarter', 'a', 'anim-slide-l');
+      const q2 = makeFruitBlock('quarter', 'b', 'anim-slide-r');
+      piecesArea.appendChild(q1);
+      piecesArea.appendChild(q2);
+      renderRefBar('both');
+      setTimeout(() => equation.classList.add('show'), 250);
+      visualState = 'apple';
+      emit('fruitChange', { key });
+      return;
+    }
+
+    let svg = '';
+    if (key === 'pizza')   svg = pizzaSVG();
+    if (key === 'banana')  svg = bananaSVG();
+    if (key === 'orange')  svg = orangeSVG();
+    if (key === 'compare') svg = appleBananaCompareSVG();
+    if (!svg) return;
+
+    clearPieces();
+    const wrap = document.createElement('div');
+    wrap.className = `frac-block fruit-${key} anim-bounce`;
+    wrap.innerHTML = svg;
+    piecesArea.appendChild(wrap);
+    renderRefBar(key);
+    visualState = key;
+    emit('fruitChange', { key });
+  }
+
   function showEquation() {
     equation.classList.add('show');
   }
@@ -381,6 +635,7 @@
     split,
     smash,
     celebrate,
+    showFruit,
     showEquation,
     hideEquationAndWin,
     playSound,

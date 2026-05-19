@@ -17,14 +17,26 @@
 <!-- Sound captions overlay (Deaf / hard-of-hearing accessibility) -->
 <div class="captions" id="captions" aria-live="polite" aria-atomic="false" aria-label="Sound captions"></div>
 
-<main class="app" role="main">
+<!-- ── Lesson hub (landing screen) ── -->
+<section class="hub" id="hub" aria-label="Choose a lesson">
+  <div class="hub-inner">
+    <div class="hub-head">
+      <div class="hub-logo" aria-hidden="true">🍎</div>
+      <h1 class="hub-title">Fraction Fruit Lab</h1>
+      <p class="hub-sub">Pick a lesson to play with Pip the seed</p>
+    </div>
+    <div class="hub-cards" id="hubCards"></div>
+  </div>
+</section>
+
+<main class="app" role="main" hidden>
 
   <!-- ── Left panel: Chat / Tutor ── -->
   <section class="panel chat" aria-label="Tutor chat">
     <header class="chat-header">
-      <div class="chat-logo" aria-hidden="true">🍎</div>
+      <button class="hdr-home" id="homeBtn" type="button" aria-label="Back to lessons" title="Back to lessons">←</button>
       <div class="chat-titles">
-        <div class="chat-title">Fraction Fruit Lab</div>
+        <div class="chat-title" id="lessonTitle">Fraction Fruit Lab</div>
         <div class="chat-sub">with Pip the seed</div>
       </div>
       <div class="header-toggles">

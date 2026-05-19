@@ -14,17 +14,32 @@ const anthropic = process.env.ANTHROPIC_API_KEY
   ? new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
   : null;
 
-const PIP_SYSTEM_PROMPT = `You are Pip, a warm and curious math tutor for a 9-year-old learning fraction equivalence (1/2 = 2/4).
+const PIP_SYSTEM_PROMPT = `You are Pip, a warm and curious math tutor (a friendly apple seed) for a 9-year-old. The app has THREE fruit-themed lessons; you give wrong-answer hints for all of them.
 
-The lesson uses FRUITS as the manipulative. The student has just sliced a half-apple into two quarter-pieces, squished them back together, and watched the same half re-form. The check-for-understanding then carries the idea across multiple fruits:
+LESSON 1 — Equivalence (1/2 = 2/4). The student sliced a half-apple into two quarters and squished them back. Then a multi-fruit check:
+  q1 apple: which is bigger, 1/2 or 2/4? (same size)
+  q2 apple: how many quarter-pieces fit in one half? (2)
+  q3 watermelon (6 wedges): is 3/6 the same as 1/2? (yes)
+  q4 watermelon: how many sixth-wedges in half a watermelon? (3)
+  q5 banana: is 1/3 the same as 2/6? (yes)
+  q6 apple vs banana: is 1/2 the same size as 1/3? (no, different)
+  q7 orange (8 segments): is 4/8 the same as 1/2? (yes)
 
-  q1 — apple: which is bigger, 1/2 or 2/4? (correct: same size)
-  q2 — apple: how many quarter-pieces fit inside one half? (correct: 2)
-  q3 — watermelon (6 wedges): is 3/6 the same as 1/2? (correct: yes)
-  q4 — watermelon: how many sixth-wedges fit in half a watermelon? (correct: 3)
-  q5 — banana: is 1/3 the same as 2/6? (correct: yes)
-  q6 — apple vs banana: is 1/2 the same fraction-size as 1/3? (correct: no, different sizes)
-  q7 — orange (8 segments): is 4/8 the same as 1/2? (correct: yes)
+LESSON 2 — Comparing (more pieces = smaller). The student saw a half-apple next to a smaller quarter. Check:
+  c1: bigger, 1/2 or 1/4? (1/2)
+  c2: bigger, 1/3 or 1/6? (1/3)
+  c3: bigger, 1/2 or 1/3? (1/2)
+  c4: cutting into MORE pieces makes each piece...? (smaller)
+  c5: biggest single piece — 1/2, 1/4, or 1/8? (1/2)
+
+LESSON 3 — Adding same-denominator fractions (add tops, keep bottom). The student combined two quarter-pieces into 2/4. Check:
+  a1: 1/4 + 1/4? (2/4)
+  a2: 1/3 + 1/3? (2/3)
+  a3: 2/6 + 1/6? (3/6)
+  a4: 1/5 + 2/5? (3/5)
+  a5: adding same-bottom fractions, what stays the same? (the bottom number)
+
+Use the qId you're given to know which lesson + question the student is on.
 
 Your voice rules — never break these:
 - Short sentences. Maximum two short lines.
@@ -90,6 +105,80 @@ const FALLBACK = {
       'Half of 8 is… 4. So 4 segments out of 8 = 1/2 the orange!',
     ],
     rephrase: 'Four segments out of eight — does that equal one piece out of two?',
+  },
+
+  // ── Lesson 2: Comparing ──
+  c1: {
+    hints: [
+      'Remember the apple — the half was a big chunk, the quarter was small. Which wins? 🤔',
+      'More cuts means smaller pieces. 1/2 is two cuts, 1/4 is four cuts.',
+    ],
+    rephrase: 'Picture both pieces side by side. Which is the bigger chunk of apple?',
+  },
+  c2: {
+    hints: [
+      'Would you rather share a banana with 2 friends or 5 friends? Fewer friends = bigger pieces 🤔',
+      'Cutting into 6 makes smaller pieces than cutting into 3.',
+    ],
+    rephrase: 'Bigger bottom number means smaller pieces. So which is bigger — 1/3 or 1/6?',
+  },
+  c3: {
+    hints: [
+      'Cut a fruit into 2 vs into 3 — which makes the chunkier piece? 🤔',
+      '2 is fewer cuts than 3, so that piece is bigger.',
+    ],
+    rephrase: 'Fewer cuts = bigger pieces. Is 1/2 bigger than 1/3?',
+  },
+  c4: {
+    hints: [
+      'Think of sharing one fruit with more and more people — does your slice grow or shrink? 🤔',
+      'The same fruit split into more parts means each part is tinier.',
+    ],
+    rephrase: 'If you keep cutting into more pieces, what happens to each piece?',
+  },
+  c5: {
+    hints: [
+      'Smallest bottom number = fewest cuts = biggest piece. Which has the smallest bottom? 🤔',
+      '2 cuts vs 4 vs 8 — fewest cuts wins.',
+    ],
+    rephrase: 'Of 1/2, 1/4, 1/8 — which has the fewest cuts, so the biggest piece?',
+  },
+
+  // ── Lesson 3: Adding ──
+  a1: {
+    hints: [
+      'You squished two quarter-pieces together — how many quarters is that now? 🤔',
+      'Add the tops: 1 + 1 = 2. Keep the bottom: 4.',
+    ],
+    rephrase: 'One quarter plus one more quarter — how many quarters total?',
+  },
+  a2: {
+    hints: [
+      'Same rule — add the top numbers, keep the bottom the same 🤔',
+      '1 third + 1 third. Tops: 1 + 1. Bottom stays 3.',
+    ],
+    rephrase: 'One third plus one third — keep the 3 on the bottom. What is it?',
+  },
+  a3: {
+    hints: [
+      'Add ONLY the tops: 2 + 1. Does the bottom number (6) change? 🤔',
+      'Two sixths plus one sixth — how many sixths is that?',
+    ],
+    rephrase: '2 sixths and 1 more sixth — how many sixths?',
+  },
+  a4: {
+    hints: [
+      'Tops: 1 + 2. Bottom: stays 5. What do you get? 🤔',
+      'One fifth plus two fifths = three fifths.',
+    ],
+    rephrase: 'One fifth plus two fifths — keep the 5 on the bottom. How many fifths?',
+  },
+  a5: {
+    hints: [
+      'In every example you added the tops — but did the bottom number ever change? 🤔',
+      '1/4 + 1/4 = 2/4. The 4 stayed put.',
+    ],
+    rephrase: 'Tops get added. So which number stays the same — top or bottom?',
   },
 };
 

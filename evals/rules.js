@@ -66,6 +66,18 @@ const MANIPULATIVE_REFS = [
   'banana', 'bananas',
   'orange', 'oranges',
   'fruit', 'fruits',
+
+  // comparing lesson — concrete size + sharing language
+  'bigger', 'smaller', 'big', 'small',
+  'share', 'shares', 'shared', 'sharing',
+  'friend', 'friends',
+  'grow', 'grows', 'shrink', 'shrinks',
+
+  // adding lesson — the parts of a fraction the kid manipulates
+  'top', 'tops',
+  'bottom', 'bottoms',
+  'add', 'adds',
+  'plus',
 ];
 
 // ── Rule implementations ──────────────────────────────────────

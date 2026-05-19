@@ -7,9 +7,14 @@
 (function () {
   'use strict';
 
-  const messagesEl = document.getElementById('messages');
-  const choicesEl  = document.getElementById('choices');
-  const progressEl = document.getElementById('progress');
+  const messagesEl  = document.getElementById('messages');
+  const choicesEl   = document.getElementById('choices');
+  const progressEl  = document.getElementById('progress');
+  const hubEl       = document.getElementById('hub');
+  const hubCardsEl  = document.getElementById('hubCards');
+  const appEl       = document.querySelector('.app');
+  const homeBtn     = document.getElementById('homeBtn');
+  const lessonTitle = document.getElementById('lessonTitle');
 
   // Lock UI while an animation or API call is in flight.
   let busy = false;
@@ -166,8 +171,9 @@
     hideProgress();
 
     if (s.stage === 'win') {
+      tutorScript.markComplete(s.lessonId);
       pipBubble(s.cfg.pip);
-      renderAdvanceButton(s.cfg.action, handlePlayAgain);
+      renderWinButtons(s.cfg.action);
       return;
     }
 
@@ -218,12 +224,13 @@
     busy = true;
     clearChoices();
 
-    if (stage === 'idle') {
-      await manipulative.split();
-    } else if (stage === 'split') {
-      await manipulative.smash();
+    // Each stage declares which manipulative method its button triggers
+    // (e.g. equivalence idle → 'split', adding idle → 'addingCombine').
+    const cfg = tutorScript.state().cfg;
+    const manipName = cfg && cfg.manip;
+    if (manipName && typeof manipulative[manipName] === 'function') {
+      await manipulative[manipName]();
     }
-    // 'smash' → 'check': no manipulative change needed
 
     tutorScript.advance();
     busy = false;
@@ -306,6 +313,28 @@
     renderStage();
   }
 
+  // Win screen offers two paths: replay this lesson, or return to the hub
+  // to pick another. Both are rendered as choice-style buttons.
+  function renderWinButtons(action) {
+    clearChoices();
+    // Play Again
+    const again = document.createElement('button');
+    again.className = 'choice-btn primary';
+    again.type = 'button';
+    again.textContent = action.label;
+    if (action.ariaLabel) again.setAttribute('aria-label', action.ariaLabel);
+    again.addEventListener('click', () => { if (!busy) { manipulative.playSound('tap'); handlePlayAgain(); } });
+    choicesEl.appendChild(again);
+    // Pick another lesson
+    const pick = document.createElement('button');
+    pick.className = 'choice-btn';
+    pick.type = 'button';
+    pick.textContent = '📚  Pick another lesson';
+    pick.setAttribute('aria-label', 'Go back and pick another lesson');
+    pick.addEventListener('click', () => { if (!busy) { manipulative.playSound('tap'); goToHub(); } });
+    choicesEl.appendChild(pick);
+  }
+
   async function handlePlayAgain() {
     busy = true;
     clearChoices();
@@ -314,8 +343,9 @@
     }
     await pause(150);
     messagesEl.innerHTML = '';
+    tutorScript.resetActiveLesson();
     await manipulative.reset();
-    tutorScript.resetAll();
+    manipulative.setup(tutorScript.manipInit());
     busy = false;
     renderStage();
   }
@@ -338,10 +368,62 @@
     return null;
   }
 
+  // ── Hub ──
+  function renderHub() {
+    if (!hubCardsEl) return;
+    const lessons = tutorScript.listLessons();
+    hubCardsEl.innerHTML = '';
+    lessons.forEach((les) => {
+      const card = document.createElement('button');
+      card.className = `hub-card ${les.done ? 'done' : ''}`;
+      card.type = 'button';
+      card.setAttribute('aria-label', `${les.title}. ${les.blurb}${les.done ? ' Completed.' : ''}`);
+      card.innerHTML = `
+        <span class="hub-card-emoji" aria-hidden="true">${les.emoji}</span>
+        <span class="hub-card-text">
+          <span class="hub-card-title">${escape(les.title)}</span>
+          <span class="hub-card-blurb">${escape(les.blurb)}</span>
+        </span>
+        <span class="hub-card-badge" aria-hidden="true">${les.done ? '✓' : '▶'}</span>`;
+      card.addEventListener('click', () => startLesson(les.id));
+      hubCardsEl.appendChild(card);
+    });
+  }
+
+  function showHub() {
+    if (window.voice && typeof window.voice.cancel === 'function') window.voice.cancel();
+    renderHub();
+    if (hubEl) hubEl.hidden = false;
+    if (appEl) appEl.hidden = true;
+  }
+
+  function goToHub() {
+    busy = false;
+    messagesEl.innerHTML = '';
+    clearChoices();
+    hideProgress();
+    showHub();
+  }
+
+  function startLesson(id) {
+    if (!tutorScript.loadLesson(id)) return;
+    const les = tutorScript.LESSONS[id];
+    if (lessonTitle) lessonTitle.textContent = les.title;
+    if (hubEl) hubEl.hidden = true;
+    if (appEl) appEl.hidden = false;
+    messagesEl.innerHTML = '';
+    clearChoices();
+    hideProgress();
+    manipulative.setup(tutorScript.manipInit());
+    busy = false;
+    renderStage();
+  }
+
   // ── Boot ──
   function init() {
     manipulative.init();
-    renderStage();
+    if (homeBtn) homeBtn.addEventListener('click', () => { if (!busy) goToHub(); });
+    showHub();
   }
 
   if (document.readyState === 'loading') {

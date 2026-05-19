@@ -439,6 +439,19 @@
       refBar.innerHTML =
         Array.from({ length: 4 }).map(() => `<div class="ref-seg" style="width:12.5%;${ORANGE_HI}${BR}">1/8</div>`).join('') +
         Array.from({ length: 4 }).map((_, i) => `<div class="ref-seg" style="width:12.5%;${ORANGE_LITE}${i === 3 ? '' : BR}color:#7A4A20">1/8</div>`).join('');
+    } else if (mode === 'cmp-half-quarter') {
+      // Comparing lesson: 1/2 (big red) vs 1/4 (smaller red) — proportional widths
+      refBar.innerHTML =
+        `<div class="ref-seg" style="width:50%;${APPLE_BRIGHT}${BR}">1/2</div>` +
+        `<div class="ref-seg" style="width:25%;${APPLE_DARK}${BR}">1/4</div>` +
+        `<div class="ref-seg empty" style="width:25%;"></div>`;
+    } else if (mode === 'adding') {
+      // Adding lesson: 4 quarters, left 2 highlighted = 2/4
+      refBar.innerHTML =
+        `<div class="ref-seg" style="width:25%;${APPLE_DARK}${BR}">1/4</div>` +
+        `<div class="ref-seg" style="width:25%;${APPLE_BRIGHT}${BR}">1/4</div>` +
+        `<div class="ref-seg empty" style="width:25%;${BR}">1/4</div>` +
+        `<div class="ref-seg empty" style="width:25%;">1/4</div>`;
     }
   }
 
@@ -542,6 +555,79 @@
     return wait(600);
   }
 
+  // ── Lesson setup (called when a lesson loads) ──
+  // mode: 'half' (equivalence/comparing start) | 'addingStart' (two quarters)
+  function setup(mode) {
+    equation.classList.remove('show');
+    winMsg.classList.remove('show');
+    clearConfetti();
+    if (mode === 'addingStart') {
+      visualState = 'quarters';
+      showQuarters();
+      renderRefBar('adding');
+    } else {
+      visualState = 'half';
+      showHalf('anim-bounce');
+      renderRefBar('half');
+    }
+  }
+
+  // ── Comparing lesson: half-apple (big) next to quarter-apple (small) ──
+  function compareSizes() {
+    playSound('split');
+    clearPieces();
+    equation.classList.remove('show');
+
+    const half = makeFruitBlock('half', null, 'anim-slide-l');
+    half.classList.add('cmp-big');
+    const quarter = makeFruitBlock('quarter', 'a', 'anim-slide-r');
+    quarter.classList.add('cmp-small');
+
+    piecesArea.appendChild(half);
+    piecesArea.appendChild(quarter);
+    renderRefBar('cmp-half-quarter');
+    visualState = 'compareSizes';
+    setTimeout(() => playSound('equation'), 300);
+    emit('compareSizes');
+    return wait(450);
+  }
+
+  // ── Adding lesson: two quarters combine into 2/4 ──
+  function addingCombine() {
+    if (visualState !== 'quarters') {
+      // Make sure we're showing two quarters first.
+      showQuarters();
+      visualState = 'quarters';
+    }
+    return new Promise((resolve) => {
+      const pieces = piecesArea.querySelectorAll('.frac-block');
+      pieces.forEach((p) => {
+        p.classList.add('anim-shake');
+        setTimeout(() => p.classList.remove('anim-shake'), 420);
+      });
+      setTimeout(() => {
+        playSound('smash');
+        flashOverlay.classList.add('anim-flash');
+        setTimeout(() => flashOverlay.classList.remove('anim-flash'), 380);
+
+        // Show the merged half-apple (which = 2/4) but with an ADDITION
+        // caption instead of the equivalence equation.
+        visualState = 'addingMerged';
+        clearPieces();
+        const merged = makeFruitBlock('half', null, 'anim-smash anim-pulse');
+        // Override the fraction label to read 2/4 (it's still half the apple).
+        const lbl = merged.querySelector('.frac-label');
+        if (lbl) lbl.innerHTML = '<span class="frac-num">2</span><div class="frac-bar-line"></div><span class="frac-den">4</span>';
+        piecesArea.appendChild(merged);
+        renderRefBar('adding');
+
+        setTimeout(() => playSound('equation'), 280);
+        emit('addingCombine');
+        setTimeout(resolve, 700);
+      }, 280);
+    });
+  }
+
   // Swap the workspace to a different fruit visual.
   // Used by app.js when the check phase moves from one fruit to another.
   // `key` ∈ { 'apple', 'watermelon', 'banana', 'compare', 'orange' }.
@@ -639,9 +725,12 @@
   // Expose
   window.manipulative = {
     init,
+    setup,
     reset,
     split,
     smash,
+    compareSizes,
+    addingCombine,
     celebrate,
     showFruit,
     showEquation,

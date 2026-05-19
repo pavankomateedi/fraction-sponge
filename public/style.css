@@ -39,6 +39,157 @@ button {
 }
 
 /* ─────────────────────────────────────────
+   Lesson hub (landing screen)
+   ───────────────────────────────────────── */
+.hub {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  overflow-y: auto;
+}
+
+.hub[hidden] { display: none; }
+
+.hub-inner {
+  width: 100%;
+  max-width: 560px;
+}
+
+.hub-head {
+  text-align: center;
+  margin-bottom: 22px;
+}
+
+.hub-logo {
+  font-size: 3rem;
+  line-height: 1;
+}
+
+.hub-title {
+  font-size: 2rem;
+  font-weight: 900;
+  color: white;
+  margin-top: 6px;
+  letter-spacing: -0.5px;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
+}
+
+.hub-sub {
+  font-size: 1rem;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.85);
+  margin-top: 4px;
+}
+
+.hub-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.hub-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  text-align: left;
+  background: rgba(255, 255, 255, 0.97);
+  border: none;
+  border-radius: 22px;
+  padding: 18px 20px;
+  cursor: pointer;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.22);
+  transition: transform 0.14s, box-shadow 0.14s;
+  min-height: 88px;
+  touch-action: manipulation;
+}
+
+.hub-card:active {
+  transform: scale(0.98);
+  box-shadow: 0 5px 16px rgba(0, 0, 0, 0.18);
+}
+
+.hub-card.done {
+  border: 2.5px solid var(--green);
+}
+
+.hub-card-emoji {
+  font-size: 2.4rem;
+  line-height: 1;
+  flex-shrink: 0;
+  width: 54px;
+  height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #fff3cf, #ffe19e);
+  border-radius: 16px;
+}
+
+.hub-card-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.hub-card-title {
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: var(--ink);
+}
+
+.hub-card-blurb {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--ink-soft);
+  line-height: 1.3;
+}
+
+.hub-card-badge {
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: white;
+  background: var(--purple);
+}
+
+.hub-card.done .hub-card-badge {
+  background: var(--green);
+}
+
+/* Home / back-to-lessons button in the chat header */
+.hdr-home {
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  border: 2px solid rgba(102, 126, 234, 0.3);
+  background: white;
+  color: var(--purple-dark);
+  border-radius: 12px;
+  font-size: 1.3rem;
+  font-weight: 900;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, transform 0.12s;
+  touch-action: manipulation;
+}
+.hdr-home:active { transform: scale(0.94); background: rgba(102, 126, 234, 0.08); }
+
+/* ─────────────────────────────────────────
    App shell — two-panel layout
    ───────────────────────────────────────── */
 .app {
@@ -50,6 +201,8 @@ button {
   padding: 14px;
   overflow: hidden;
 }
+
+.app[hidden] { display: none; }
 
 .panel {
   background: rgba(255, 255, 255, 0.96);
@@ -496,6 +649,10 @@ button {
   width: 320px;
   height: 165px;
 }
+
+/* Comparing lesson: half (big) vs quarter (small) at honest relative sizes */
+.frac-block.cmp-big   { width: 200px; height: 150px; }
+.frac-block.cmp-small { width: 110px; height: 90px;  align-self: center; }
 
 .frac-block.fruit-watermelon .fruit-svg,
 .frac-block.fruit-banana .fruit-svg,

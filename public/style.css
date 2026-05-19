@@ -338,69 +338,76 @@ button {
   flex: 1;
 }
 
-/* Fraction blocks */
+/* Fruit pieces — apple cross-sections rendered as inline SVG.
+   The block is now a positioning shell; the SVG draws the apple itself
+   and the .frac-label overlays the fraction notation. */
 .frac-block {
-  border-radius: 18px;
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  box-shadow:
-    0 8px 22px rgba(0, 0, 0, 0.18),
-    inset 0 1px 0 rgba(255, 255, 255, 0.35),
-    inset 0 -2px 0 rgba(0, 0, 0, 0.1);
   user-select: none;
   -webkit-user-select: none;
+  filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.18));
 }
 
 .frac-block.half {
   width: 240px;
-  height: 130px;
-  background: linear-gradient(145deg, var(--orange), var(--orange-light));
+  height: 145px;
 }
 
-.frac-block.quarter-a {
-  width: 140px;
-  height: 130px;
-  background: linear-gradient(145deg, var(--yellow), var(--yellow-light));
-}
-
+.frac-block.quarter-a,
 .frac-block.quarter-b {
   width: 140px;
-  height: 130px;
-  background: linear-gradient(145deg, var(--pink), var(--pink-dark));
+  height: 145px;
 }
 
-.frac-display {
+.fruit-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Fraction notation overlaid on the apple */
+.frac-label {
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0;
+  background: rgba(255, 255, 255, 0.85);
+  border: 2px solid rgba(198, 40, 40, 0.5);
+  border-radius: 10px;
+  padding: 3px 9px 4px;
+  pointer-events: none;
 }
 
 .frac-num, .frac-den {
-  font-size: 2.4rem;
+  font-size: 1.4rem;
   font-weight: 900;
-  color: white;
-  text-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+  color: #8d1414;
   line-height: 1;
 }
 
 .frac-bar-line {
-  width: 42px;
-  height: 4px;
-  background: rgba(255, 255, 255, 0.85);
+  width: 22px;
+  height: 3px;
+  background: #8d1414;
   border-radius: 2px;
-  margin: 5px 0;
+  margin: 2px 0;
 }
 
 .frac-block.quarter-a .frac-num,
 .frac-block.quarter-a .frac-den,
 .frac-block.quarter-b .frac-num,
-.frac-block.quarter-b .frac-den { font-size: 1.85rem; }
+.frac-block.quarter-b .frac-den { font-size: 1.15rem; }
 
 .frac-block.quarter-a .frac-bar-line,
-.frac-block.quarter-b .frac-bar-line { width: 32px; }
+.frac-block.quarter-b .frac-bar-line { width: 18px; height: 2.5px; }
 
 /* Equation */
 .equation {
@@ -429,12 +436,32 @@ button {
 
 .eq-rhs { display: flex; gap: 6px; }
 
-.mini-block {
-  border-radius: 12px;
+/* Mini apple visuals inside the equation row */
+.eq-mini {
+  position: relative;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.15));
+}
+.eq-mini svg {
+  display: block;
+}
+.eq-mini-half svg  { width: 90px;  height: 56px; }
+.eq-mini-quarter svg { width: 52px; height: 52px; }
+
+.eq-label {
+  font-size: 0.95rem;
+  font-weight: 900;
+  color: var(--purple-dark);
+  background: white;
+  padding: 1px 7px;
+  border-radius: 8px;
+  border: 1.5px solid rgba(198, 40, 40, 0.45);
+  margin-top: -4px;
+  position: relative;
+  z-index: 2;
 }
 
 /* Win message */
@@ -547,17 +574,19 @@ button {
     gap: 10px;
     padding: 10px;
   }
-  .frac-block.half     { width: 200px; height: 110px; }
+  .frac-block.half     { width: 200px; height: 125px; }
   .frac-block.quarter-a,
-  .frac-block.quarter-b { width: 110px; height: 110px; }
+  .frac-block.quarter-b { width: 115px; height: 125px; }
   .workspace-title { font-size: 1.3rem; }
+  .frac-num, .frac-den { font-size: 1.15rem; }
 }
 
 /* Very short screens (landscape phone) */
 @media (max-height: 540px) {
   .pieces-area { min-height: 110px; }
-  .frac-block.half     { width: 180px; height: 96px; }
+  .frac-block.half     { width: 180px; height: 108px; }
   .frac-block.quarter-a,
-  .frac-block.quarter-b { width: 100px; height: 96px; }
-  .frac-num, .frac-den { font-size: 1.8rem; }
+  .frac-block.quarter-b { width: 100px; height: 108px; }
+  .frac-num, .frac-den { font-size: 1rem; }
+  .frac-bar-line { width: 18px; }
 }

@@ -1,246 +1,246 @@
 {
-  "version": 1,
-  "description": "Golden dataset for the Fraction Sponge tutor (/api/tutor). Each case is a (qId, prompt, studentAnswer, attemptNumber, mode) tuple the production endpoint sees, along with hand-written notes about what makes a good Pip response for that case. The harness applies rule-based checks (always) and an optional Claude-as-judge layer (when JUDGE=1).",
-  "lastUpdated": "2026-05-18",
+  "version": 2,
+  "description": "Golden dataset for the Fraction Fruit Lab tutor (/api/tutor). Each case is a (qId, prompt, studentAnswer, attemptNumber, mode) tuple the production endpoint sees, along with hand-written notes about what makes a good Pip response for that case. The harness applies rule-based checks (always) and an optional Claude-as-judge layer (when JUDGE=1). v2: rebuilt for the fruit-themed lesson (apple → pizza → banana → orange).",
+  "lastUpdated": "2026-05-19",
   "cases": [
     {
       "id": "q1-bigger-half-a1",
       "input": {
         "qId": "q1",
-        "prompt": "Quick question — which is bigger: 1/2 or 2/4?",
+        "prompt": "Apple check 🍎 — which is bigger: 1/2 of the apple or 2/4 of the apple?",
         "studentAnswer": "1/2 is bigger",
         "attemptNumber": 1,
         "mode": "hint"
       },
-      "tags": ["compare", "common-misconception", "denominator-bigger-fraction"],
-      "notes": "Classic misconception — kid thinks bigger numerator means bigger fraction. Pip should reference the smash they just watched. Do NOT say 'same' verbatim."
+      "tags": ["compare", "apple", "common-misconception", "denominator-bigger-fraction"],
+      "notes": "Classic misconception — kid thinks bigger numerator means bigger fraction. Pip should reference the apple-squish they just watched. Do NOT say 'same' verbatim."
     },
     {
       "id": "q1-bigger-2-4-a1",
       "input": {
         "qId": "q1",
-        "prompt": "Quick question — which is bigger: 1/2 or 2/4?",
+        "prompt": "Apple check 🍎 — which is bigger: 1/2 of the apple or 2/4 of the apple?",
         "studentAnswer": "2/4 is bigger",
         "attemptNumber": 1,
         "mode": "hint"
       },
-      "tags": ["compare", "wrong-pick"],
-      "notes": "Less common but possible — opposite of the first misconception. Same redirect pattern applies."
+      "tags": ["compare", "apple", "wrong-pick"],
+      "notes": "Less common but possible — opposite of the first misconception. Same apple-evidence redirect applies."
     },
     {
       "id": "q1-rephrase-a2",
       "input": {
         "qId": "q1",
-        "prompt": "Quick question — which is bigger: 1/2 or 2/4?",
+        "prompt": "Apple check 🍎 — which is bigger: 1/2 of the apple or 2/4 of the apple?",
         "studentAnswer": "1/2 is bigger",
         "attemptNumber": 2,
         "mode": "rephrase"
       },
-      "tags": ["rephrase", "compare"],
-      "notes": "Second wrong attempt — Pip should rephrase the question in different words. Must still be a question. Must NOT just re-read the original prompt verbatim."
+      "tags": ["rephrase", "compare", "apple"],
+      "notes": "Second wrong attempt — Pip should rephrase the apple comparison in different words. Must still be a question. Must NOT just re-read the original prompt verbatim."
     },
     {
-      "id": "q2-one-fourth-a1",
+      "id": "q2-one-quarter-a1",
       "input": {
         "qId": "q2",
-        "prompt": "Nice. Now look — how many one-fourth blocks fit inside one half?",
-        "studentAnswer": "1 fourth",
+        "prompt": "Nice. Still with apples 🍎 — how many quarter pieces fit inside one half of the apple?",
+        "studentAnswer": "1 quarter",
         "attemptNumber": 1,
         "mode": "hint"
       },
-      "tags": ["count", "off-by-one"],
-      "notes": "Kid undercounted. Pip should point them to the SMASH they did — two pieces snapped into one half."
+      "tags": ["count", "apple", "off-by-one"],
+      "notes": "Kid undercounted. Pip should point them to the SQUISH they did — two apple pieces snapped into one half."
     },
     {
-      "id": "q2-four-fourths-a1",
+      "id": "q2-four-quarters-a1",
       "input": {
         "qId": "q2",
-        "prompt": "Nice. Now look — how many one-fourth blocks fit inside one half?",
-        "studentAnswer": "4 fourths",
+        "prompt": "Nice. Still with apples 🍎 — how many quarter pieces fit inside one half of the apple?",
+        "studentAnswer": "4 quarters",
         "attemptNumber": 1,
         "mode": "hint"
       },
-      "tags": ["count", "off-by-two"],
-      "notes": "Kid is thinking of the whole, not the half. Pip can point at the reference bar — the orange section is HALF, not the whole."
+      "tags": ["count", "apple", "whole-vs-half"],
+      "notes": "Kid is thinking of the whole apple, not the half. Pip can point at the reference bar — the red section is the HALF."
     },
     {
       "id": "q2-rephrase-a2",
       "input": {
         "qId": "q2",
-        "prompt": "Nice. Now look — how many one-fourth blocks fit inside one half?",
-        "studentAnswer": "1 fourth",
+        "prompt": "Nice. Still with apples 🍎 — how many quarter pieces fit inside one half of the apple?",
+        "studentAnswer": "1 quarter",
         "attemptNumber": 2,
         "mode": "rephrase"
       },
-      "tags": ["rephrase", "count"],
-      "notes": "Rephrase the count question gently. Stay a question."
+      "tags": ["rephrase", "count", "apple"],
+      "notes": "Rephrase the apple count question gently. Stay a question."
     },
     {
       "id": "q3-different-a1",
       "input": {
         "qId": "q3",
-        "prompt": "Cool. New one — is 3/6 the same as 1/2?",
+        "prompt": "New fruit time! 🍕 Look at a pizza cut into 6 slices. Is 3/6 of the pizza the same as 1/2?",
         "studentAnswer": "No, totally different",
         "attemptNumber": 1,
         "mode": "hint"
       },
-      "tags": ["apply", "new-equivalent"],
-      "notes": "Kid hasn't transferred yet — sees 3 and 6 as 'totally new'. Pip should connect it back to the smash pattern: same fraction, smaller pieces."
+      "tags": ["apply", "pizza", "new-equivalent"],
+      "notes": "Kid hasn't transferred from apple to pizza yet. Pip should connect it back to the apple-squish pattern: same trick, new fruit."
     },
     {
       "id": "q3-not-sure-a1",
       "input": {
         "qId": "q3",
-        "prompt": "Cool. New one — is 3/6 the same as 1/2?",
+        "prompt": "New fruit time! 🍕 Look at a pizza cut into 6 slices. Is 3/6 of the pizza the same as 1/2?",
         "studentAnswer": "Not sure",
         "attemptNumber": 1,
         "mode": "hint"
       },
-      "tags": ["apply", "hesitant"],
-      "notes": "Kid is unsure — Pip's hint should give them confidence by pointing back to evidence, not by telling them the answer."
+      "tags": ["apply", "pizza", "hesitant"],
+      "notes": "Kid is unsure on the new fruit — Pip's hint should give confidence by pointing back to the pizza's slices, not by telling them the answer."
     },
     {
-      "id": "q4-two-sixths-a1",
+      "id": "q4-two-slices-a1",
       "input": {
         "qId": "q4",
-        "prompt": "Then how many one-sixth pieces fit inside one half?",
-        "studentAnswer": "2 sixths",
+        "prompt": "Still pizza 🍕 — how many of those one-sixth slices fit inside half a pizza?",
+        "studentAnswer": "2 slices",
         "attemptNumber": 1,
         "mode": "hint"
       },
-      "tags": ["count", "carryover-wrong"],
-      "notes": "Kid is reusing the '2' answer from Q2 — Pip should redirect to the fact that sixths are smaller so MORE fit."
+      "tags": ["count", "pizza", "carryover-wrong"],
+      "notes": "Kid is reusing the '2' answer from Q2 (apple quarters). Pip should redirect — sixth-slices are smaller, so MORE fit in a half."
     },
     {
-      "id": "q4-six-sixths-a1",
+      "id": "q4-six-slices-a1",
       "input": {
         "qId": "q4",
-        "prompt": "Then how many one-sixth pieces fit inside one half?",
-        "studentAnswer": "6 sixths",
+        "prompt": "Still pizza 🍕 — how many of those one-sixth slices fit inside half a pizza?",
+        "studentAnswer": "6 slices",
         "attemptNumber": 1,
         "mode": "hint"
       },
-      "tags": ["count", "whole-vs-half"],
-      "notes": "Kid is counting the WHOLE bar, not the half. Reference bar shows the half clearly — Pip should point at it."
+      "tags": ["count", "pizza", "whole-vs-half"],
+      "notes": "Kid is counting the WHOLE pizza, not the half. Pip should point at the half versus the whole."
     },
     {
       "id": "q4-rephrase-a3",
       "input": {
         "qId": "q4",
-        "prompt": "Then how many one-sixth pieces fit inside one half?",
-        "studentAnswer": "2 sixths",
+        "prompt": "Still pizza 🍕 — how many of those one-sixth slices fit inside half a pizza?",
+        "studentAnswer": "2 slices",
         "attemptNumber": 3,
         "mode": "rephrase"
       },
-      "tags": ["rephrase", "third-attempt"],
+      "tags": ["rephrase", "third-attempt", "pizza"],
       "notes": "Third attempt — Pip should rephrase even more gently. Don't give the answer."
     },
     {
       "id": "q5-no-way-a1",
       "input": {
         "qId": "q5",
-        "prompt": "Brand-new fraction time — is 1/3 the same as 2/6?",
+        "prompt": "Banana time 🍌 — cut one into 3 chunks. Is 1/3 of the banana the same as 2/6?",
         "studentAnswer": "No way",
         "attemptNumber": 1,
         "mode": "hint"
       },
-      "tags": ["transfer", "new-base-fraction"],
-      "notes": "Pip should connect this to the 1/2 = 2/4 trick — same pattern, different starting fraction."
+      "tags": ["transfer", "banana", "new-base-fraction"],
+      "notes": "Pip should connect this to the apple-equivalence trick — same pattern, different starting fraction, different fruit."
     },
     {
       "id": "q5-maybe-a1",
       "input": {
         "qId": "q5",
-        "prompt": "Brand-new fraction time — is 1/3 the same as 2/6?",
+        "prompt": "Banana time 🍌 — cut one into 3 chunks. Is 1/3 of the banana the same as 2/6?",
         "studentAnswer": "Maybe?",
         "attemptNumber": 1,
         "mode": "hint"
       },
-      "tags": ["transfer", "hesitant"],
-      "notes": "Tentative — Pip should validate the uncertainty and nudge toward the pattern."
+      "tags": ["transfer", "banana", "hesitant"],
+      "notes": "Tentative — Pip should validate the uncertainty and nudge toward the pattern via the banana cuts."
     },
     {
       "id": "q6-look-equal-a1",
       "input": {
         "qId": "q6",
-        "prompt": "Careful — is 1/2 the same as 1/3?",
+        "prompt": "Careful 🍎🍌 — is 1/2 of an apple the same fraction-size as 1/3 of a banana?",
         "studentAnswer": "Yes — they look equal",
         "attemptNumber": 1,
         "mode": "hint"
       },
-      "tags": ["discriminate", "over-generalization"],
-      "notes": "CRITICAL: Kid has over-generalized the equivalence pattern. Pip must NOT affirm — must redirect to size comparison. The hint should reference how splitting into 3 makes SMALLER pieces than splitting into 2."
+      "tags": ["discriminate", "mixed-fruit", "over-generalization"],
+      "notes": "CRITICAL: Kid has over-generalized the equivalence pattern across fruits. Pip must NOT affirm — must redirect to size comparison. The hint should reference how splitting into 3 makes SMALLER slices than splitting into 2."
     },
     {
       "id": "q6-not-sure-a1",
       "input": {
         "qId": "q6",
-        "prompt": "Careful — is 1/2 the same as 1/3?",
+        "prompt": "Careful 🍎🍌 — is 1/2 of an apple the same fraction-size as 1/3 of a banana?",
         "studentAnswer": "Not sure",
         "attemptNumber": 1,
         "mode": "hint"
       },
-      "tags": ["discriminate", "hesitant"],
-      "notes": "Kid is unsure — Pip should ask them to compare piece SIZES, not just numbers."
+      "tags": ["discriminate", "mixed-fruit", "hesitant"],
+      "notes": "Kid is unsure — Pip should ask them to compare piece SIZES (1/2 slice vs 1/3 slice), not the fruits themselves."
     },
     {
       "id": "q6-rephrase-a2",
       "input": {
         "qId": "q6",
-        "prompt": "Careful — is 1/2 the same as 1/3?",
+        "prompt": "Careful 🍎🍌 — is 1/2 of an apple the same fraction-size as 1/3 of a banana?",
         "studentAnswer": "Yes — they look equal",
         "attemptNumber": 2,
         "mode": "rephrase"
       },
-      "tags": ["rephrase", "discriminate"],
+      "tags": ["rephrase", "discriminate", "mixed-fruit"],
       "notes": "Rephrase the discrimination question. Must keep the kid skeptical without leading them to the wrong answer."
     },
     {
-      "id": "q7-four-eights-more-a1",
+      "id": "q7-eight-more-a1",
       "input": {
         "qId": "q7",
-        "prompt": "Last one! Is 4/8 the same as 1/2?",
+        "prompt": "Last one! 🍊 An orange has 8 natural segments. Is 4/8 of the orange the same as 1/2?",
         "studentAnswer": "No, 4/8 is more",
         "attemptNumber": 1,
         "mode": "hint"
       },
-      "tags": ["capstone", "big-numbers-bigger"],
-      "notes": "Kid sees 4 and 8 and thinks bigger numbers = bigger fraction. Pip should connect to the pattern: half of 8 is 4."
+      "tags": ["capstone", "orange", "big-numbers-bigger"],
+      "notes": "Kid sees 4 and 8 and thinks bigger numbers = bigger fraction. Pip should connect to the pattern: half of 8 segments is 4."
     },
     {
-      "id": "q7-one-half-more-a1",
+      "id": "q7-half-more-a1",
       "input": {
         "qId": "q7",
-        "prompt": "Last one! Is 4/8 the same as 1/2?",
+        "prompt": "Last one! 🍊 An orange has 8 natural segments. Is 4/8 of the orange the same as 1/2?",
         "studentAnswer": "No, 1/2 is more",
         "attemptNumber": 1,
         "mode": "hint"
       },
-      "tags": ["capstone", "opposite-misconception"],
+      "tags": ["capstone", "orange", "opposite-misconception"],
       "notes": "Opposite misconception — kid is sticking with the small-fraction-name. Same redirect needed."
     },
     {
       "id": "q7-rephrase-a2",
       "input": {
         "qId": "q7",
-        "prompt": "Last one! Is 4/8 the same as 1/2?",
+        "prompt": "Last one! 🍊 An orange has 8 natural segments. Is 4/8 of the orange the same as 1/2?",
         "studentAnswer": "No, 4/8 is more",
         "attemptNumber": 2,
         "mode": "rephrase"
       },
-      "tags": ["rephrase", "capstone"],
-      "notes": "Final question, second attempt. Rephrase with the equivalence pattern in mind."
+      "tags": ["rephrase", "capstone", "orange"],
+      "notes": "Final question, second attempt. Rephrase with the equivalence pattern (and orange-segment imagery) in mind."
     },
     {
       "id": "q1-empty-answer-a1",
       "input": {
         "qId": "q1",
-        "prompt": "Quick question — which is bigger: 1/2 or 2/4?",
+        "prompt": "Apple check 🍎 — which is bigger: 1/2 of the apple or 2/4 of the apple?",
         "studentAnswer": "",
         "attemptNumber": 1,
         "mode": "hint"
       },
-      "tags": ["edge", "empty-answer"],
+      "tags": ["edge", "empty-answer", "apple"],
       "notes": "Edge case: empty student answer (shouldn't happen in the UI but tests robustness). Pip should still produce a helpful hint."
     }
   ]

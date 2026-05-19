@@ -30,20 +30,42 @@ const BANNED_PATTERNS = [
 ];
 
 // Words that signal Pip is referencing the manipulative the kid just used.
-// At least one should appear.
+// At least one should appear. The lesson is fruit-themed (apple → pizza →
+// banana → orange) so the manipulative vocabulary spans physical fruit
+// actions (slice, squish, peel) and fraction-piece vocabulary (half, quarter).
 const MANIPULATIVE_REFS = [
-  'split', 'splat', 'smash', 'smashed', 'smashing',
+  // legacy block-era vocab kept for back-compat with any responses that drift
+  'split', 'smash', 'smashed', 'smashing',
   'piece', 'pieces',
-  'block', 'blocks',
   'fit', 'fits', 'fitting',
   'snap', 'snapped', 'snapping',
   'bar',
+
+  // fraction-piece vocabulary
   'half', 'halves', 'halved',
-  'fourth', 'fourths', 'fourths.',
+  'quarter', 'quarters',
+  'fourth', 'fourths',
+  'third', 'thirds',
   'sixth', 'sixths',
   'eighth', 'eighths',
+  'segment', 'segments',
+  'slice', 'slices', 'sliced', 'slicing',
+  'chunk', 'chunks',
+  'wedge', 'wedges',
+
+  // fruit-action vocabulary (what the kid does in the lesson)
+  'cut', 'cuts', 'cutting',
+  'squish', 'squished', 'squishing',
+  'mash', 'mashed',
+  'peel', 'peeled', 'peeling',
   'cover', 'covers', 'covered', 'covering',
-  'cut', 'cuts',
+
+  // the fruits themselves
+  'apple', 'apples',
+  'pizza', 'pizzas',
+  'banana', 'bananas',
+  'orange', 'oranges',
+  'fruit', 'fruits',
 ];
 
 // ── Rule implementations ──────────────────────────────────────

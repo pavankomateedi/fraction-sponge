@@ -1,5 +1,9 @@
 /* ─────────────────────────────────────────
-   manipulative.js — fraction workspace
+   manipulative.js — fruit workspace
+   Renders apple cross-sections (whole, half,
+   quarter) that the kid can split and squish
+   to discover 1/2 = 2/4.
+
    Pure visual + audio module. Knows nothing
    about Pip, the tutor, or the lesson script.
    Emits `pieceAction` events on window so
@@ -39,24 +43,102 @@
 
   const sounds = {
     split: () => {
-      tone(600,  'sine', 0.12, 0.25, 0);
-      tone(900,  'sine', 0.10, 0.20, 0.07);
-      tone(1200, 'sine', 0.08, 0.15, 0.14);
+      // "Slice!" — bright rising chime, like a knife through fruit
+      tone(700,  'sine', 0.10, 0.24, 0);
+      tone(1050, 'sine', 0.09, 0.20, 0.06);
+      tone(1400, 'sine', 0.08, 0.16, 0.12);
     },
     smash: () => {
-      tone(180, 'sawtooth', 0.09, 0.32, 0);
-      tone(140, 'sawtooth', 0.13, 0.28, 0.05);
-      tone(420, 'sine',     0.10, 0.22, 0.17);
+      // "Squish!" — soft thud with a juicy resolution
+      tone(160, 'sawtooth', 0.10, 0.30, 0);
+      tone(120, 'sawtooth', 0.14, 0.26, 0.05);
+      tone(480, 'sine',     0.10, 0.22, 0.17);
     },
     win: () => {
       [523, 659, 784, 1047].forEach((f, i) => tone(f, 'sine', 0.32, 0.24, i * 0.11));
     },
   };
 
+  // ── Apple SVG builders ──
+  // Cross-section view of an apple: red rim (skin), pale interior (flesh),
+  // dark seeds in the middle. Pieces are sized to fit the existing
+  // .frac-block container so we don't have to rewire the CSS layout.
+
+  function appleHalfSVG() {
+    // Half-apple = top half of cross-section: curved skin on top, flat cut face on bottom.
+    // viewBox 240×130 to match landscape block sizing.
+    return `
+<svg viewBox="0 0 240 130" xmlns="http://www.w3.org/2000/svg" class="fruit-svg fruit-half" aria-hidden="true">
+  <defs>
+    <linearGradient id="appleSkinHalf" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ef5350"/>
+      <stop offset="60%" stop-color="#c62828"/>
+      <stop offset="100%" stop-color="#7f0000"/>
+    </linearGradient>
+  </defs>
+  <!-- Stem -->
+  <rect x="116" y="6" width="8" height="14" rx="3" fill="#5d4037"/>
+  <!-- Leaf -->
+  <ellipse cx="138" cy="14" rx="14" ry="6" fill="#66bb6a" transform="rotate(20 138 14)"/>
+  <!-- Apple body (flesh - white) -->
+  <path d="M 20 115 Q 20 25 120 25 Q 220 25 220 115 Z"
+        fill="#FFF8E1" stroke="url(#appleSkinHalf)" stroke-width="10" stroke-linejoin="round"/>
+  <!-- Core silhouette (subtle) -->
+  <path d="M 120 38 Q 102 75 120 110 Q 138 75 120 38 Z"
+        fill="#fde6c8" opacity="0.7"/>
+  <!-- Seeds: star pattern at the heart of the cut face -->
+  <ellipse cx="105" cy="70" rx="4.5" ry="6" fill="#3e2723" transform="rotate(-25 105 70)"/>
+  <ellipse cx="135" cy="70" rx="4.5" ry="6" fill="#3e2723" transform="rotate(25 135 70)"/>
+  <ellipse cx="120" cy="92" rx="4.5" ry="6" fill="#3e2723"/>
+</svg>`;
+  }
+
+  function appleQuarterSVG(variant) {
+    // Quarter-apple = 90° wedge of cross-section.
+    // variant 'a' = left-leaning, variant 'b' = right-leaning (mirror).
+    // viewBox 140×130 to match landscape quarter block sizing.
+    const isLeft = variant === 'a';
+    const skinId = `appleSkinQ${variant}`;
+    const stemX = isLeft ? 128 : 4;        // stem at outer (far) corner
+    const leafX = isLeft ? 116 : 16;
+    const leafR = isLeft ? -30 : 30;
+    // Wedge path: tip at inner corner, curved arc on the outside.
+    // Left variant: tip at bottom-right (130,115); arc goes up-left.
+    // Right variant: tip at bottom-left (10,115); arc goes up-right.
+    const wedge = isLeft
+      ? `M 130 115 L 10 115 A 130 130 0 0 1 130 25 Z`     // curved top-left
+      : `M 10 115 A 130 130 0 0 1 130 115 L 130 115 L 130 115 L 10 115 Z`;
+    // Right wedge actually needs: tip at bottom-left, curved going up-right, back along right edge.
+    const wedgeRight = `M 10 115 L 10 25 A 130 130 0 0 1 130 115 Z`;
+    return `
+<svg viewBox="0 0 140 130" xmlns="http://www.w3.org/2000/svg" class="fruit-svg fruit-quarter fruit-quarter-${variant}" aria-hidden="true">
+  <defs>
+    <linearGradient id="${skinId}" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ef5350"/>
+      <stop offset="60%" stop-color="#c62828"/>
+      <stop offset="100%" stop-color="#7f0000"/>
+    </linearGradient>
+  </defs>
+  ${isLeft ? `
+  <!-- Stem at outer (right) corner -->
+  <rect x="${stemX - 2}" y="6" width="6" height="12" rx="2" fill="#5d4037"/>
+  <ellipse cx="${leafX}" cy="14" rx="10" ry="4" fill="#66bb6a" transform="rotate(${leafR} ${leafX} 14)"/>
+  ` : `
+  <!-- Stem at outer (left) corner -->
+  <rect x="${stemX - 2}" y="6" width="6" height="12" rx="2" fill="#5d4037"/>
+  <ellipse cx="${leafX}" cy="14" rx="10" ry="4" fill="#66bb6a" transform="rotate(${leafR} ${leafX} 14)"/>
+  `}
+  <!-- Wedge body -->
+  <path d="${isLeft ? wedge : wedgeRight}"
+        fill="#FFF8E1" stroke="url(#${skinId})" stroke-width="9" stroke-linejoin="round"/>
+  <!-- Seed near inner corner -->
+  ${isLeft
+    ? `<ellipse cx="100" cy="92" rx="4" ry="5.5" fill="#3e2723" transform="rotate(-30 100 92)"/>`
+    : `<ellipse cx="40"  cy="92" rx="4" ry="5.5" fill="#3e2723" transform="rotate(30 40 92)"/>`}
+</svg>`;
+  }
+
   // ── State ──
-  // 'half'      — single 1/2 block visible (initial / reset)
-  // 'quarters'  — two 1/4 blocks visible (after split)
-  // 'merged'    — single 1/2 again + equation visible (after smash)
   let visualState = 'half';
 
   // ── DOM ──
@@ -69,36 +151,46 @@
 
   // ── Renderers ──
   function renderRefBar(mode) {
-    const BR  = 'border-right:2px solid rgba(255,255,255,0.35)';
-    const BD  = 'border-right:2px dashed rgba(255,255,255,0.5)';
+    // Reference bar shows the apple-skin red and the fraction proportions.
+    // 'half'      — left half filled red, right half empty (the whole bar = a whole apple worth)
+    // 'quarters'  — left quarter dark-red, next quarter bright-red, right half empty
+    // 'both'      — combined view: the two quarters AND the half overlapping/aligned
+    const FILL_DARK   = 'background:linear-gradient(135deg,#c62828,#8d1414);';
+    const FILL_BRIGHT = 'background:linear-gradient(135deg,#ef5350,#c62828);';
+    const FILL_BLEND  = 'background:linear-gradient(135deg,#ef5350,#c62828);';
+    const BR  = 'border-right:2px solid rgba(255,255,255,0.35);';
+    const BD  = 'border-right:2px dashed rgba(255,255,255,0.5);';
 
     if (mode === 'half') {
       refBar.innerHTML =
-        `<div class="ref-seg" style="width:50%;background:linear-gradient(135deg,#FF6B35,#FF9A5C);${BR}">1/2</div>` +
+        `<div class="ref-seg" style="width:50%;${FILL_BRIGHT}${BR}">1/2 🍎</div>` +
         `<div class="ref-seg empty" style="width:50%;">1/2</div>`;
     } else if (mode === 'quarters') {
       refBar.innerHTML =
-        `<div class="ref-seg" style="width:25%;background:linear-gradient(135deg,#F7971E,#FFD200);${BR}">1/4</div>` +
-        `<div class="ref-seg" style="width:25%;background:linear-gradient(135deg,#f953c6,#b91d73);${BR}">1/4</div>` +
+        `<div class="ref-seg" style="width:25%;${FILL_DARK}${BR}">1/4</div>` +
+        `<div class="ref-seg" style="width:25%;${FILL_BRIGHT}${BR}">1/4</div>` +
         `<div class="ref-seg empty" style="width:50%;">1/2</div>`;
     } else { // both
       refBar.innerHTML =
-        `<div class="ref-seg" style="width:25%;background:linear-gradient(135deg,#F7971E,#FFD200);${BR}">1/4</div>` +
-        `<div class="ref-seg" style="width:25%;background:linear-gradient(135deg,#f953c6,#b91d73);${BD}">1/4</div>` +
-        `<div class="ref-seg" style="width:50%;background:linear-gradient(135deg,#FF6B35,#FF9A5C);border-left:2px dashed rgba(255,255,255,0.5)">= 1/2</div>`;
+        `<div class="ref-seg" style="width:25%;${FILL_DARK}${BR}">1/4</div>` +
+        `<div class="ref-seg" style="width:25%;${FILL_BRIGHT}${BD}">1/4</div>` +
+        `<div class="ref-seg" style="width:50%;${FILL_BLEND}border-left:2px dashed rgba(255,255,255,0.5);">= 1/2 🍎</div>`;
     }
   }
 
-  function makeFracBlock(cls, extraAnim) {
+  function makeFruitBlock(kind, variant, extraAnim) {
+    // kind: 'half' | 'quarter'
+    // variant: for quarter, 'a' or 'b'
     const d = document.createElement('div');
+    const cls = kind === 'half' ? 'half' : `quarter-${variant}`;
     d.className = `frac-block ${cls} ${extraAnim || ''}`.trim();
-    const [n, den] = cls.includes('half') ? ['1', '2'] : ['1', '4'];
-    d.innerHTML = `
-      <div class="frac-display">
-        <span class="frac-num">${n}</span>
-        <div class="frac-bar-line"></div>
-        <span class="frac-den">${den}</span>
-      </div>`;
+    d.innerHTML = kind === 'half' ? appleHalfSVG() : appleQuarterSVG(variant);
+    // Fraction label overlay
+    const label = document.createElement('div');
+    label.className = 'frac-label';
+    const [n, den] = kind === 'half' ? ['1', '2'] : ['1', '4'];
+    label.innerHTML = `<span class="frac-num">${n}</span><div class="frac-bar-line"></div><span class="frac-den">${den}</span>`;
+    d.appendChild(label);
     return d;
   }
 
@@ -108,13 +200,13 @@
 
   function showHalf(animClass) {
     clearPieces();
-    piecesArea.appendChild(makeFracBlock('half', animClass));
+    piecesArea.appendChild(makeFruitBlock('half', null, animClass));
   }
 
   function showQuarters() {
     clearPieces();
-    piecesArea.appendChild(makeFracBlock('quarter-a', 'anim-slide-l'));
-    piecesArea.appendChild(makeFracBlock('quarter-b', 'anim-slide-r'));
+    piecesArea.appendChild(makeFruitBlock('quarter', 'a', 'anim-slide-l'));
+    piecesArea.appendChild(makeFruitBlock('quarter', 'b', 'anim-slide-r'));
   }
 
   function emit(type, detail = {}) {
@@ -122,8 +214,6 @@
   }
 
   // ── Public API ──
-  // Each action returns a Promise that resolves when its animation+sound finish,
-  // so the tutor can sequence dialogue cleanly.
   function reset() {
     visualState = 'half';
     equation.classList.remove('show');
@@ -195,15 +285,16 @@
   // ── Confetti ──
   function launchConfetti() {
     if (!workspaceEl) return;
-    const colors = ['#FF6B35', '#FFD200', '#f953c6', '#5a3fc0', '#2bb673', '#FF6B6B', '#00cfff', '#fff'];
+    // Fruit-themed confetti palette: apple red, banana yellow, orange, watermelon pink, leaf green
+    const colors = ['#c62828', '#FFD600', '#FF9800', '#EC407A', '#43A047', '#FF6F00', '#fff'];
 
-    for (let i = 0; i < 38; i++) {
+    for (let i = 0; i < 42; i++) {
       setTimeout(() => {
         const c = document.createElement('div');
-        const sz = 7 + Math.random() * 10;
+        const sz = 7 + Math.random() * 11;
         const dur = 1.2 + Math.random() * 0.9;
         const del = Math.random() * 0.55;
-        const isRound = Math.random() > 0.45;
+        const isRound = Math.random() > 0.4;
         c.className = 'confetti-piece';
         c.style.cssText = `
           left: ${6 + Math.random() * 88}%;
@@ -216,7 +307,7 @@
         `;
         workspaceEl.appendChild(c);
         setTimeout(() => c.remove(), (dur + del + 0.3) * 1000);
-      }, i * 42);
+      }, i * 38);
     }
   }
 

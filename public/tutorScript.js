@@ -1,164 +1,172 @@
 /* ─────────────────────────────────────────
    tutorScript.js — lesson state machine
-   Pure data + transitions. No DOM, no fetch.
-   app.js renders and drives.
+   Fruit-themed: Pip (the apple seed) guides
+   the kid through slicing an apple, then
+   transfers the concept across pizza, banana,
+   and orange. Pure data + transitions —
+   no DOM, no fetch.
    ───────────────────────────────────────── */
 (function () {
   'use strict';
 
-  // ── Linear stages ──
-  //   idle    — Pip greets, "Split it!" button
-  //   split   — after split, "Smash them!" button
-  //   smash   — after smash, "Tell me more!" advances to check
-  //   check   — iterates through checkQuestions[]
-  //   win     — confetti + play again
+  // ── Linear stages (manipulative phase) ──
+  //   idle   — Pip greets, "Slice it!" button — student sees a half-apple
+  //   split  — after slice, "Squish them!" button — student sees two quarters
+  //   smash  — after squish, "Tell me more!" — student sees the half-apple back + equation
+  //   check  — iterates through checkQuestions[] (multi-fruit progression)
+  //   win    — confetti + play again
   const stages = {
     idle: {
-      pip: "Hey! I'm Pip 🧽 I've got one half. I wonder what's hiding inside it... 👀",
-      action: { type: 'advance', label: '✂️  Split it!', style: 'primary' },
+      pip: "Hey! I'm Pip 🍎 — an apple seed. I've got half an apple. I wonder what's hiding inside it… 👀",
+      action: { type: 'advance', label: '🔪  Slice it!', style: 'primary' },
       next: 'split',
     },
     split: {
-      pip: "Whoa, two pieces! Each one is one-fourth (1/4). Hmm... do you think they're still the same size as before? 🤔",
-      action: { type: 'advance', label: '🔨  Smash them!', style: 'primary' },
+      pip: "Whoa, two pieces! Each one is a quarter (1/4) of the apple. Hmm... do they still cover the same space as the half?",
+      action: { type: 'advance', label: '🤲  Squish them together!', style: 'primary' },
       next: 'smash',
     },
     smash: {
-      pip: "They fit back PERFECTLY! 1/2 and 2/4 take up the same space! 🤯",
+      pip: "They fit back PERFECTLY! 1/2 of an apple = 2/4 of an apple. Same fruit, same space. 🤯",
       action: { type: 'advance', label: "Let's check what you got! ✨", style: 'green' },
       next: 'check',
     },
     win: {
-      pip: "You discovered equivalent fractions! Two fractions that look different but mean the SAME thing. 🌟",
+      pip: "You discovered equivalent fractions! Different names, same amount of fruit. 🌟",
       action: { type: 'reset', label: '🔄  Play Again!', style: 'primary' },
       next: 'idle',
     },
   };
 
   // ── Check-for-understanding bank ──
-  // Progression: recall → recall(count) → apply → apply(count)
-  //            → transfer → discriminate (NOT equivalent) → capstone
-  // Pip's "cheer" line plays on correct answers; hints[] are the scripted
-  // fallbacks when Claude is unavailable.
+  // Multi-fruit progression: apple → apple → pizza → pizza → banana → mixed → orange.
+  // Each question's `fruit` field is just an emoji indicator the chat can show.
   const checkQuestions = [
     {
       id: 'q1',
+      fruit: '🍎',
       kind: 'compare',
-      prompt: "Quick question — which is bigger: 1/2 or 2/4?",
+      prompt: "Apple check 🍎 — which is bigger: 1/2 of the apple or 2/4 of the apple?",
       choices: [
         { id: 'a', label: '1/2 is bigger',         correct: false },
         { id: 'b', label: '2/4 is bigger',         correct: false },
         { id: 'c', label: "They're the same! 🎯", correct: true  },
       ],
-      cheer: "YES! Same size, different name. That's the whole trick. 🎯",
+      cheer: "YES! Same apple, same space, different name. That's the whole trick. 🎯",
       hints: [
-        "Hmm — when you smashed the two fourths together, did they fit perfectly into the half? What does that tell you? 🤔",
-        "Look at the bar at the top. The orange and the two pieces cover the same space, right? So they're the…?",
+        "Hmm — when you squished the two apple quarters together, did they fit perfectly into the half? What does that tell you? 🤔",
+        "Look at the bar at the top. The red half and the two quarters cover the same space, right? So they're the…?",
       ],
-      rephrase: "Take another look. Which one wins — 1/2 or 2/4 — or is something else going on? 🤔",
+      rephrase: "Stare at the fruit again. Are 1/2 and 2/4 actually the same amount, or different? 🤔",
     },
     {
       id: 'q2',
+      fruit: '🍎',
       kind: 'count',
-      prompt: "Nice. Now look — how many one-fourth blocks fit inside one half?",
+      prompt: "Nice. Still with apples 🍎 — how many quarter pieces fit inside one half of the apple?",
       choices: [
-        { id: 'a', label: '1 fourth',  correct: false },
-        { id: 'b', label: '2 fourths', correct: true  },
-        { id: 'c', label: '4 fourths', correct: false },
+        { id: 'a', label: '1 quarter',  correct: false },
+        { id: 'b', label: '2 quarters', correct: true  },
+        { id: 'c', label: '4 quarters', correct: false },
       ],
-      cheer: "Exactly! Two-fourths makes one-half. You can SEE it. 🧠",
+      cheer: "Exactly! Two quarter-slices fit into one half. You can SEE it. 🧠",
       hints: [
-        "Picture the smash you just did. Two pieces snapped back into one half — how many is that?",
-        "One half = two fourths. So how many fourths fit inside one half? Count them in your head 🧠",
+        "Picture the squish you just did. Two apple pieces snapped back into one half — how many is that?",
+        "One half of the apple = two quarters. So how many quarters fit inside that half? Count them 🧠",
       ],
-      rephrase: "Try again — how many one-fourth pieces snap together to make one half?",
+      rephrase: "Try again — how many quarter pieces of apple stack up to one half?",
     },
     {
       id: 'q3',
+      fruit: '🍕',
       kind: 'apply',
-      prompt: "Cool. New one — is 3/6 the same as 1/2?",
+      prompt: "New fruit time! 🍕 Look at a pizza cut into 6 slices. Is 3/6 of the pizza the same as 1/2?",
       choices: [
-        { id: 'a', label: 'Yes — same size! ✨',    correct: true  },
-        { id: 'b', label: 'No, totally different',  correct: false },
-        { id: 'c', label: 'Not sure',               correct: false },
+        { id: 'a', label: 'Yes — same slice of pie! ✨', correct: true  },
+        { id: 'b', label: 'No, totally different',       correct: false },
+        { id: 'c', label: 'Not sure',                    correct: false },
       ],
-      cheer: "Boom — different pieces, same space. You see the pattern. 🌟",
+      cheer: "Boom — pizza or apple, the same trick works. You see the pattern. 🌟",
       hints: [
-        "Imagine cutting the half into 6 little pieces. Half of 6 is... how many? 🤔",
-        "Same idea as 2/4 — just smaller pieces. Three out of six covers the same half.",
+        "Picture half a pizza. If the whole pizza has 6 slices, how many cover the half? 🤔",
+        "Same idea as the apple — different fruit, different cut, same half. Half of 6 slices is…?",
       ],
-      rephrase: "Different shape — if a whole splits into 6 pieces and you take 3, how much do you have?",
+      rephrase: "Different food this time — if a pizza has 6 slices and you grab 3, how much pizza is that?",
     },
     {
       id: 'q4',
+      fruit: '🍕',
       kind: 'count',
-      prompt: "Then how many one-sixth pieces fit inside one half?",
+      prompt: "Still pizza 🍕 — how many of those one-sixth slices fit inside half a pizza?",
       choices: [
-        { id: 'a', label: '2 sixths', correct: false },
-        { id: 'b', label: '3 sixths', correct: true  },
-        { id: 'c', label: '6 sixths', correct: false },
+        { id: 'a', label: '2 slices', correct: false },
+        { id: 'b', label: '3 slices', correct: true  },
+        { id: 'c', label: '6 slices', correct: false },
       ],
-      cheer: "Yep! 3/6 fills the same space as 1/2. 🎯",
+      cheer: "Yep! 3 slices out of 6 = half a pizza. 🎯",
       hints: [
-        "If 1/2 = 3/6, then how many sixths are inside that half? Peek at the fraction 👀",
-        "Half of 6 little pieces is... how many pieces?",
+        "If 1/2 of the pizza = 3/6, then how many sixth-slices are in that half? Peek at the fraction 👀",
+        "Half of 6 pizza slices is… how many slices?",
       ],
-      rephrase: "Picture cutting the half into 6 even slivers. Count them — what's the number?",
+      rephrase: "Picture cutting the pizza into 6 even slices. Count just the half — what's that number?",
     },
     {
       id: 'q5',
+      fruit: '🍌',
       kind: 'transfer',
-      prompt: "Brand-new fraction time — is 1/3 the same as 2/6?",
+      prompt: "Banana time 🍌 — cut one into 3 chunks. Is 1/3 of the banana the same as 2/6?",
       choices: [
         { id: 'a', label: 'Yes — same idea! 🎯', correct: true  },
         { id: 'b', label: 'No way',              correct: false },
         { id: 'c', label: 'Maybe?',              correct: false },
       ],
-      cheer: "YES! Same trick, brand-new fraction. You're flying. 🚀",
+      cheer: "YES! Same trick, brand-new fruit. You're flying. 🚀",
       hints: [
-        "Same trick! If two fourths = one half, would two sixths = one third?",
-        "Cut a third into two smaller pieces — what would each be called?",
+        "Same trick! If two apple quarters = one half, would two banana sixths = one banana third?",
+        "Cut each third of the banana in two — what would each tiny piece be called?",
       ],
-      rephrase: "Different fraction this time — does 1/3 equal 2/6?",
+      rephrase: "Different fruit this time — does 1/3 of a banana equal 2/6?",
     },
     {
       id: 'q6',
+      fruit: '🍎🍌',
       kind: 'discriminate',
-      prompt: "Careful — is 1/2 the same as 1/3?",
+      prompt: "Careful 🍎🍌 — is 1/2 of an apple the same fraction-size as 1/3 of a banana?",
       choices: [
         { id: 'a', label: "Yes — they look equal",  correct: false },
-        { id: 'b', label: "No, they're different",  correct: true  },
+        { id: 'b', label: "No, different sizes",    correct: true  },
         { id: 'c', label: 'Not sure',               correct: false },
       ],
-      cheer: "RIGHT! Half is bigger than a third — totally different sizes. 👀",
+      cheer: "RIGHT! 1/2 is bigger than 1/3 — different fractions, different sizes. 👀",
       hints: [
-        "Hmm — if you split a bar into 2 pieces vs 3 pieces, are the pieces the same size? 🤔",
-        "Bigger denominator means smaller pieces. One slice of 3 is smaller than one slice of 2.",
+        "Hmm — if you slice a fruit into 2 pieces vs 3 pieces, are the pieces the same size? 🤔",
+        "More slices means smaller slices. So a slice out of 3 is smaller than a slice out of 2.",
       ],
-      rephrase: "Compare carefully: is one piece out of 2 the same as one piece out of 3?",
+      rephrase: "Compare the slice sizes: is one piece out of 2 the same as one piece out of 3?",
     },
     {
       id: 'q7',
+      fruit: '🍊',
       kind: 'capstone',
-      prompt: "Last one! Is 4/8 the same as 1/2?",
+      prompt: "Last one! 🍊 An orange has 8 natural segments. Is 4/8 of the orange the same as 1/2?",
       choices: [
         { id: 'a', label: 'Yes — half is half! 🎯', correct: true  },
         { id: 'b', label: 'No, 4/8 is more',         correct: false },
         { id: 'c', label: 'No, 1/2 is more',         correct: false },
       ],
-      cheer: "PERFECT. You found another one — 4/8 = 1/2. You really get it. 🌟",
+      cheer: "PERFECT. 4 of 8 segments = half an orange. You really get it. 🌟",
       hints: [
-        "If you cut your half into 8 tiny pieces, how many would cover the half? 🤔",
-        "Half of 8 is... 4. So 4 out of 8 = 1/2!",
+        "If you peel an orange and have 8 segments, how many cover half of it? 🤔",
+        "Half of 8 is… 4. So 4 segments out of 8 = 1/2 the orange!",
       ],
-      rephrase: "Four of eight pieces — does that equal one of two pieces?",
+      rephrase: "Four segments out of eight — does that equal one piece out of two?",
     },
   ];
 
   // ── State ──
   let currentStage = 'idle';
   let questionIdx = 0;
-  let attemptsByQ = {}; // qId → number of wrong attempts
+  let attemptsByQ = {};
 
   function currentQuestion() {
     return checkQuestions[questionIdx] || null;
@@ -174,7 +182,7 @@
       const q = currentQuestion();
       return {
         stage: 'check',
-        cfg: stages.check, // undefined — handled by app.js via question
+        cfg: stages.check,
         question: q,
         questionIdx,
         totalQuestions: checkQuestions.length,
@@ -196,14 +204,11 @@
     currentStage = stageId;
   }
 
-  // Advance from a non-check, non-win linear stage.
   function advance() {
     const next = stages[currentStage]?.next;
     if (next) currentStage = next;
   }
 
-  // Move to the next question inside the check stage.
-  // Returns true if there's another question, false if we exhausted them.
   function nextQuestion() {
     if (questionIdx < checkQuestions.length - 1) {
       questionIdx += 1;
@@ -212,7 +217,6 @@
     return false;
   }
 
-  // Called when student answers wrong.
   function recordWrongAttempt() {
     const q = currentQuestion();
     if (!q) return;

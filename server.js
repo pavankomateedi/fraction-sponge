@@ -14,88 +14,96 @@ const anthropic = process.env.ANTHROPIC_API_KEY
   ? new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
   : null;
 
-const PIP_SYSTEM_PROMPT = `You are Pip, a warm and curious math tutor for a 9-year-old learning fraction equivalence.
+const PIP_SYSTEM_PROMPT = `You are Pip, a warm and curious math tutor for a 9-year-old learning fraction equivalence (1/2 = 2/4).
 
-The student has just split a 1/2 block into two 1/4 blocks, smashed them back together, and watched the same shape reappear. They are now answering a check-for-understanding question.
+The lesson uses FRUITS as the manipulative. The student has just sliced a half-apple into two quarter-pieces, squished them back together, and watched the same half re-form. The check-for-understanding then carries the idea across multiple fruits:
 
-Voice rules — never break these:
+  q1 — apple: which is bigger, 1/2 or 2/4? (correct: same size)
+  q2 — apple: how many quarter-pieces fit inside one half? (correct: 2)
+  q3 — pizza (6 slices): is 3/6 the same as 1/2? (correct: yes)
+  q4 — pizza: how many sixth-slices fit in half a pizza? (correct: 3)
+  q5 — banana: is 1/3 the same as 2/6? (correct: yes)
+  q6 — apple vs banana: is 1/2 the same fraction-size as 1/3? (correct: no, different sizes)
+  q7 — orange (8 segments): is 4/8 the same as 1/2? (correct: yes)
+
+Your voice rules — never break these:
 - Short sentences. Maximum two short lines.
 - Never use the words "wrong," "incorrect," "no," or "not right."
-- Redirect by referencing what they JUST DID with the physical blocks ("when you smashed them...", "look at the bar...", "remember when the pieces lined up?").
+- When the student answers incorrectly, redirect by referencing what they did with the FRUIT — slicing, squishing, peeling, segments, slices, halves, quarters, the specific fruit at hand.
 - Use "Hmm…", "I wonder…", "Did you see that?!" Be curious WITH the kid, not above them.
-- One emoji max. Used sparingly.
-- Never lecture. Ask a question that points them back to the evidence.
+- One emoji max per message. Used sparingly.
+- Never lecture. Ask a question that points them back to the evidence (the fruit they just imagined or sliced).
 
-You will be given the exact question they're answering, their answer, and the attempt number.
+You will be given the stage, the student's answer, and the attempt number.
 Return ONLY the tutor's next message — no preamble, no quotes, no JSON. Plain text, under 25 words.`;
 
-// Scripted fallback hints, keyed by question id. Used when:
+// Scripted fallback hints — keyed by question id. Used when:
 //   - No API key is configured, or
 //   - The Claude API call fails (timeout, rate limit, network).
 // hints[attemptNumber - 1], clamped to the last entry.
 const FALLBACK = {
   q1: {
     hints: [
-      'Hmm — when you smashed the two fourths together, did they fit perfectly into the half? What does that tell you? 🤔',
-      "Look at the bar at the top. The orange and the two pieces cover the same space, right? So they're the…?",
+      'Hmm — when you squished the two apple quarters together, did they fit perfectly into the half? What does that tell you? 🤔',
+      "Look at the bar at the top. The red half and the two quarters cover the same space, right? So they're the…?",
     ],
-    rephrase: 'Take another look. Which one wins — 1/2 or 2/4 — or is something else going on? 🤔',
+    rephrase: 'Stare at the fruit again. Are 1/2 and 2/4 actually the same amount, or different? 🤔',
   },
   q2: {
     hints: [
-      'Picture the smash you just did. Two pieces snapped back into one half — how many is that?',
-      'One half = two fourths. So how many fourths fit inside one half? Count them in your head 🧠',
+      'Picture the squish you just did. Two apple pieces snapped back into one half — how many is that?',
+      'One half of the apple = two quarters. So how many quarters fit inside that half? Count them 🧠',
     ],
-    rephrase: 'Try again — how many one-fourth pieces snap together to make one half?',
+    rephrase: 'Try again — how many quarter pieces of apple stack up to one half?',
   },
   q3: {
     hints: [
-      'Imagine cutting the half into 6 little pieces. Half of 6 is... how many? 🤔',
-      'Same idea as 2/4 — just smaller pieces. Three out of six covers the same half.',
+      'Picture half a pizza. If the whole pizza has 6 slices, how many cover the half? 🤔',
+      'Same idea as the apple — different fruit, different cut, same half. Half of 6 slices is…?',
     ],
-    rephrase: 'Different shape — if a whole splits into 6 pieces and you take 3, how much do you have?',
+    rephrase: 'Different food this time — if a pizza has 6 slices and you grab 3, how much pizza is that?',
   },
   q4: {
     hints: [
-      'If 1/2 = 3/6, then how many sixths are inside that half? Peek at the fraction 👀',
-      'Half of 6 little pieces is... how many pieces?',
+      'If 1/2 of the pizza = 3/6, then how many sixth-slices are in that half? Peek at the fraction 👀',
+      'Half of 6 pizza slices is… how many slices?',
     ],
-    rephrase: 'Picture cutting the half into 6 even slivers. Count them — what is the number?',
+    rephrase: "Picture cutting the pizza into 6 even slices. Count just the half — what's that number?",
   },
   q5: {
     hints: [
-      'Same trick! If two fourths = one half, would two sixths = one third?',
-      'Cut a third into two smaller pieces — what would each be called?',
+      'Same trick! If two apple quarters = one half, would two banana sixths = one banana third?',
+      'Cut each third of the banana in two — what would each tiny piece be called?',
     ],
-    rephrase: 'Different fraction this time — does 1/3 equal 2/6?',
+    rephrase: 'Different fruit this time — does 1/3 of a banana equal 2/6?',
   },
   q6: {
     hints: [
-      'Hmm — if you split a bar into 2 pieces vs 3 pieces, are the pieces the same size? 🤔',
-      'Bigger denominator means smaller pieces. One slice of 3 is smaller than one slice of 2.',
+      'Hmm — if you slice a fruit into 2 pieces vs 3 pieces, are the pieces the same size? 🤔',
+      'More slices means smaller slices. So a slice out of 3 is smaller than a slice out of 2.',
     ],
-    rephrase: 'Compare carefully: is one piece out of 2 the same as one piece out of 3?',
+    rephrase: 'Compare the slice sizes: is one piece out of 2 the same as one piece out of 3?',
   },
   q7: {
     hints: [
-      'If you cut your half into 8 tiny pieces, how many would cover the half? 🤔',
-      'Half of 8 is... 4. So 4 out of 8 = 1/2!',
+      'If you peel an orange and have 8 segments, how many cover half of it? 🤔',
+      'Half of 8 is… 4. So 4 segments out of 8 = 1/2 the orange!',
     ],
-    rephrase: 'Four of eight pieces — does that equal one of two pieces?',
+    rephrase: 'Four segments out of eight — does that equal one piece out of two?',
   },
 };
 
 function fallbackHint(qId, attemptNumber) {
   const entry = FALLBACK[qId];
   if (!entry || !entry.hints?.length) {
-    return "Hmm — let's look at the pieces again. What did you see when you smashed them? 🤔";
+    return "Hmm — let's look at the fruit again. What did you see when you sliced it? 🤔";
   }
   const idx = Math.min(Math.max(0, attemptNumber - 1), entry.hints.length - 1);
   return entry.hints[idx];
 }
 
 function fallbackRephrase(qId) {
-  return FALLBACK[qId]?.rephrase || 'Take another look at the pieces. What do you notice? 🤔';
+  return FALLBACK[qId]?.rephrase || 'Take another look at the fruit. What do you notice? 🤔';
 }
 
 /**
@@ -132,8 +140,8 @@ app.post('/api/tutor', async (req, res) => {
 
   const userMessage =
     mode === 'rephrase'
-      ? `The student is on question: "${prompt}". They got it wrong on attempt ${attemptNumber}. Re-ask the same question in different, gentler words. Stay short and warm. Do NOT give them the answer.`
-      : `Question shown: "${prompt}". The student answered: "${studentAnswer}". This is wrong attempt ${attemptNumber}. Give them ONE short redirecting hint that references the physical blocks they smashed — never tell them they are wrong, never give the answer outright.`;
+      ? `The student is on question: "${prompt}". They got it wrong on attempt ${attemptNumber}. Re-ask the same question in different, gentler words. Stay short and warm. Do NOT give them the answer. Reference the fruit at hand.`
+      : `Question shown: "${prompt}". The student answered: "${studentAnswer}". This is wrong attempt ${attemptNumber}. Give them ONE short redirecting hint that references the FRUIT (apple/pizza/banana/orange) they're thinking about — never tell them they are wrong, never give the answer outright.`;
 
   try {
     const completion = await anthropic.messages.create({
@@ -163,6 +171,7 @@ app.get('/api/health', (_req, res) => {
     hasApiKey: Boolean(anthropic),
     model: 'claude-haiku-4-5',
     questionCount: Object.keys(FALLBACK).length,
+    theme: 'fruit',
   });
 });
 
@@ -171,6 +180,6 @@ app.get('*', (_req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Fraction Sponge listening on http://localhost:${PORT}`);
+  console.log(`Fraction Fruit Lab listening on http://localhost:${PORT}`);
   console.log(`Claude API: ${anthropic ? 'enabled' : 'disabled (scripted fallback only)'}`);
 });

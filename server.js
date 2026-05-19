@@ -20,8 +20,8 @@ The lesson uses FRUITS as the manipulative. The student has just sliced a half-a
 
   q1 — apple: which is bigger, 1/2 or 2/4? (correct: same size)
   q2 — apple: how many quarter-pieces fit inside one half? (correct: 2)
-  q3 — pizza (6 slices): is 3/6 the same as 1/2? (correct: yes)
-  q4 — pizza: how many sixth-slices fit in half a pizza? (correct: 3)
+  q3 — watermelon (6 wedges): is 3/6 the same as 1/2? (correct: yes)
+  q4 — watermelon: how many sixth-wedges fit in half a watermelon? (correct: 3)
   q5 — banana: is 1/3 the same as 2/6? (correct: yes)
   q6 — apple vs banana: is 1/2 the same fraction-size as 1/3? (correct: no, different sizes)
   q7 — orange (8 segments): is 4/8 the same as 1/2? (correct: yes)
@@ -58,17 +58,17 @@ const FALLBACK = {
   },
   q3: {
     hints: [
-      'Picture half a pizza. If the whole pizza has 6 slices, how many cover the half? 🤔',
-      'Same idea as the apple — different fruit, different cut, same half. Half of 6 slices is…?',
+      'Picture half a watermelon. If the whole thing has 6 wedges, how many cover the half? 🤔',
+      'Same idea as the apple — different fruit, different cut, same half. Half of 6 wedges is…?',
     ],
-    rephrase: 'Different food this time — if a pizza has 6 slices and you grab 3, how much pizza is that?',
+    rephrase: 'Different fruit this time — if a watermelon has 6 wedges and you grab 3, how much is that?',
   },
   q4: {
     hints: [
-      'If 1/2 of the pizza = 3/6, then how many sixth-slices are in that half? Peek at the fraction 👀',
-      'Half of 6 pizza slices is… how many slices?',
+      'If 1/2 of the watermelon = 3/6, then how many sixth-wedges are in that half? Peek at the fraction 👀',
+      'Half of 6 watermelon wedges is… how many wedges?',
     ],
-    rephrase: "Picture cutting the pizza into 6 even slices. Count just the half — what's that number?",
+    rephrase: "Picture cutting the watermelon into 6 even wedges. Count just the half — what's that number?",
   },
   q5: {
     hints: [
@@ -141,7 +141,7 @@ app.post('/api/tutor', async (req, res) => {
   const userMessage =
     mode === 'rephrase'
       ? `The student is on question: "${prompt}". They got it wrong on attempt ${attemptNumber}. Re-ask the same question in different, gentler words. Stay short and warm. Do NOT give them the answer. Reference the fruit at hand.`
-      : `Question shown: "${prompt}". The student answered: "${studentAnswer}". This is wrong attempt ${attemptNumber}. Give them ONE short redirecting hint that references the FRUIT (apple/pizza/banana/orange) they're thinking about — never tell them they are wrong, never give the answer outright.`;
+      : `Question shown: "${prompt}". The student answered: "${studentAnswer}". This is wrong attempt ${attemptNumber}. Give them ONE short redirecting hint that references the FRUIT (apple/watermelon/banana/orange) they're thinking about — never tell them they are wrong, never give the answer outright.`;
 
   try {
     const completion = await anthropic.messages.create({

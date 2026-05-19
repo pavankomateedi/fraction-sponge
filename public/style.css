@@ -261,6 +261,54 @@ button {
 }
 
 /* ─────────────────────────────────────────
+   Progress indicator (check phase only)
+   Lives outside the chat bubble so it is
+   never read aloud by TTS.
+   ───────────────────────────────────────── */
+.progress {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 4px 4px;
+  flex-shrink: 0;
+}
+
+.progress[hidden] { display: none; }
+
+.progress-label {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--ink-soft);
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+
+.progress-dots {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.progress-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(102, 126, 234, 0.2);
+  transition: background 0.2s, transform 0.2s;
+}
+
+.progress-dot.done {
+  background: var(--green);
+}
+
+.progress-dot.current {
+  background: var(--purple);
+  transform: scale(1.25);
+  box-shadow: 0 0 0 3px rgba(90, 63, 192, 0.2);
+}
+
+/* ─────────────────────────────────────────
    Answer choice buttons
    ───────────────────────────────────────── */
 .choices {
@@ -437,7 +485,7 @@ button {
 
 /* New fruit visualizations (Q3-Q7). These are wider single blocks
    that swap in via manipulative.showFruit(). */
-.frac-block.fruit-pizza,
+.frac-block.fruit-watermelon,
 .frac-block.fruit-banana,
 .frac-block.fruit-orange {
   width: 280px;
@@ -449,7 +497,7 @@ button {
   height: 165px;
 }
 
-.frac-block.fruit-pizza .fruit-svg,
+.frac-block.fruit-watermelon .fruit-svg,
 .frac-block.fruit-banana .fruit-svg,
 .frac-block.fruit-orange .fruit-svg,
 .frac-block.fruit-compare .fruit-svg {

@@ -2,7 +2,7 @@
    tutorScript.js — lesson state machine
    Fruit-themed: Pip (the apple seed) guides
    the kid through slicing an apple, then
-   transfers the concept across pizza, banana,
+   transfers the concept across watermelon, banana,
    and orange. Pure data + transitions —
    no DOM, no fetch.
    ───────────────────────────────────────── */
@@ -59,7 +59,7 @@
   };
 
   // ── Check-for-understanding bank ──
-  // Multi-fruit progression: apple → apple → pizza → pizza → banana → mixed → orange.
+  // Multi-fruit progression: apple → apple → watermelon → watermelon → banana → mixed → orange.
   // Each question's `fruit` field is just an emoji indicator the chat can show.
   const checkQuestions = [
     {
@@ -98,37 +98,37 @@
     },
     {
       id: 'q3',
-      fruit: '🍕',
+      fruit: '🍉',
       kind: 'apply',
-      prompt: "New fruit time! 🍕 Look at a pizza cut into 6 slices. Is 3/6 of the pizza the same as 1/2?",
+      prompt: "New fruit time! 🍉 Look at a watermelon cut into 6 wedges. Is 3/6 of the watermelon the same as 1/2?",
       choices: [
-        { id: 'a', label: 'Yes — same slice of pie! ✨', correct: true  },
-        { id: 'b', label: 'No, totally different',       correct: false },
-        { id: 'c', label: 'Not sure',                    correct: false },
+        { id: 'a', label: 'Yes — same juicy half! ✨', correct: true  },
+        { id: 'b', label: 'No, totally different',     correct: false },
+        { id: 'c', label: 'Not sure',                  correct: false },
       ],
-      cheer: "Boom — pizza or apple, the same trick works. You see the pattern. 🌟",
+      cheer: "Boom — watermelon or apple, the same trick works. You see the pattern. 🌟",
       hints: [
-        "Picture half a pizza. If the whole pizza has 6 slices, how many cover the half? 🤔",
-        "Same idea as the apple — different fruit, different cut, same half. Half of 6 slices is…?",
+        "Picture half a watermelon. If the whole thing has 6 wedges, how many cover the half? 🤔",
+        "Same idea as the apple — different fruit, different cut, same half. Half of 6 wedges is…?",
       ],
-      rephrase: "Different food this time — if a pizza has 6 slices and you grab 3, how much pizza is that?",
+      rephrase: "Different fruit this time — if a watermelon has 6 wedges and you grab 3, how much is that?",
     },
     {
       id: 'q4',
-      fruit: '🍕',
+      fruit: '🍉',
       kind: 'count',
-      prompt: "Still pizza 🍕 — how many of those one-sixth slices fit inside half a pizza?",
+      prompt: "Still watermelon 🍉 — how many of those one-sixth wedges fit inside half a watermelon?",
       choices: [
-        { id: 'a', label: '2 slices', correct: false },
-        { id: 'b', label: '3 slices', correct: true  },
-        { id: 'c', label: '6 slices', correct: false },
+        { id: 'a', label: '2 wedges', correct: false },
+        { id: 'b', label: '3 wedges', correct: true  },
+        { id: 'c', label: '6 wedges', correct: false },
       ],
-      cheer: "Yep! 3 slices out of 6 = half a pizza. 🎯",
+      cheer: "Yep! 3 wedges out of 6 = half a watermelon. 🎯",
       hints: [
-        "If 1/2 of the pizza = 3/6, then how many sixth-slices are in that half? Peek at the fraction 👀",
-        "Half of 6 pizza slices is… how many slices?",
+        "If 1/2 of the watermelon = 3/6, then how many sixth-wedges are in that half? Peek at the fraction 👀",
+        "Half of 6 watermelon wedges is… how many wedges?",
       ],
-      rephrase: "Picture cutting the pizza into 6 even slices. Count just the half — what's that number?",
+      rephrase: "Picture cutting the watermelon into 6 even wedges. Count just the half — what's that number?",
     },
     {
       id: 'q5',
@@ -225,6 +225,13 @@
   }
 
   function advance() {
+    // The 'check' stage isn't in `stages` (it's a synthetic state that
+    // iterates checkQuestions), so it has no .next to look up. When we
+    // advance out of check — i.e., after the final question — go to win.
+    if (currentStage === 'check') {
+      currentStage = 'win';
+      return;
+    }
     const next = stages[currentStage]?.next;
     if (next) currentStage = next;
   }

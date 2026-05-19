@@ -44,8 +44,11 @@
 
   let enabled = readPref();
   let toggleBtn = null;
-  let voicesReady = false;
+  // Once we lock onto a voice we NEVER change it for the session — this
+  // is what stops the accent flipping (e.g. male → female) mid-lesson
+  // when the browser's async voice list settles after the first utterance.
   let chosenVoice = null;
+  let voiceLocked = false;
 
   const supported = typeof window.speechSynthesis !== 'undefined'
                  && typeof window.SpeechSynthesisUtterance !== 'undefined';
@@ -92,17 +95,25 @@
   }
 
   // ── Voice picking ──
+  // Target a British (en-GB) voice with a young, friendly quality —
+  // think Peppa Pig. Order matters: most-specific British female voices
+  // first, then any en-GB, then any English as a last resort.
   function pickVoice() {
     if (!supported) return null;
     const voices = window.speechSynthesis.getVoices() || [];
     if (!voices.length) return null;
 
-    // Prefer English, prefer something that sounds friendly. Order matters.
     const preferences = [
-      (v) => v.lang === 'en-US' && /samantha/i.test(v.name),
-      (v) => v.lang === 'en-US' && /karen|tessa|fiona|moira/i.test(v.name),
-      (v) => v.lang === 'en-US' && /google.*us english/i.test(v.name),
-      (v) => /en-US/i.test(v.lang),
+      // Named British voices known to be female / young-sounding
+      (v) => /en-GB/i.test(v.lang) && /(google uk english female)/i.test(v.name),
+      (v) => /en-GB/i.test(v.lang) && /(kate|serena|martha|hazel|stephanie|amelie|fiona)/i.test(v.name),
+      // Any female-flagged British voice
+      (v) => /en-GB/i.test(v.lang) && /female/i.test(v.name),
+      // Any British voice at all (keeps the accent even if male)
+      (v) => /en-GB/i.test(v.lang),
+      (v) => /en[-_]?gb/i.test(v.name),
+      // English fallback so narration still works where no en-GB exists
+      (v) => /en-US/i.test(v.lang) && /samantha|google us english/i.test(v.name),
       (v) => /^en/i.test(v.lang),
     ];
 
@@ -113,9 +124,15 @@
     return voices[0];
   }
 
+  // Returns the locked voice, choosing it once if not yet locked.
+  // After the first successful lock the voice never changes for the session.
   function ensureVoice() {
-    if (chosenVoice) return chosenVoice;
-    chosenVoice = pickVoice();
+    if (voiceLocked && chosenVoice) return chosenVoice;
+    const v = pickVoice();
+    if (v) {
+      chosenVoice = v;
+      voiceLocked = true;
+    }
     return chosenVoice;
   }
 
@@ -133,9 +150,9 @@
       const utter = new SpeechSynthesisUtterance(text);
       const v = ensureVoice();
       if (v) utter.voice = v;
-      utter.lang = (v && v.lang) || 'en-US';
+      utter.lang = (v && v.lang) || 'en-GB';
       utter.rate = 0.95;   // slightly slower than default for clarity
-      utter.pitch = 1.05;  // slightly brighter for kid-friendly feel
+      utter.pitch = 1.25;  // higher + brighter — young, Peppa-Pig-ish quality
       utter.volume = 1.0;
       window.speechSynthesis.speak(utter);
     } catch (err) {
@@ -176,16 +193,15 @@
     }
     syncToggleUI();
 
-    // Some browsers populate voices async. Latch on so our first speak()
-    // gets a real voice.
+    // Browsers populate voices async. We pre-pick when the list arrives,
+    // but ONLY until the voice is locked (first actual speak). After that
+    // we leave it alone so the accent never changes mid-lesson.
     if (supported && window.speechSynthesis.onvoiceschanged !== undefined) {
       window.speechSynthesis.onvoiceschanged = () => {
-        voicesReady = true;
-        chosenVoice = pickVoice();
+        if (!voiceLocked) chosenVoice = pickVoice();
       };
     }
     chosenVoice = pickVoice();
-    voicesReady = Boolean(chosenVoice);
 
     // Listen for the event app.js dispatches whenever Pip says something.
     window.addEventListener('pipSpoke', (e) => {

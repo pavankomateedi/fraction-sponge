@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "description": "Golden dataset for the Fraction Fruit Lab tutor (/api/tutor). Each case is a (qId, prompt, studentAnswer, attemptNumber, mode) tuple the production endpoint sees, along with hand-written notes about what makes a good Pip response for that case. The harness applies rule-based checks (always) and an optional Claude-as-judge layer (when JUDGE=1). v2: rebuilt for the fruit-themed lesson (apple → pizza → banana → orange).",
+  "description": "Golden dataset for the Fraction Fruit Lab tutor (/api/tutor). Each case is a (qId, prompt, studentAnswer, attemptNumber, mode) tuple the production endpoint sees, along with hand-written notes about what makes a good Pip response for that case. The harness applies rule-based checks (always) and an optional Claude-as-judge layer (when JUDGE=1). v2: rebuilt for the fruit-themed lesson (apple → watermelon → banana → orange).",
   "lastUpdated": "2026-05-19",
   "cases": [
     {
@@ -79,60 +79,60 @@
       "id": "q3-different-a1",
       "input": {
         "qId": "q3",
-        "prompt": "New fruit time! 🍕 Look at a pizza cut into 6 slices. Is 3/6 of the pizza the same as 1/2?",
+        "prompt": "New fruit time! 🍉 Look at a watermelon cut into 6 wedges. Is 3/6 of the watermelon the same as 1/2?",
         "studentAnswer": "No, totally different",
         "attemptNumber": 1,
         "mode": "hint"
       },
-      "tags": ["apply", "pizza", "new-equivalent"],
-      "notes": "Kid hasn't transferred from apple to pizza yet. Pip should connect it back to the apple-squish pattern: same trick, new fruit."
+      "tags": ["apply", "watermelon", "new-equivalent"],
+      "notes": "Kid hasn't transferred from apple to watermelon yet. Pip should connect it back to the apple-squish pattern: same trick, new fruit."
     },
     {
       "id": "q3-not-sure-a1",
       "input": {
         "qId": "q3",
-        "prompt": "New fruit time! 🍕 Look at a pizza cut into 6 slices. Is 3/6 of the pizza the same as 1/2?",
+        "prompt": "New fruit time! 🍉 Look at a watermelon cut into 6 wedges. Is 3/6 of the watermelon the same as 1/2?",
         "studentAnswer": "Not sure",
         "attemptNumber": 1,
         "mode": "hint"
       },
-      "tags": ["apply", "pizza", "hesitant"],
-      "notes": "Kid is unsure on the new fruit — Pip's hint should give confidence by pointing back to the pizza's slices, not by telling them the answer."
+      "tags": ["apply", "watermelon", "hesitant"],
+      "notes": "Kid is unsure on the new fruit — Pip's hint should give confidence by pointing back to the watermelon's wedges, not by telling them the answer."
     },
     {
-      "id": "q4-two-slices-a1",
+      "id": "q4-two-wedges-a1",
       "input": {
         "qId": "q4",
-        "prompt": "Still pizza 🍕 — how many of those one-sixth slices fit inside half a pizza?",
-        "studentAnswer": "2 slices",
+        "prompt": "Still watermelon 🍉 — how many of those one-sixth wedges fit inside half a watermelon?",
+        "studentAnswer": "2 wedges",
         "attemptNumber": 1,
         "mode": "hint"
       },
-      "tags": ["count", "pizza", "carryover-wrong"],
-      "notes": "Kid is reusing the '2' answer from Q2 (apple quarters). Pip should redirect — sixth-slices are smaller, so MORE fit in a half."
+      "tags": ["count", "watermelon", "carryover-wrong"],
+      "notes": "Kid is reusing the '2' answer from Q2 (apple quarters). Pip should redirect — sixth-wedges are smaller, so MORE fit in a half."
     },
     {
-      "id": "q4-six-slices-a1",
+      "id": "q4-six-wedges-a1",
       "input": {
         "qId": "q4",
-        "prompt": "Still pizza 🍕 — how many of those one-sixth slices fit inside half a pizza?",
-        "studentAnswer": "6 slices",
+        "prompt": "Still watermelon 🍉 — how many of those one-sixth wedges fit inside half a watermelon?",
+        "studentAnswer": "6 wedges",
         "attemptNumber": 1,
         "mode": "hint"
       },
-      "tags": ["count", "pizza", "whole-vs-half"],
-      "notes": "Kid is counting the WHOLE pizza, not the half. Pip should point at the half versus the whole."
+      "tags": ["count", "watermelon", "whole-vs-half"],
+      "notes": "Kid is counting the WHOLE watermelon, not the half. Pip should point at the half versus the whole."
     },
     {
       "id": "q4-rephrase-a3",
       "input": {
         "qId": "q4",
-        "prompt": "Still pizza 🍕 — how many of those one-sixth slices fit inside half a pizza?",
-        "studentAnswer": "2 slices",
+        "prompt": "Still watermelon 🍉 — how many of those one-sixth wedges fit inside half a watermelon?",
+        "studentAnswer": "2 wedges",
         "attemptNumber": 3,
         "mode": "rephrase"
       },
-      "tags": ["rephrase", "third-attempt", "pizza"],
+      "tags": ["rephrase", "third-attempt", "watermelon"],
       "notes": "Third attempt — Pip should rephrase even more gently. Don't give the answer."
     },
     {

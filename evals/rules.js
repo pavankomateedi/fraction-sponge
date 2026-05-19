@@ -30,7 +30,7 @@ const BANNED_PATTERNS = [
 ];
 
 // Words that signal Pip is referencing the manipulative the kid just used.
-// At least one should appear. The lesson is fruit-themed (apple → pizza →
+// At least one should appear. The lesson is fruit-themed (apple → watermelon →
 // banana → orange) so the manipulative vocabulary spans physical fruit
 // actions (slice, squish, peel) and fraction-piece vocabulary (half, quarter).
 const MANIPULATIVE_REFS = [
@@ -62,7 +62,7 @@ const MANIPULATIVE_REFS = [
 
   // the fruits themselves
   'apple', 'apples',
-  'pizza', 'pizzas',
+  'watermelon', 'watermelons',
   'banana', 'bananas',
   'orange', 'oranges',
   'fruit', 'fruits',

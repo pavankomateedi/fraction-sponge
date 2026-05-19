@@ -9,6 +9,7 @@
 
   const messagesEl = document.getElementById('messages');
   const choicesEl  = document.getElementById('choices');
+  const progressEl = document.getElementById('progress');
 
   // Lock UI while an animation or API call is in flight.
   let busy = false;
@@ -161,6 +162,9 @@
       return;
     }
 
+    // Progress dots only belong to the check phase.
+    hideProgress();
+
     if (s.stage === 'win') {
       pipBubble(s.cfg.pip);
       renderAdvanceButton(s.cfg.action, handlePlayAgain);
@@ -175,14 +179,38 @@
   function renderCheckQuestion() {
     const { question, questionIdx, totalQuestions } = tutorScript.state();
     if (!question) return;
-    // Subtle progress hint so the kid can feel momentum.
-    const progress = ` (${questionIdx + 1}/${totalQuestions})`;
-    const { id } = pipBubble(question.prompt + progress);
+    // IMPORTANT: the prompt is both displayed AND spoken by TTS. We must
+    // NOT bake the progress count into it — "(3/7)" gets read aloud as a
+    // fraction ("three sevenths"), which confuses the lesson. Progress
+    // lives in a separate dots indicator instead.
+    const { id } = pipBubble(question.prompt);
+    renderProgress(questionIdx, totalQuestions);
     renderChoices(
       question.choices,
       (choice, btn) => handleChoice(question, choice, btn),
       id
     );
+  }
+
+  // Dots indicator: ●●●○○○○ — filled = done/current, hollow = upcoming.
+  // Lives outside the chat bubble so it is never spoken by TTS.
+  function renderProgress(idx, total) {
+    if (!progressEl) return;
+    progressEl.hidden = false;
+    const dots = Array.from({ length: total }, (_, i) => {
+      const cls = i < idx ? 'done' : (i === idx ? 'current' : 'upcoming');
+      return `<span class="progress-dot ${cls}" aria-hidden="true"></span>`;
+    }).join('');
+    progressEl.innerHTML =
+      `<span class="progress-label">Question ${idx + 1} of ${total}</span>` +
+      `<span class="progress-dots">${dots}</span>`;
+  }
+
+  function hideProgress() {
+    if (progressEl) {
+      progressEl.hidden = true;
+      progressEl.innerHTML = '';
+    }
   }
 
   // ── Handlers ──
@@ -303,7 +331,7 @@
   function fruitKeyFromEmoji(emoji) {
     if (!emoji) return null;
     if (emoji.includes('🍎') && emoji.includes('🍌')) return 'compare';
-    if (emoji.includes('🍕')) return 'pizza';
+    if (emoji.includes('🍉')) return 'watermelon';
     if (emoji.includes('🍌')) return 'banana';
     if (emoji.includes('🍊')) return 'orange';
     if (emoji.includes('🍎')) return 'apple';

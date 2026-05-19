@@ -135,47 +135,55 @@
 </svg>`;
   }
 
-  // ── Pizza SVG (Q3-Q4: 3/6 = 1/2) ──────────────────────────────
-  // Top-down view, 6 wedges, left half (3 slices) highlighted with
-  // a saturated sauce overlay so "3/6" reads as "the red half".
-  function pizzaSVG() {
+  // ── Watermelon SVG (Q3-Q4: 3/6 = 1/2) ─────────────────────────
+  // Top-down round watermelon slice, 6 wedges. Left half (3 wedges)
+  // highlighted in deeper red so "3/6" reads as "the dark-red half".
+  // Green rind ring, pink/red flesh, dark seeds.
+  function watermelonSVG() {
     return `
-<svg viewBox="0 0 240 160" xmlns="http://www.w3.org/2000/svg" class="fruit-svg fruit-pizza" aria-hidden="true">
+<svg viewBox="0 0 240 160" xmlns="http://www.w3.org/2000/svg" class="fruit-svg fruit-watermelon" aria-hidden="true">
   <defs>
-    <radialGradient id="pizzaCheese" cx="50%" cy="40%">
-      <stop offset="0%" stop-color="#FFE066"/>
-      <stop offset="100%" stop-color="#F9A825"/>
+    <radialGradient id="melonFlesh" cx="50%" cy="42%">
+      <stop offset="0%" stop-color="#FF6F8E"/>
+      <stop offset="100%" stop-color="#E63956"/>
     </radialGradient>
-    <radialGradient id="pizzaSauce" cx="50%" cy="40%">
-      <stop offset="0%" stop-color="#E04545"/>
-      <stop offset="100%" stop-color="#A82020"/>
+    <radialGradient id="melonFleshHi" cx="50%" cy="42%">
+      <stop offset="0%" stop-color="#E63956"/>
+      <stop offset="100%" stop-color="#B71C3A"/>
     </radialGradient>
   </defs>
   <g transform="translate(120,80)">
-    <!-- Crust ring -->
-    <circle r="70" fill="#C68B4E" stroke="#7A4A20" stroke-width="3"/>
-    <!-- Sauce + cheese inner -->
-    <circle r="60" fill="url(#pizzaCheese)"/>
-    <!-- Left half: SAUCE highlight (3/6 = 1/2 visualization) -->
-    <path d="M 0 -60 A 60 60 0 0 0 0 60 L 0 0 Z" fill="url(#pizzaSauce)" opacity="0.85"/>
-    <!-- Slice dividers (6 wedges from center) -->
-    <g stroke="white" stroke-width="2" stroke-linecap="round">
-      <line x1="0" y1="0" x2="0"   y2="-60"/>
-      <line x1="0" y1="0" x2="52"  y2="-30"/>
-      <line x1="0" y1="0" x2="52"  y2="30"/>
-      <line x1="0" y1="0" x2="0"   y2="60"/>
-      <line x1="0" y1="0" x2="-52" y2="30"/>
-      <line x1="0" y1="0" x2="-52" y2="-30"/>
+    <!-- Dark green rind -->
+    <circle r="70" fill="#2E7D32"/>
+    <!-- Light green inner rind -->
+    <circle r="64" fill="#A5D66A"/>
+    <!-- Flesh -->
+    <circle r="58" fill="url(#melonFlesh)"/>
+    <!-- Left half: deeper red highlight (3/6 = 1/2) -->
+    <path d="M 0 -58 A 58 58 0 0 0 0 58 L 0 0 Z" fill="url(#melonFleshHi)"/>
+    <!-- Wedge dividers (6 wedges) -->
+    <g stroke="rgba(255,255,255,0.55)" stroke-width="2" stroke-linecap="round">
+      <line x1="0" y1="0" x2="0"   y2="-58"/>
+      <line x1="0" y1="0" x2="50"  y2="-29"/>
+      <line x1="0" y1="0" x2="50"  y2="29"/>
+      <line x1="0" y1="0" x2="0"   y2="58"/>
+      <line x1="0" y1="0" x2="-50" y2="29"/>
+      <line x1="0" y1="0" x2="-50" y2="-29"/>
     </g>
-    <!-- Pepperoni dots (one in each cheese wedge for fun) -->
-    <circle cx="26"  cy="-26" r="5" fill="#8C1414"/>
-    <circle cx="40"  cy="0"   r="5" fill="#8C1414"/>
-    <circle cx="26"  cy="26"  r="5" fill="#8C1414"/>
+    <!-- Seeds scattered in the flesh -->
+    <g fill="#2b1a0e">
+      <ellipse cx="-28" cy="-18" rx="3" ry="5" transform="rotate(20 -28 -18)"/>
+      <ellipse cx="-20" cy="22"  rx="3" ry="5" transform="rotate(-15 -20 22)"/>
+      <ellipse cx="-38" cy="6"   rx="3" ry="5" transform="rotate(10 -38 6)"/>
+      <ellipse cx="26"  cy="-22" rx="3" ry="5" transform="rotate(-20 26 -22)"/>
+      <ellipse cx="34"  cy="14"  rx="3" ry="5" transform="rotate(15 34 14)"/>
+      <ellipse cx="18"  cy="32"  rx="3" ry="5" transform="rotate(-10 18 32)"/>
+    </g>
   </g>
   <!-- Side labels -->
   <g font-family="Nunito, sans-serif" font-weight="900" text-anchor="middle">
-    <text x="80"  y="148" font-size="14" fill="#8d1414">3/6</text>
-    <text x="160" y="148" font-size="14" fill="#7A4A20">3/6</text>
+    <text x="80"  y="150" font-size="14" fill="#B71C3A">3/6</text>
+    <text x="160" y="150" font-size="14" fill="#2E7D32">3/6</text>
   </g>
 </svg>`;
   }
@@ -363,7 +371,7 @@
   // ── State ──
   // Visual states:
   //   'half' / 'quarters' / 'merged' — apple manipulative phase
-  //   'pizza'    — pizza visualization for Q3-Q4 (3/6 vs 1/2)
+  //   'watermelon' — watermelon visualization for Q3-Q4 (3/6 vs 1/2)
   //   'banana'   — banana 1/3 vs 2/6 stacked visualization for Q5
   //   'compare'  — apple-half vs banana-third for Q6 (1/2 ≠ 1/3)
   //   'orange'   — orange 4/8 = 1/2 segment visualization for Q7
@@ -386,9 +394,9 @@
     // Apple palette (original manipulative phase + Q1-Q2)
     const APPLE_DARK   = 'background:linear-gradient(135deg,#c62828,#8d1414);';
     const APPLE_BRIGHT = 'background:linear-gradient(135deg,#ef5350,#c62828);';
-    // Pizza palette
-    const PIZZA_SAUCE  = 'background:linear-gradient(135deg,#E04545,#A82020);';
-    const PIZZA_CHEESE = 'background:linear-gradient(135deg,#FFD54F,#F9A825);';
+    // Watermelon palette
+    const MELON_RED    = 'background:linear-gradient(135deg,#E63956,#B71C3A);';
+    const MELON_LITE   = 'background:linear-gradient(135deg,#FF6F8E,#E63956);';
     // Banana palette
     const BANANA_HI    = 'background:linear-gradient(135deg,#FFC107,#FF8F00);';
     const BANANA_LITE  = 'background:linear-gradient(135deg,#FFEB3B,#E6A700);';
@@ -410,11 +418,11 @@
         `<div class="ref-seg" style="width:25%;${APPLE_DARK}${BR}">1/4</div>` +
         `<div class="ref-seg" style="width:25%;${APPLE_BRIGHT}${BD}">1/4</div>` +
         `<div class="ref-seg" style="width:50%;${APPLE_BRIGHT}border-left:2px dashed rgba(255,255,255,0.5);">= 1/2 🍎</div>`;
-    } else if (mode === 'pizza') {
-      // 6 sixths total — left 3 filled with sauce-red, right 3 filled with cheese-yellow
+    } else if (mode === 'watermelon') {
+      // 6 sixths total — left 3 deep-red, right 3 lighter pink-red
       refBar.innerHTML =
-        Array.from({ length: 3 }).map(() => `<div class="ref-seg" style="width:16.66%;${PIZZA_SAUCE}${BR}">1/6</div>`).join('') +
-        Array.from({ length: 3 }).map((_, i) => `<div class="ref-seg" style="width:16.66%;${PIZZA_CHEESE}${i === 2 ? '' : BR}color:#7A4A20">1/6</div>`).join('');
+        Array.from({ length: 3 }).map(() => `<div class="ref-seg" style="width:16.66%;${MELON_RED}${BR}">1/6</div>`).join('') +
+        Array.from({ length: 3 }).map((_, i) => `<div class="ref-seg" style="width:16.66%;${MELON_LITE}${i === 2 ? '' : BR}">1/6</div>`).join('');
     } else if (mode === 'banana') {
       // Left 2 sixths highlighted = 2/6 = 1/3; right 4 sixths lighter
       refBar.innerHTML =
@@ -536,7 +544,7 @@
 
   // Swap the workspace to a different fruit visual.
   // Used by app.js when the check phase moves from one fruit to another.
-  // `key` ∈ { 'apple', 'pizza', 'banana', 'compare', 'orange' }.
+  // `key` ∈ { 'apple', 'watermelon', 'banana', 'compare', 'orange' }.
   function showFruit(key) {
     if (!piecesArea) return;
     // Hide the apple's smash-equation overlay — only relevant during the
@@ -558,10 +566,10 @@
     }
 
     let svg = '';
-    if (key === 'pizza')   svg = pizzaSVG();
-    if (key === 'banana')  svg = bananaSVG();
-    if (key === 'orange')  svg = orangeSVG();
-    if (key === 'compare') svg = appleBananaCompareSVG();
+    if (key === 'watermelon') svg = watermelonSVG();
+    if (key === 'banana')     svg = bananaSVG();
+    if (key === 'orange')     svg = orangeSVG();
+    if (key === 'compare')    svg = appleBananaCompareSVG();
     if (!svg) return;
 
     clearPieces();

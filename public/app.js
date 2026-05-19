@@ -14,15 +14,17 @@
   let busy = false;
 
   // ── Message rendering ──
-  function pipBubble(text) {
+  let bubbleSeq = 0;
+  function pipBubble(text, opts = {}) {
     const wrap = document.createElement('div');
     wrap.className = 'msg from-pip';
+    const bubbleId = opts.id || `pip-bubble-${++bubbleSeq}`;
     wrap.innerHTML = `
-      <div class="msg-avatar" aria-hidden="true">🧽</div>
-      <div class="msg-bubble">${escape(text)}</div>`;
+      <div class="msg-avatar" aria-hidden="true">🍎</div>
+      <div class="msg-bubble" id="${bubbleId}">${escape(text)}</div>`;
     messagesEl.appendChild(wrap);
     scrollChat();
-    return wrap;
+    return { wrap, id: bubbleId };
   }
 
   function studentBubble(text) {
@@ -67,7 +69,10 @@
     clearChoices();
     const btn = document.createElement('button');
     btn.className = `choice-btn ${action.style === 'green' ? 'green' : 'primary'}`;
+    btn.type = 'button';
     btn.textContent = action.label;
+    // Screen readers benefit from a clearer label than the emoji-prefixed visible text.
+    if (action.ariaLabel) btn.setAttribute('aria-label', action.ariaLabel);
     btn.addEventListener('click', () => {
       if (busy) return;
       manipulative.playSound('tap');
@@ -76,13 +81,19 @@
     choicesEl.appendChild(btn);
   }
 
-  function renderChoices(choices, onPick) {
+  function renderChoices(choices, onPick, questionPromptId) {
     clearChoices();
-    choices.forEach((c) => {
+    choices.forEach((c, idx) => {
       const btn = document.createElement('button');
       btn.className = 'choice-btn';
+      btn.type = 'button';
       btn.textContent = c.label;
       btn.dataset.id = c.id;
+      // Tie each choice to the question above for screen-reader context.
+      if (questionPromptId) {
+        btn.setAttribute('aria-describedby', questionPromptId);
+      }
+      btn.setAttribute('aria-label', `Answer ${idx + 1} of ${choices.length}: ${c.label}`);
       btn.addEventListener('click', () => {
         if (busy) return;
         manipulative.playSound('tap');
@@ -156,8 +167,12 @@
     if (!question) return;
     // Subtle progress hint so the kid can feel momentum.
     const progress = ` (${questionIdx + 1}/${totalQuestions})`;
-    pipBubble(question.prompt + progress);
-    renderChoices(question.choices, (choice, btn) => handleChoice(question, choice, btn));
+    const { id } = pipBubble(question.prompt + progress);
+    renderChoices(
+      question.choices,
+      (choice, btn) => handleChoice(question, choice, btn),
+      id
+    );
   }
 
   // ── Handlers ──

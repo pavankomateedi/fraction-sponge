@@ -14,16 +14,28 @@
 </head>
 <body>
 
-<div class="app">
+<!-- Sound captions overlay (Deaf / hard-of-hearing accessibility) -->
+<div class="captions" id="captions" aria-live="polite" aria-atomic="false" aria-label="Sound captions"></div>
+
+<main class="app" role="main">
 
   <!-- ── Left panel: Chat / Tutor ── -->
   <section class="panel chat" aria-label="Tutor chat">
     <header class="chat-header">
       <div class="chat-logo" aria-hidden="true">🍎</div>
-      <div>
+      <div class="chat-titles">
         <div class="chat-title">Fraction Fruit Lab</div>
         <div class="chat-sub">with Pip the seed</div>
       </div>
+      <button
+        class="captions-toggle on"
+        id="captionsToggle"
+        type="button"
+        aria-pressed="true"
+        aria-label="Captions on — tap to turn off"
+        title="Sound captions">
+        <span class="cc-label">CC</span>
+      </button>
     </header>
 
     <div class="messages" id="messages" aria-live="polite" aria-atomic="false"></div>
@@ -104,16 +116,17 @@
       </div>
     </div>
 
-    <div class="win-msg" id="winMsg">
+    <div class="win-msg" id="winMsg" aria-live="assertive">
       <div class="win-big">1/2 🍎 = 2/4 🍎</div>
       <div class="win-sub">Equivalent Fractions!</div>
     </div>
   </section>
 
-</div>
+</main>
 
 <script src="/manipulative.js"></script>
 <script src="/tutorScript.js"></script>
+<script src="/captions.js"></script>
 <script src="/app.js"></script>
 </body>
 </html>

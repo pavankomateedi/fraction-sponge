@@ -152,3 +152,33 @@ Tutor-critical file edits (server.js, tutorScript.js, manipulative.js, app.js) t
 - **Chrome on desktop / Android** — secondary
 
 Touch targets ≥ 60px. No pinch-zoom (locked viewport). Web Audio synthesises all sound on the fly — no audio file downloads.
+
+---
+
+## Accessibility
+
+The app is designed touch-first and text-first, which makes it usable for **Deaf, hard-of-hearing, and non-speaking users** out of the box. Every spoken cue has a visual equivalent.
+
+| Feature | What it does | Where |
+|---|---|---|
+| **Sound captions** | Every sound effect (slice, squish, ding, hmm, hooray, etc.) surfaces as a floating badge near the top of the screen. Toggle on/off via the **CC** button in the chat header; preference persists in `localStorage`. **On by default.** | [public/captions.js](public/captions.js) |
+| **No-audio fallback** | Sound is always *enhancement*, never the only signal. Splits animate, smashes flash, equations reveal, confetti shows. The lesson is fully playable with the device muted. | inherent in the design |
+| **Touch-only** | Every interaction is a tap. No voice input. Non-speaking users have zero friction. | [public/app.js](public/app.js) |
+| **Reduced motion** | If the OS reports `prefers-reduced-motion: reduce`, bouncy springs, shakes, and spinning confetti are replaced with simple fades. Vestibular-sensitive users included. | `@media (prefers-reduced-motion: reduce)` in [public/style.css](public/style.css) |
+| **Screen-reader support** | ARIA-live regions on the chat (`polite`) and win message (`assertive`); descriptive `aria-label` on action buttons; `aria-describedby` on each answer choice pointing back to its question. | [public/index.html](public/index.html), [public/app.js](public/app.js) |
+| **High contrast** | WCAG AA color contrast on all text. `@media (forced-colors: active)` adds explicit borders so the app survives Windows High Contrast and similar modes. | [public/style.css](public/style.css) |
+| **Touch targets** | All interactive elements ≥ 60×60 px including the CC toggle. | [public/style.css](public/style.css) |
+| **Font sizes** | Body text 16px+, Pip bubbles 1rem, choice buttons 1.02rem. | [public/style.css](public/style.css) |
+
+### Sound caption examples
+
+| Sound | Caption shown |
+|---|---|
+| Slice | `✂️ slice!` |
+| Squish | `🤲 squish!` |
+| Correct answer | `✨ yes!` |
+| Wrong answer | `💭 hmm…` |
+| Fruit transition | `🌟 new fruit!` |
+| Win arpeggio | `🎉 hooray!` |
+
+The captions module dispatches no audio of its own — it just listens for `soundPlayed` events that [public/manipulative.js](public/manipulative.js) emits whenever any sound plays. This decouples the audio code from the visual indicator and makes adding new sounds trivial.

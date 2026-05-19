@@ -18,22 +18,42 @@
   const stages = {
     idle: {
       pip: "Hey! I'm Pip 🍎 — an apple seed. I've got half an apple. I wonder what's hiding inside it… 👀",
-      action: { type: 'advance', label: '🔪  Slice it!', style: 'primary' },
+      action: {
+        type: 'advance',
+        label: '🔪  Slice it!',
+        ariaLabel: 'Slice the half-apple into two quarters',
+        style: 'primary',
+      },
       next: 'split',
     },
     split: {
       pip: "Whoa, two pieces! Each one is a quarter (1/4) of the apple. Hmm... do they still cover the same space as the half?",
-      action: { type: 'advance', label: '🤲  Squish them together!', style: 'primary' },
+      action: {
+        type: 'advance',
+        label: '🤲  Squish them together!',
+        ariaLabel: 'Squish the two quarter-pieces back into a half',
+        style: 'primary',
+      },
       next: 'smash',
     },
     smash: {
       pip: "They fit back PERFECTLY! 1/2 of an apple = 2/4 of an apple. Same fruit, same space. 🤯",
-      action: { type: 'advance', label: "Let's check what you got! ✨", style: 'green' },
+      action: {
+        type: 'advance',
+        label: "Let's check what you got! ✨",
+        ariaLabel: 'Continue to the check questions',
+        style: 'green',
+      },
       next: 'check',
     },
     win: {
       pip: "You discovered equivalent fractions! Different names, same amount of fruit. 🌟",
-      action: { type: 'reset', label: '🔄  Play Again!', style: 'primary' },
+      action: {
+        type: 'reset',
+        label: '🔄  Play Again!',
+        ariaLabel: 'Play the lesson again from the beginning',
+        style: 'primary',
+      },
       next: 'idle',
     },
   };

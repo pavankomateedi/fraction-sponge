@@ -1,0 +1,22 @@
+# AWS App Runner — source-based deploy config.
+# App Runner reads this when you connect the GitHub repo and choose
+# "Use a configuration file". No Docker needed for this path.
+#
+# Secrets (ANTHROPIC_API_KEY) are NOT set here — add them in the
+# App Runner console under Configuration → Environment variables,
+# so they never land in git.
+version: 1.0
+runtime: nodejs18
+build:
+  commands:
+    build:
+      - npm ci --omit=dev
+run:
+  command: node server.js
+  network:
+    # App Runner sets the PORT env var to this value and routes to it.
+    # server.js reads process.env.PORT, so they line up automatically.
+    port: 3000
+  env:
+    - name: NODE_ENV
+      value: production

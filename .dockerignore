@@ -1,0 +1,9 @@
+node_modules
+npm-debug.log
+.env
+.env.local
+.git
+.gitignore
+evals/last-run.json
+*.md
+.claude

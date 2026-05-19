@@ -15,6 +15,13 @@ npm run eval
 # Rule-based + LLM judge (requires ANTHROPIC_API_KEY)
 npm run eval:judge
 
+# Run against the LIVE Railway deploy (real Claude responses in production)
+npm run eval:live
+npm run eval:live:judge
+
+# Or aim at any URL
+EVAL_BASE_URL=https://your-url.up.railway.app npm run eval
+
 # Show actual responses inline
 EVAL_SHOW_RESPONSES=1 npm run eval
 
@@ -22,13 +29,13 @@ EVAL_SHOW_RESPONSES=1 npm run eval
 EVAL_VERBOSE=1 npm run eval
 ```
 
-The harness boots `node server.js` on port **3100** (not 3000 — so it won't clash with your dev server), runs the cases, and shuts down.
+By default the harness boots `node server.js` on port **3100** (not 3000 — won't clash with your dev server). With `EVAL_BASE_URL` set, it skips the boot and targets the URL directly — useful for confirming the production deploy still passes the rubric.
 
 ---
 
 ## What you'll see
 
-```
+```text
 ╭─ Fraction Sponge · /api/tutor evals ─╮
 
 Loaded 20 cases from evals/golden.json
@@ -58,14 +65,14 @@ Summary
 
 ## Interpretation
 
-| Symbol | Meaning |
-|---|---|
-| ✓ green | Every rule passed |
-| ! yellow | Most rules passed but at least one failed (4+ pass) |
-| ✗ red | Multiple rule failures or a harness error |
-| `claude` tag | Response came from the live Claude API |
-| `fallback` tag | Response came from scripted `FALLBACK` table in [server.js](../server.js) |
-| `judge X/6 (p|t|l)` | Judge total / max, broken into persona, pedagogy, leak |
+| Symbol                | Meaning                                                                       |
+| --------------------- | ----------------------------------------------------------------------------- |
+| ✓ green               | Every rule passed                                                             |
+| ! yellow              | Most rules passed but at least one failed (4+ pass)                           |
+| ✗ red                 | Multiple rule failures or a harness error                                     |
+| `claude` tag          | Response came from the live Claude API                                        |
+| `fallback` tag        | Response came from scripted `FALLBACK` table in [server.js](../server.js)     |
+| `judge X/6 (p\|t\|l)` | Judge total / max, broken into persona, pedagogy, leak                        |
 
 An overall PASS requires (a) rule pass-rate ≥ 85% AND (b) judge score ≥ 75% (when judge is enabled) AND (c) no harness errors. Override with env vars below.
 
@@ -73,29 +80,30 @@ An overall PASS requires (a) rule pass-rate ≥ 85% AND (b) judge score ≥ 75% 
 
 ## Tuning
 
-| Env var | Default | Purpose |
-|---|---|---|
-| `JUDGE` | unset | Set to `1` to enable the LLM judge |
-| `EVAL_PORT` | 3100 | Port the harness boots the server on |
-| `EVAL_PASS_THRESHOLD` | 0.85 | Minimum rule pass rate for overall PASS |
-| `EVAL_JUDGE_THRESHOLD` | 0.75 | Minimum judge total/max for overall PASS |
-| `EVAL_CONCURRENCY` | 4 | Parallel in-flight requests |
-| `EVAL_TIMEOUT_MS` | 12000 | Per-request timeout |
-| `EVAL_SHOW_RESPONSES` | unset | Print the actual response under each case |
-| `EVAL_VERBOSE` | unset | Pipe server stdout/stderr through |
+| Env var                | Default | Purpose                                                       |
+| ---------------------- | ------- | ------------------------------------------------------------- |
+| `JUDGE`                | unset   | Set to `1` to enable the LLM judge                            |
+| `EVAL_BASE_URL`        | unset   | Target a deployed URL instead of booting local (e.g. Railway) |
+| `EVAL_PORT`            | 3100    | Port the harness boots the server on (local mode)             |
+| `EVAL_PASS_THRESHOLD`  | 0.85    | Minimum rule pass rate for overall PASS                       |
+| `EVAL_JUDGE_THRESHOLD` | 0.75    | Minimum judge total/max for overall PASS                      |
+| `EVAL_CONCURRENCY`     | 4       | Parallel in-flight requests                                   |
+| `EVAL_TIMEOUT_MS`      | 12000   | Per-request timeout                                           |
+| `EVAL_SHOW_RESPONSES`  | unset   | Print the actual response under each case                     |
+| `EVAL_VERBOSE`         | unset   | Pipe server stdout/stderr through                             |
 
 ---
 
 ## Files
 
-```
+```text
 evals/
 ├── README.md         (this file)
 ├── rubric.md         what's being checked and why
 ├── golden.json       hand-curated test cases
 ├── rules.js          deterministic rule implementations
 ├── judge.js          LLM-as-judge (Claude Haiku)
-├── run.js            harness — boots server, scores, prints
+├── run.js            harness — boots server (or hits remote URL), scores, prints
 └── last-run.json     auto-written after each run for diffing
 ```
 

@@ -8,7 +8,10 @@
     "dev": "node server.js",
     "eval": "node evals/run.js",
     "eval:judge": "node -e \"process.env.JUDGE='1';require('./evals/run.js')\"",
-    "eval:verbose": "node -e \"process.env.EVAL_SHOW_RESPONSES='1';process.env.EVAL_VERBOSE='1';require('./evals/run.js')\""
+    "eval:verbose": "node -e \"process.env.EVAL_SHOW_RESPONSES='1';process.env.EVAL_VERBOSE='1';require('./evals/run.js')\"",
+    "eval:live": "node -e \"process.env.EVAL_BASE_URL='https://web-production-44b1.up.railway.app';require('./evals/run.js')\"",
+    "eval:live:judge": "node -e \"process.env.EVAL_BASE_URL='https://web-production-44b1.up.railway.app';process.env.JUDGE='1';require('./evals/run.js')\"",
+    "preflight": "node scripts/preflight.js"
   },
   "engines": {
     "node": ">=18"

@@ -14,6 +14,7 @@ const path = require('path');
 const fs = require('fs');
 const { spawn } = require('child_process');
 const http = require('http');
+const https = require('https');
 
 const { runRules } = require('./rules');
 const { judgeResponse, makeClient } = require('./judge');
@@ -26,6 +27,20 @@ const JUDGE_PASS_THRESHOLD = Number(process.env.EVAL_JUDGE_THRESHOLD || 0.75); /
 const JUDGE_ENABLED = process.env.JUDGE === '1';
 const CONCURRENCY = Number(process.env.EVAL_CONCURRENCY || 4);
 const TIMEOUT_MS = Number(process.env.EVAL_TIMEOUT_MS || 12000);
+
+// Remote mode: when EVAL_BASE_URL is set, target a deployed instance instead
+// of booting a local server. Use it like:
+//   EVAL_BASE_URL=https://web-production-44b1.up.railway.app npm run eval
+const BASE_URL = (process.env.EVAL_BASE_URL || '').trim() || null;
+let REMOTE = null;
+if (BASE_URL) {
+  try {
+    REMOTE = new URL(BASE_URL);
+  } catch (err) {
+    console.error(`✗ EVAL_BASE_URL is not a valid URL: ${BASE_URL}`);
+    process.exit(2);
+  }
+}
 
 // ── ANSI colors (no chalk dep) ──
 const c = {
@@ -93,35 +108,56 @@ function stopServer() {
 
 // ── HTTP helper ───────────────────────────────────────────────
 
+// Pick http or https transport + assemble request options.
+// Remote URL takes precedence; otherwise default to localhost on PORT.
+function reqOptions(pathname, method, extraHeaders = {}, timeoutMs = TIMEOUT_MS) {
+  if (REMOTE) {
+    const isHttps = REMOTE.protocol === 'https:';
+    return {
+      transport: isHttps ? https : http,
+      opts: {
+        hostname: REMOTE.hostname,
+        port: REMOTE.port || (isHttps ? 443 : 80),
+        path: pathname,
+        method,
+        headers: { ...extraHeaders },
+        timeout: timeoutMs,
+      },
+    };
+  }
+  return {
+    transport: http,
+    opts: {
+      hostname: '127.0.0.1',
+      port: PORT,
+      path: pathname,
+      method,
+      headers: { ...extraHeaders },
+      timeout: timeoutMs,
+    },
+  };
+}
+
 function postJson(pathname, body, timeoutMs = TIMEOUT_MS) {
   return new Promise((resolve, reject) => {
     const data = Buffer.from(JSON.stringify(body));
-    const req = http.request(
-      {
-        hostname: '127.0.0.1',
-        port: PORT,
-        path: pathname,
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Content-Length': data.length,
-        },
-        timeout: timeoutMs,
-      },
-      (res) => {
-        const chunks = [];
-        res.on('data', (chunk) => chunks.push(chunk));
-        res.on('end', () => {
-          const raw = Buffer.concat(chunks).toString('utf8');
-          try {
-            const parsed = JSON.parse(raw);
-            resolve({ status: res.statusCode, body: parsed });
-          } catch (_) {
-            resolve({ status: res.statusCode, body: { raw } });
-          }
-        });
-      }
-    );
+    const { transport, opts } = reqOptions(pathname, 'POST', {
+      'Content-Type': 'application/json',
+      'Content-Length': data.length,
+    }, timeoutMs);
+    const req = transport.request(opts, (res) => {
+      const chunks = [];
+      res.on('data', (chunk) => chunks.push(chunk));
+      res.on('end', () => {
+        const raw = Buffer.concat(chunks).toString('utf8');
+        try {
+          const parsed = JSON.parse(raw);
+          resolve({ status: res.statusCode, body: parsed });
+        } catch (_) {
+          resolve({ status: res.statusCode, body: { raw } });
+        }
+      });
+    });
     req.on('error', reject);
     req.on('timeout', () => {
       req.destroy(new Error(`request timeout (${timeoutMs}ms)`));
@@ -133,7 +169,8 @@ function postJson(pathname, body, timeoutMs = TIMEOUT_MS) {
 
 async function checkHealth() {
   return new Promise((resolve, reject) => {
-    const req = http.get(`http://127.0.0.1:${PORT}/api/health`, (res) => {
+    const { transport, opts } = reqOptions('/api/health', 'GET', {}, 5000);
+    const req = transport.request(opts, (res) => {
       const chunks = [];
       res.on('data', (c) => chunks.push(c));
       res.on('end', () => {
@@ -145,7 +182,8 @@ async function checkHealth() {
       });
     });
     req.on('error', reject);
-    req.setTimeout(3000, () => req.destroy(new Error('health timeout')));
+    req.on('timeout', () => req.destroy(new Error('health timeout')));
+    req.end();
   });
 }
 
@@ -182,10 +220,19 @@ async function main() {
   banner();
   console.log(`${c.bold}Loaded${c.reset} ${cases.length} cases from ${path.relative(REPO_ROOT, GOLDEN_PATH)}`);
   console.log(`${c.bold}Mode${c.reset}   rules ${JUDGE_ENABLED ? '+ judge' : '(rules only — set JUDGE=1 to enable LLM judge)'}`);
+  if (REMOTE) {
+    console.log(`${c.bold}Target${c.reset} ${c.cyan}${REMOTE.origin}${c.reset}  ${c.dim}(remote — skipping local boot)${c.reset}`);
+  } else {
+    console.log(`${c.bold}Target${c.reset} ${c.dim}http://127.0.0.1:${PORT}${c.reset}  ${c.dim}(local — booting server.js)${c.reset}`);
+  }
   console.log('');
 
-  console.log(`${c.dim}→ Booting server on port ${PORT}…${c.reset}`);
-  await startServer();
+  if (!REMOTE) {
+    console.log(`${c.dim}→ Booting server on port ${PORT}…${c.reset}`);
+    await startServer();
+  } else {
+    console.log(`${c.dim}→ Pinging ${REMOTE.origin}…${c.reset}`);
+  }
   const health = await checkHealth();
   const apiNote = health.hasApiKey
     ? `${c.green}Claude API live${c.reset} — testing real model output`

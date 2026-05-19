@@ -47,7 +47,7 @@
       next: 'check',
     },
     win: {
-      pip: "You discovered equivalent fractions! Different names, same amount of fruit. 🌟",
+      pip: "Lesson complete! 🏆 You discovered equivalent fractions — different names, same amount of fruit. 🌟",
       action: {
         type: 'reset',
         label: '🔄  Play Again!',

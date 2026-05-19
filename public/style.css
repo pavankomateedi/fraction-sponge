@@ -111,14 +111,20 @@ button {
   text-transform: uppercase;
 }
 
-/* CC toggle — small pill button, 60×60 touch target, ARIA-pressed */
-.captions-toggle {
+/* Header toggles row — voice + CC live in a flex group on the right side */
+.header-toggles {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+/* Shared toggle styling: 60×60 touch target, ARIA-pressed state */
+.hdr-toggle {
   border: 2px solid var(--purple);
   background: white;
   color: var(--purple-dark);
   font-family: inherit;
   font-weight: 900;
-  font-size: 0.85rem;
   width: 60px;
   height: 60px;
   border-radius: 16px;
@@ -126,27 +132,27 @@ button {
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  position: relative;
   transition: background 0.15s, transform 0.12s, box-shadow 0.15s;
   box-shadow: 0 2px 0 var(--purple);
-  flex-shrink: 0;
   letter-spacing: 0.5px;
   touch-action: manipulation;
 }
 
-.captions-toggle.on {
+.hdr-toggle.on {
   background: linear-gradient(135deg, var(--purple), var(--purple-dark));
   color: white;
   border-color: var(--purple-dark);
 }
 
-.captions-toggle.off {
+.hdr-toggle.off {
   background: white;
   color: var(--ink-soft);
   border-color: rgba(102, 126, 234, 0.3);
   box-shadow: 0 2px 0 rgba(102, 126, 234, 0.3);
 }
 
-.captions-toggle.off::after {
+.hdr-toggle.off::after {
   content: "";
   position: absolute;
   width: 38px;
@@ -157,13 +163,15 @@ button {
   pointer-events: none;
 }
 
-.captions-toggle:active {
+.hdr-toggle:active {
   transform: translateY(2px);
   box-shadow: 0 0 0 var(--purple);
 }
 
-.captions-toggle.off { position: relative; }
-
+.toggle-glyph {
+  font-size: 1.05rem;
+  line-height: 1;
+}
 .cc-label {
   font-size: 0.95rem;
   font-weight: 900;
@@ -542,6 +550,20 @@ button {
   opacity: 1;
   transform: scale(1) translateY(0);
   pointer-events: auto;
+}
+
+.win-badge {
+  display: inline-block;
+  font-size: 0.95rem;
+  font-weight: 900;
+  color: white;
+  background: linear-gradient(135deg, var(--green), var(--green-light));
+  padding: 6px 14px;
+  border-radius: 999px;
+  letter-spacing: 1.5px;
+  margin-bottom: 8px;
+  box-shadow: 0 4px 14px rgba(13, 126, 118, 0.4);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
 }
 
 .win-big {

@@ -57,6 +57,14 @@
     win: () => {
       [523, 659, 784, 1047].forEach((f, i) => tone(f, 'sine', 0.32, 0.24, i * 0.11));
     },
+    // Equation reveal — three-note C-major chord stacking, resolving.
+    // Plays when `1/2 = 2/4` slides into view. This IS the "math has changed"
+    // musical accent.
+    equation: () => {
+      tone(523, 'sine', 0.45, 0.20, 0);     // C5
+      tone(659, 'sine', 0.45, 0.20, 0.06);  // E5
+      tone(784, 'sine', 0.55, 0.22, 0.12);  // G5 — resolution
+    },
     // Correct answer — soft positive two-note ascending "ding"
     correct: () => {
       tone(880,  'sine', 0.09, 0.18, 0);     // A5
@@ -290,8 +298,13 @@
         showHalf('anim-smash anim-pulse');
         renderRefBar('both');
 
-        // Reveal equation slightly after the merge animation begins
-        setTimeout(() => equation.classList.add('show'), 320);
+        // Reveal equation slightly after the merge animation begins,
+        // and chord the moment the math appears — "the math is changing"
+        // musical accent the user asked for.
+        setTimeout(() => {
+          equation.classList.add('show');
+          playSound('equation');
+        }, 320);
 
         emit('smash');
         setTimeout(resolve, 700);

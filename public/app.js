@@ -24,6 +24,16 @@
       <div class="msg-bubble" id="${bubbleId}">${escape(text)}</div>`;
     messagesEl.appendChild(wrap);
     scrollChat();
+
+    // Voice narration: voice.js listens for this event and speaks the
+    // bubble text (with fractions normalized to words). Skipped if the
+    // caller opts out (e.g., system-y notes we never want spoken).
+    if (!opts.silent) {
+      try {
+        window.dispatchEvent(new CustomEvent('pipSpoke', { detail: { text, id: bubbleId } }));
+      } catch (_) {}
+    }
+
     return { wrap, id: bubbleId };
   }
 
@@ -268,6 +278,9 @@
   async function handlePlayAgain() {
     busy = true;
     clearChoices();
+    if (window.voice && typeof window.voice.cancel === 'function') {
+      window.voice.cancel();
+    }
     await pause(150);
     messagesEl.innerHTML = '';
     await manipulative.reset();

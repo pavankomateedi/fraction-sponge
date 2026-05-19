@@ -161,6 +161,7 @@ The app is designed touch-first and text-first, which makes it usable for **Deaf
 
 | Feature | What it does | Where |
 |---|---|---|
+| **Voice narration (TTS)** | Pip's chat bubbles are read aloud via the browser's Web Speech API. Fractions are normalized to words ("one half" not "one slash two"); emoji are stripped. Toggle via the **🔊** button in the chat header; preference persists. **On by default.** Note: browsers block speech until the first user tap (autoplay rule). | [public/voice.js](public/voice.js) |
 | **Sound captions** | Every sound effect (slice, squish, ding, hmm, hooray, etc.) surfaces as a floating badge near the top of the screen. Toggle on/off via the **CC** button in the chat header; preference persists in `localStorage`. **On by default.** | [public/captions.js](public/captions.js) |
 | **No-audio fallback** | Sound is always *enhancement*, never the only signal. Splits animate, smashes flash, equations reveal, confetti shows. The lesson is fully playable with the device muted. | inherent in the design |
 | **Touch-only** | Every interaction is a tap. No voice input. Non-speaking users have zero friction. | [public/app.js](public/app.js) |
@@ -172,13 +173,12 @@ The app is designed touch-first and text-first, which makes it usable for **Deaf
 
 ### Sound caption examples
 
-| Sound | Caption shown |
-|---|---|
-| Slice | `✂️ slice!` |
-| Squish | `🤲 squish!` |
-| Correct answer | `✨ yes!` |
-| Wrong answer | `💭 hmm…` |
-| Fruit transition | `🌟 new fruit!` |
-| Win arpeggio | `🎉 hooray!` |
+- **Slice** → `✂️ slice!`
+- **Squish** → `🤲 squish!`
+- **Equation reveal** → no caption (just the chord plays)
+- **Correct answer** → `✨ yes!`
+- **Wrong answer** → `💭 hmm…`
+- **Fruit transition** → `🌟 new fruit!`
+- **Win arpeggio** → `🎉 hooray!`
 
 The captions module dispatches no audio of its own — it just listens for `soundPlayed` events that [public/manipulative.js](public/manipulative.js) emits whenever any sound plays. This decouples the audio code from the visual indicator and makes adding new sounds trivial.

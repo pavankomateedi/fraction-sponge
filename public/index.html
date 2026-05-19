@@ -27,15 +27,26 @@
         <div class="chat-title">Fraction Fruit Lab</div>
         <div class="chat-sub">with Pip the seed</div>
       </div>
-      <button
-        class="captions-toggle on"
-        id="captionsToggle"
-        type="button"
-        aria-pressed="true"
-        aria-label="Captions on — tap to turn off"
-        title="Sound captions">
-        <span class="cc-label">CC</span>
-      </button>
+      <div class="header-toggles">
+        <button
+          class="hdr-toggle voice-toggle on"
+          id="voiceToggle"
+          type="button"
+          aria-pressed="true"
+          aria-label="Voice narration on — tap to turn off"
+          title="Voice narration">
+          <span class="toggle-glyph" aria-hidden="true">🔊</span>
+        </button>
+        <button
+          class="hdr-toggle captions-toggle on"
+          id="captionsToggle"
+          type="button"
+          aria-pressed="true"
+          aria-label="Captions on — tap to turn off"
+          title="Sound captions">
+          <span class="toggle-glyph cc-label" aria-hidden="true">CC</span>
+        </button>
+      </div>
     </header>
 
     <div class="messages" id="messages" aria-live="polite" aria-atomic="false"></div>
@@ -116,9 +127,10 @@
       </div>
     </div>
 
-    <div class="win-msg" id="winMsg" aria-live="assertive">
+    <div class="win-msg" id="winMsg" aria-live="assertive" role="status">
+      <div class="win-badge">🏆  LESSON COMPLETE  🏆</div>
       <div class="win-big">1/2 🍎 = 2/4 🍎</div>
-      <div class="win-sub">Equivalent Fractions!</div>
+      <div class="win-sub">You discovered equivalent fractions!</div>
     </div>
   </section>
 
@@ -127,6 +139,7 @@
 <script src="/manipulative.js"></script>
 <script src="/tutorScript.js"></script>
 <script src="/captions.js"></script>
+<script src="/voice.js"></script>
 <script src="/app.js"></script>
 </body>
 </html>

@@ -57,7 +57,41 @@
     win: () => {
       [523, 659, 784, 1047].forEach((f, i) => tone(f, 'sine', 0.32, 0.24, i * 0.11));
     },
+    // Correct answer — soft positive two-note ascending "ding"
+    correct: () => {
+      tone(880,  'sine', 0.09, 0.18, 0);     // A5
+      tone(1175, 'sine', 0.12, 0.18, 0.07);  // D6
+    },
+    // Wrong answer — warm low-mid tone with slight downward drop.
+    // Triangle wave for warmth; never punitive, just a "try-again" cue.
+    wrong: () => {
+      tone(330, 'triangle', 0.18, 0.14, 0);
+      tone(247, 'triangle', 0.22, 0.12, 0.10);
+    },
+    // Fruit transition — quick upward sweep marking a new fruit chapter
+    transition: () => {
+      tone(523, 'sine', 0.07, 0.14, 0);     // C5
+      tone(659, 'sine', 0.07, 0.14, 0.05);  // E5
+      tone(880, 'sine', 0.09, 0.16, 0.10);  // A5
+    },
+    // Button tap — very short, very quiet UI click
+    tap: () => {
+      tone(1500, 'sine', 0.025, 0.08, 0);
+    },
   };
+
+  // Hook for future captions / sound-indicator layer: every named
+  // sound dispatches a 'soundPlayed' event so visual badges, ARIA
+  // live regions, or screen-reader announcements can latch onto it
+  // without touching the audio code.
+  function playSound(name) {
+    const fn = sounds[name];
+    if (typeof fn !== 'function') return;
+    fn();
+    try {
+      window.dispatchEvent(new CustomEvent('soundPlayed', { detail: { name } }));
+    } catch (_) { /* event dispatch is non-critical */ }
+  }
 
   // ── Apple SVG builders ──
   // Cross-section view of an apple: red rim (skin), pale interior (flesh),
@@ -227,7 +261,7 @@
 
   function split() {
     if (visualState !== 'half') return Promise.resolve();
-    sounds.split();
+    playSound('split');
     visualState = 'quarters';
     showQuarters();
     renderRefBar('quarters');
@@ -248,7 +282,7 @@
 
       // Step 2: after the shake, flash + merge
       setTimeout(() => {
-        sounds.smash();
+        playSound('smash');
         flashOverlay.classList.add('anim-flash');
         setTimeout(() => flashOverlay.classList.remove('anim-flash'), 380);
 
@@ -266,7 +300,7 @@
   }
 
   function celebrate() {
-    sounds.win();
+    playSound('win');
     winMsg.classList.add('show');
     launchConfetti();
     emit('celebrate');
@@ -336,6 +370,7 @@
     celebrate,
     showEquation,
     hideEquationAndWin,
+    playSound,
     getState: () => visualState,
   };
 })();

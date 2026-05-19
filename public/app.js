@@ -70,6 +70,7 @@
     btn.textContent = action.label;
     btn.addEventListener('click', () => {
       if (busy) return;
+      manipulative.playSound('tap');
       onTap();
     });
     choicesEl.appendChild(btn);
@@ -84,6 +85,7 @@
       btn.dataset.id = c.id;
       btn.addEventListener('click', () => {
         if (busy) return;
+        manipulative.playSound('tap');
         onPick(c, btn);
       });
       choicesEl.appendChild(btn);
@@ -181,13 +183,21 @@
     studentBubble(choice.label);
 
     if (choice.correct) {
+      // Soft positive chime — fires before Pip's text cheer for snappy feedback
+      manipulative.playSound('correct');
       const cheer = tutorScript.correctCheerFor(question.id);
       await pause(280);
       pipBubble(cheer);
       await pause(900);
 
-      const hasMore = tutorScript.nextQuestion();
-      if (hasMore) {
+      const hadMore = tutorScript.nextQuestion();
+      if (hadMore) {
+        // If the new question introduces a different fruit, mark the
+        // chapter change with a brief upward sweep.
+        const next = tutorScript.currentQuestion();
+        if (next && next.fruit && next.fruit !== question.fruit) {
+          manipulative.playSound('transition');
+        }
         busy = false;
         renderStage();
         return;
@@ -199,7 +209,8 @@
       return;
     }
 
-    // Wrong answer flow
+    // Wrong answer flow — warm "hmm" tone, never punitive
+    manipulative.playSound('wrong');
     tutorScript.recordWrongAttempt();
     const { attempts } = tutorScript.state();
 

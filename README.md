@@ -1,12 +1,14 @@
-# Fraction Sponge 🧽
+# Fraction Fruit Lab 🍎
 
-A one-lesson, iPad-first web tutor that teaches **fraction equivalence** (`1/2 = 2/4`) to 9-year-olds. The kid splits a half into two fourths, smashes them back together, and watches the same shape reappear — Pip the sponge guides the discovery and then runs a quick seven-question check for understanding.
+A one-lesson, iPad-first web tutor that teaches **fraction equivalence** (`1/2 = 2/4`) to 9-year-olds. The kid slices a half-apple into two quarters, squishes them back together, and watches the same half re-form — then Pip (the apple seed) carries the idea across pizza, banana, and orange so the kid learns equivalence is a property of *the math*, not the fruit.
 
 Built for the Synthesis Tutor 1-week challenge (Week 4).
 
+> "Pip" is what apple seeds are actually called. The mascot earned its name.
+
 ## Demo
 
-🧽 **Live app:** <https://web-production-44b1.up.railway.app>
+🍎 **Live app:** <https://web-production-44b1.up.railway.app>
 
 Open the URL on an iPad in Safari (or Chrome DevTools → device mode → iPad) for the intended experience.
 
@@ -66,19 +68,23 @@ The happy path is fully scripted — fast, predictable, and works offline. The C
 
 ### Lesson flow
 
-1. **Explore** — Pip greets, kid taps **Split** → manipulative splits 1/2 into two 1/4 blocks.
-2. **Smash** — Kid taps **Smash** → pieces shake, flash, merge. Equation `1/2 = 2/4` appears.
-3. **Check** — Seven progressive questions:
-   1. Which is bigger, 1/2 or 2/4? — *compare* (recall)
-   2. How many fourths fit in one half? — *count* (recall)
-   3. Is 3/6 the same as 1/2? — *apply* (new equivalent)
-   4. How many sixths fit in one half? — *count* (apply)
-   5. Is 1/3 the same as 2/6? — *transfer* (new base fraction)
-   6. Is 1/2 the same as 1/3? — *discriminate* (non-equivalent)
-   7. Is 4/8 the same as 1/2? — *capstone* (larger denominator)
-4. **Win** — Confetti, win message, **Play Again** resets both the manipulative and the tutor.
+1. **Explore** — Pip greets, kid taps **🔪 Slice it!** → the half-apple splits into two quarter-pieces (inline SVG with seeds, cut-face, stem, leaf).
+2. **Squish** — Kid taps **🤲 Squish them together!** → pieces shake, flash, merge. Equation `1/2 = 2/4` appears with apple visuals.
+3. **Check** — Seven questions across four fruits — equivalence is a property of the math, not the fruit:
 
-The question bank lives in `public/tutorScript.js` — to dial up or down, just add or remove entries from `checkQuestions[]`.
+   | #   | Fruit     | Question                                          | Skill                            |
+   | --- | --------- | ------------------------------------------------- | -------------------------------- |
+   | 1   | 🍎 apple  | Which is bigger, 1/2 or 2/4 of the apple?         | *compare*                        |
+   | 2   | 🍎 apple  | How many quarters fit in one half?                | *count*                          |
+   | 3   | 🍕 pizza  | Is 3/6 of a pizza the same as 1/2?                | *apply* (new fruit)              |
+   | 4   | 🍕 pizza  | How many sixth-slices fit in half a pizza?        | *count* (applied)                |
+   | 5   | 🍌 banana | Is 1/3 of a banana the same as 2/6?               | *transfer* (new base fraction)   |
+   | 6   | 🍎🍌      | Is 1/2 of an apple the same as 1/3 of a banana?   | *discriminate* (non-equivalent)  |
+   | 7   | 🍊 orange | Is 4/8 of an orange the same as 1/2?              | *capstone* (larger denominator)  |
+
+4. **Win** — Fruit-themed confetti, win message, **Play Again** resets both the manipulative and the tutor.
+
+The question bank lives in `public/tutorScript.js` — each entry has a `fruit` emoji, prompt, choices, cheer, hints, and a rephrase. Add or remove entries to dial up or down.
 
 ---
 

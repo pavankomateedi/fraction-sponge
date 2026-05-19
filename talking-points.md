@@ -8,23 +8,30 @@ Print this or pin it next to your screen. Don't read it on camera.
 
 ## The one-sentence pitch
 
-> "Synthesis Tutor's magic is that math feels like exploration, not homework. I built **Fraction Sponge** — a one-lesson web tutor that teaches 9-year-olds that 1/2 equals 2/4, by letting them split it apart and smash it back together."
+> "Synthesis Tutor's magic is that math feels like exploration, not homework. I built **Fraction Fruit Lab** — a one-lesson web tutor that teaches 9-year-olds that 1/2 equals 2/4 by slicing a half-apple, squishing it back together, then carrying the same idea across pizza, banana, and orange. Equivalence becomes a property of *the math*, not the fruit."
 
-That sentence does three jobs: names the inspiration, names the lesson, names the gesture. Open with it.
+That sentence does four jobs: names the inspiration, names the lesson, names the gesture, names the pedagogical hook (multi-fruit transfer). Open with it.
 
 ---
 
 ## The five lines that have to land
 
-| When | Line |
-|---|---|
-| Right after smash + equation appears | *"That's the aha moment — Pip names what their hands already felt."* |
-| Just before the wrong-answer demo | *"Watch how Pip never says 'wrong' — she points back to what the kid just did with the pieces."* |
-| After Pip's hint arrives | *"That came from a Claude `haiku-4-5` call. The system prompt enforces Pip's voice — never 'wrong,' always references the physical blocks."* |
-| Showing the iPad | *"60px touch targets, pinch-zoom locked, audio context unlocks on first tap. iPad-first, no install, no login."* |
-| At the architecture diagram | *"One endpoint — `POST /api/tutor` — proxies wrong answers to Claude. API key stays on the server. The happy path is fully scripted, so it works offline."* |
+1. **Right after squish + equation appears:**
+   > *"That's the aha moment — Pip names what their hands already felt."*
 
-If you can only deliver one of these, deliver line 2.
+2. **Going from apple to pizza (Q3):**
+   > *"Same trick, brand-new fruit. By the end the kid sees equivalence as a property of the math, not the apple."*
+
+3. **After Pip's wrong-answer hint arrives:**
+   > *"That came from a Claude `haiku-4-5` call. The system prompt enforces Pip's voice — never says 'wrong,' always references the fruit the kid just sliced."*
+
+4. **Showing the iPad:**
+   > *"60px touch targets, pinch-zoom locked, audio context unlocks on first tap. iPad-first, no install, no login."*
+
+5. **At the architecture diagram:**
+   > *"One endpoint — `POST /api/tutor` — proxies wrong answers to Claude. API key stays on the server. The happy path is fully scripted, so it works offline."*
+
+If you can only deliver one of these, deliver **#2** — the multi-fruit transfer is the pedagogical insight that distinguishes this from a single-fruit drill.
 
 ---
 
@@ -73,13 +80,11 @@ If anyone asks live questions, here are the four most likely:
 
 ## Common stumbles (and the recovery line for each)
 
-| If this happens | Say |
-|---|---|
-| You stumble naming the model | "It's Claude Haiku — the fast, cheap one. Right tool for a real-time kid tutor." |
-| You can't remember a Pip line | Read the next bubble off the screen — it's *supposed* to carry the demo |
-| The smash animation feels slow on camera | "And the smash takes about half a second — long enough to feel satisfying, short enough that a 9-year-old doesn't get bored" |
-| iPad audio doesn't fire on first tap | Re-tap Split. iOS unlocks the audio context on user gesture — that's by design |
-| Claude API is slow mid-demo | "And here's the 8-second timeout falling through to the scripted hint — works offline too" |
+- **You stumble naming the model** → "It's Claude Haiku — the fast, cheap one. Right tool for a real-time kid tutor."
+- **You can't remember a Pip line** → Read the next bubble off the screen. It's *supposed* to carry the demo.
+- **The squish animation feels slow on camera** → "The squish takes about half a second — long enough to feel satisfying, short enough that a 9-year-old doesn't get bored."
+- **iPad audio doesn't fire on first tap** → Re-tap **Slice it**. iOS unlocks the audio context on user gesture — that's by design.
+- **Claude API is slow mid-demo** → "And here's the 8-second timeout falling through to the scripted hint — works offline too."
 
 ---
 
@@ -94,6 +99,7 @@ npm run preflight
 You want **READY TO DEMO** in green. If not — abort, fix, retry.
 
 Also:
+
 - [ ] iPad on WiFi, charged, plugged in
 - [ ] URL bookmarked on iPad's home screen
 - [ ] Browser tab on desktop: live URL

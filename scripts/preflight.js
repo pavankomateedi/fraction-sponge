@@ -75,14 +75,15 @@ function record(name, pass, note) {
 
 async function main() {
   console.log('');
-  console.log(`${c.bold}${c.cyan}╭─ Fraction Sponge · pre-flight ──╮${c.reset}`);
+  console.log(`${c.bold}${c.cyan}╭─ Fraction Fruit Lab · pre-flight ──╮${c.reset}`);
   console.log(`${c.dim}Target: ${TARGET.origin}${c.reset}`);
   console.log('');
 
   // 1. Index loads
   try {
     const r = await req('/');
-    const ok = r.status === 200 && r.raw.length > 1000 && /<title>Fraction Sponge/.test(r.raw);
+    // Tolerate any "Fraction <something> Lab" title — survives future renames.
+    const ok = r.status === 200 && r.raw.length > 1000 && /<title>Fraction /i.test(r.raw);
     record('index.html serves', ok, `HTTP ${r.status}, ${r.raw.length}B, ${r.ms}ms`);
   } catch (err) {
     record('index.html serves', false, err.message);

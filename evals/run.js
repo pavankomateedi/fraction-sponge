@@ -299,7 +299,7 @@ async function main() {
 
 function banner() {
   console.log('');
-  console.log(`${c.bold}${c.cyan}╭─ Fraction Sponge · /api/tutor evals ─╮${c.reset}`);
+  console.log(`${c.bold}${c.cyan}╭─ Fraction Fruit Lab · /api/tutor evals ─╮${c.reset}`);
   console.log('');
 }
 

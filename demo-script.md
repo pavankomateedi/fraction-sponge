@@ -19,13 +19,13 @@ The structure below maps to the PRD §6 deliverable and the build-plan Thursday 
 
 ## 0:00–0:30 — Frame the problem (≈30s)
 
-**On screen:** Title card OR the deployed URL paused at the start state (single 1/2 block, Pip's greeting).
+**On screen:** Title card OR the deployed URL paused at the start state (half-apple visible, Pip's greeting).
 
 **What you say (one take, conversational):**
 
-> "Synthesis Tutor's magic is that math feels like exploration, not homework. The challenge this week: build a one-lesson clone that captures that feeling. I made **Fraction Sponge** — a single web lesson that teaches 9-year-olds that 1/2 equals 2/4, by letting them split it apart and smash it back together."
+> "Synthesis Tutor's magic is that math feels like exploration, not homework. The challenge this week: build a one-lesson clone that captures that feeling. I made **Fraction Fruit Lab** — the kid slices a half-apple, squishes it back together, and discovers that 1/2 equals 2/4. Then Pip carries the same idea across pizza, banana, and orange — so equivalence becomes a property of the math, not the fruit."
 
-**Beat:** Don't read the PRD. One sentence on problem, one on what you built.
+**Beat:** Don't read the PRD. One sentence on the problem, one on the multi-fruit pedagogy.
 
 ---
 
@@ -33,18 +33,18 @@ The structure below maps to the PRD §6 deliverable and the build-plan Thursday 
 
 **On screen:** the live app. Don't narrate every click — let Pip and the manipulative carry it.
 
-1. **0:30** — Pip greets: *"Hey! I'm Pip 🧽 I've got one half. I wonder what's hiding inside it…"*
-2. **0:38** — Tap **Split it!** → chime, pieces slide apart. Pip: *"Whoa, two pieces! Each one is one-fourth…"*
-3. **0:50** — Tap **Smash them!** → shake → flash → merge → equation `1/2 = 2/4` appears. Pip: *"They fit back PERFECTLY!"*
+1. **0:30** — Pip greets: *"Hey! I'm Pip 🍎 — an apple seed. I've got half an apple. I wonder what's hiding inside it…"*
+2. **0:38** — Tap **🔪 Slice it!** → chime, the half-apple splits into two quarter-pieces. Pip: *"Whoa, two pieces! Each one is a quarter…"*
+3. **0:50** — Tap **🤲 Squish them together!** → shake → flash → merge → equation `1/2 = 2/4` appears with apple visuals. Pip: *"They fit back PERFECTLY!"*
 
    *(Briefly say out loud:* "That's the aha moment — Pip names what their hands already felt."*)*
 
-4. **1:05** — Tap **Let's check what you got!** → first check question appears.
-5. **1:10–1:55** — Walk through Q1 → Q2 → Q3 quickly, getting them right.
+4. **1:05** — Tap **Let's check what you got!** → first apple question appears.
+5. **1:10–1:55** — Walk through Q1 (apple) → Q2 (apple) → Q3 (**now pizza**) quickly, getting them right. **Pause briefly on the fruit switch:** *"Same trick, brand-new fruit."*
 
 **What you can say over this segment:**
 
-> "The lesson has three phases — explore, instruct, check. Explore comes first; Pip names the concept *after* the kid has physically done it; the check is what locks it in."
+> "The lesson has three phases — explore, instruct, check. Explore comes first; Pip names the concept *after* the kid has physically done it; then the check carries the idea across new fruits to make sure they're learning the math, not just the apple."
 
 ---
 
@@ -52,16 +52,16 @@ The structure below maps to the PRD §6 deliverable and the build-plan Thursday 
 
 This is the moment that shows judges this is an *AI*-powered tutor, not just a scripted dialogue tree.
 
-1. **2:00** — At Q4 (or whichever next), deliberately tap a **wrong** answer.
+1. **2:00** — At Q4 (pizza) or Q5 (banana), deliberately tap a **wrong** answer.
 2. **2:05** — Typing indicator appears.
-3. **2:08** — Pip's hint arrives. *Read it aloud* — "watch how Pip never says 'wrong' — she points back to what they just did with the pieces."
+3. **2:08** — Pip's hint arrives. *Read it aloud* — "watch how Pip never says 'wrong' — she points back to the fruit, the slice, the squish."
 4. **2:20** — Tap the same wrong answer *again*.
 5. **2:24** — Two new bubbles: another hint + a rephrased version of the question.
 6. **2:35** — Pick the right answer. Pip cheers.
 
 **What you can say:**
 
-> "Wrong answers go to a Claude `haiku-4-5` endpoint. The system prompt enforces Pip's voice — never says 'wrong,' always references the physical blocks. On a second wrong attempt, Pip also rephrases the question. The happy path is fully scripted, so it works even if Claude is offline."
+> "Wrong answers go to a Claude `haiku-4-5` endpoint. The system prompt enforces Pip's voice — never says 'wrong,' always references the fruit the kid is thinking about. On a second wrong attempt, Pip also rephrases the question. The happy path is fully scripted, so it works even if Claude is offline."
 
 ---
 
@@ -108,12 +108,10 @@ This is the moment that shows judges this is an *AI*-powered tutor, not just a s
 
 ## Recovery plan if something goes wrong
 
-| Problem | Fix |
-|---|---|
-| Claude API timeout mid-demo | The 8s timeout falls back to scripted hints — narrate it: "and this works offline too" |
-| Audio doesn't play | First tap is the unlock — re-tap Split if silent |
-| iPad freezes | Switch to Chrome DevTools iPad simulation and finish the take there |
-| You stumble on a line | Stop, take a breath, restart the section. Loom lets you trim |
+- **Claude API timeout mid-demo** — The 8s timeout falls back to scripted hints. Narrate it: *"and this works offline too."*
+- **Audio doesn't play** — First tap is the unlock. Re-tap **Slice it** if silent.
+- **iPad freezes** — Switch to Chrome DevTools iPad simulation and finish the take there.
+- **You stumble on a line** — Stop, take a breath, restart the section. Loom lets you trim.
 
 ---
 

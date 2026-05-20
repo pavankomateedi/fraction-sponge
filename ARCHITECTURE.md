@@ -2,6 +2,8 @@
 
 Two views: the **runtime/component flow** (what happens in the browser + server during a lesson) and the **deployment flow** (how the code gets from your machine to a kid's iPad on AWS).
 
+> 🖼️ A slide-ready diagram of the deployment flow is in [architecture.svg](architecture.svg) (open in a browser to view/export).
+
 ---
 
 ## 1. Runtime / component flow

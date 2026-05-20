@@ -1,0 +1,80 @@
+<svg viewBox="0 0 820 660" xmlns="http://www.w3.org/2000/svg" font-family="Nunito, Segoe UI, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#5a3fc0"/>
+    </marker>
+    <style>
+      .box { fill:#ffffff; stroke:#5a3fc0; stroke-width:2.5; rx:14; }
+      .outer { fill:#f3f0ff; stroke:#5a3fc0; stroke-width:2.5; }
+      .alt { fill:#fff7e6; stroke:#E8A91E; stroke-width:2.5; }
+      .ai  { fill:#eafff4; stroke:#0d7e76; stroke-width:2.5; }
+      .h   { font-size:17px; font-weight:900; fill:#2d2d4e; }
+      .s   { font-size:13px; font-weight:700; fill:#5b5b80; }
+      .t   { font-size:12px; font-weight:700; fill:#5b5b80; }
+      .lbl { font-size:12px; font-weight:800; fill:#5a3fc0; }
+      .flow { stroke:#5a3fc0; stroke-width:2.5; fill:none; }
+    </style>
+  </defs>
+
+  <text x="410" y="30" text-anchor="middle" font-size="22" font-weight="900" fill="#4a2d99">Fraction Fruit Lab — Deployment Architecture</text>
+
+  <!-- Developer -->
+  <rect class="box" x="310" y="52" width="200" height="48" rx="14"/>
+  <text class="h" x="410" y="82" text-anchor="middle">Developer (local repo)</text>
+
+  <!-- arrow to GitHub -->
+  <line class="flow" x1="410" y1="100" x2="410" y2="132" marker-end="url(#arrow)"/>
+  <text class="lbl" x="420" y="120">git push</text>
+
+  <!-- GitHub -->
+  <rect class="box" x="310" y="132" width="200" height="48" rx="14"/>
+  <text class="h" x="410" y="162" text-anchor="middle">GitHub · main</text>
+
+  <!-- branch to AWS (left) and Railway (right) -->
+  <path class="flow" d="M 380 180 C 320 210, 250 210, 250 232" marker-end="url(#arrow)"/>
+  <text class="lbl" x="150" y="212">git archive → zip</text>
+  <path class="flow" d="M 440 180 C 600 210, 655 210, 655 232" marker-end="url(#arrow)"/>
+  <text class="lbl" x="600" y="206">auto-deploy</text>
+
+  <!-- AWS Elastic Beanstalk outer -->
+  <rect class="outer" x="60" y="232" width="380" height="262" rx="16"/>
+  <text class="h" x="250" y="260" text-anchor="middle">AWS Elastic Beanstalk  (primary)</text>
+  <text class="s" x="250" y="280" text-anchor="middle">us-east-2 · single instance · free-tier</text>
+
+  <!-- EC2 inner -->
+  <rect class="box" x="90" y="298" width="320" height="138" rx="12"/>
+  <text class="h" x="250" y="322" text-anchor="middle">EC2 · Node 20 / Amazon Linux 2023</text>
+  <text class="s" x="250" y="346" text-anchor="middle">Procfile → node server.js  (Express)</text>
+  <text class="s" x="250" y="368" text-anchor="middle">serves /public  +  POST /api/tutor</text>
+  <text class="t" x="250" y="392" text-anchor="middle">reads process.env.PORT (8080)</text>
+  <text class="t" x="250" y="412" text-anchor="middle">env: ANTHROPIC_API_KEY · NODE_ENV=production</text>
+
+  <text class="s" x="250" y="462" text-anchor="middle">Health check:  GET /  →  200</text>
+
+  <!-- Railway fallback -->
+  <rect class="alt" x="560" y="232" width="200" height="120" rx="14"/>
+  <text class="h" x="660" y="260" text-anchor="middle" fill="#8a5a00">Railway (fallback)</text>
+  <text class="s" x="660" y="284" text-anchor="middle">auto-deploys main</text>
+  <text class="s" x="660" y="306" text-anchor="middle">HTTPS · mirror</text>
+  <text class="t" x="660" y="330" text-anchor="middle">when platform healthy</text>
+
+  <!-- Claude API -->
+  <rect class="ai" x="560" y="392" width="200" height="104" rx="14"/>
+  <text class="h" x="660" y="420" text-anchor="middle" fill="#0d7e76">Anthropic Claude</text>
+  <text class="s" x="660" y="442" text-anchor="middle">claude-haiku-4-5</text>
+  <text class="t" x="660" y="463" text-anchor="middle">wrong-answer hints only</text>
+  <text class="t" x="660" y="482" text-anchor="middle">(scripted fallback if off)</text>
+
+  <!-- EC2 -> Claude -->
+  <path class="flow" d="M 410 366 C 490 366, 540 430, 558 440" marker-end="url(#arrow)"/>
+  <text class="lbl" x="455" y="392">/api/tutor</text>
+
+  <!-- AWS -> Browser -->
+  <line class="flow" x1="250" y1="494" x2="250" y2="556" marker-end="url(#arrow)"/>
+  <text class="lbl" x="260" y="528">serves app · HTTP</text>
+
+  <!-- Browser -->
+  <rect class="box" x="95" y="556" width="310" height="52" rx="14"/>
+  <text class="h" x="250" y="580" text-anchor="middle">Kid's browser / iPad</text>
+  <text class="t" x="250" y="598" text-anchor="middle">vanilla HTML/CSS/JS · touch-first</text>
+</svg>

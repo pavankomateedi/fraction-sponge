@@ -27,8 +27,12 @@
   <circle cx="79" cy="48" r="10" fill="#6D4C41"/>
   <circle cx="21" cy="37" r="4.5" fill="#FF7AA2"/>
   <circle cx="79" cy="37" r="4.5" fill="#FF7AA2"/>
-  <circle cx="41" cy="47" r="3.6" fill="#3e2723"/>
-  <circle cx="59" cy="47" r="3.6" fill="#3e2723"/>
+  <circle cx="41" cy="47" r="6.5" fill="#ffffff" stroke="#d8c4af" stroke-width="1"/>
+  <circle cx="59" cy="47" r="6.5" fill="#ffffff" stroke="#d8c4af" stroke-width="1"/>
+  <g class="buddy-pupils">
+    <circle cx="41" cy="48" r="3.4" fill="#3e2723"/>
+    <circle cx="59" cy="48" r="3.4" fill="#3e2723"/>
+  </g>
   <circle cx="34" cy="55" r="3.2" fill="#FF8A80" opacity="0.6"/>
   <circle cx="66" cy="55" r="3.2" fill="#FF8A80" opacity="0.6"/>
   <path d="M 42 57 Q 50 65 58 57" stroke="#3e2723" stroke-width="2.6" fill="none" stroke-linecap="round"/>
@@ -44,8 +48,12 @@
   <rect x="45" y="64" width="10" height="14" fill="#E8B58A"/>
   <circle cx="50" cy="46" r="27" fill="#E8B58A"/>
   <path d="M 23 44 Q 23 14 50 14 Q 77 14 77 44 Q 70 29 60 30 Q 55 25 50 28 Q 45 25 40 30 Q 30 29 23 44 Z" fill="#23150c"/>
-  <circle cx="41" cy="47" r="3.6" fill="#23150c"/>
-  <circle cx="59" cy="47" r="3.6" fill="#23150c"/>
+  <circle cx="41" cy="47" r="6.5" fill="#ffffff" stroke="#cdb398" stroke-width="1"/>
+  <circle cx="59" cy="47" r="6.5" fill="#ffffff" stroke="#cdb398" stroke-width="1"/>
+  <g class="buddy-pupils">
+    <circle cx="41" cy="48" r="3.4" fill="#23150c"/>
+    <circle cx="59" cy="48" r="3.4" fill="#23150c"/>
+  </g>
   <circle cx="34" cy="55" r="3.2" fill="#FF8A80" opacity="0.55"/>
   <circle cx="66" cy="55" r="3.2" fill="#FF8A80" opacity="0.55"/>
   <path d="M 42 57 Q 50 65 58 57" stroke="#23150c" stroke-width="2.6" fill="none" stroke-linecap="round"/>
@@ -103,8 +111,32 @@
     el.classList.add('buddy-cheer');
   }
 
+  // ── Eyes follow the cursor ──
+  // On desktop, the buddy's pupils track the mouse so it looks like it's
+  // watching what the kid does. Offset is tiny + clamped so the pupils
+  // stay inside the eye-whites. (Touch devices have no cursor → pupils
+  // rest centered, which is fine.)
+  const MAX_OFFSET = 2.6; // SVG user units
+  function trackCursor(e) {
+    const el = document.getElementById('buddy');
+    if (!el) return;
+    const pupils = el.querySelector('.buddy-pupils');
+    if (!pupils) return;
+    const r = el.getBoundingClientRect();
+    if (!r.width) return; // hidden / not in a lesson
+    const cx = r.left + r.width / 2;
+    const cy = r.top + r.height / 2;
+    let dx = e.clientX - cx;
+    let dy = e.clientY - cy;
+    const dist = Math.hypot(dx, dy) || 1;
+    dx = (dx / dist) * MAX_OFFSET;
+    dy = (dy / dist) * MAX_OFFSET;
+    pupils.setAttribute('transform', `translate(${dx.toFixed(2)} ${dy.toFixed(2)})`);
+  }
+
   function init() {
     renderPicker();
+    window.addEventListener('mousemove', trackCursor);
   }
 
   if (document.readyState === 'loading') {

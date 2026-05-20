@@ -191,7 +191,7 @@
       checkQuestions: [
         {
           id: 'c1', kind: 'compare',
-          prompt: "Which is bigger — 1/2 of an apple or 1/4 of an apple?",
+          prompt: "Which is bigger — 1/2 of {f} or 1/4 of {f}?",
           choices: [
             { id: 'a', label: '1/2 is bigger 🎯', correct: true  },
             { id: 'b', label: '1/4 is bigger',    correct: false },
@@ -199,22 +199,22 @@
           ],
           cheer: "YES! Half is bigger. Two cuts beats four cuts. 🎯",
           hints: [
-            "Remember the apple you just cut — the half was a big piece, the quarter was small. Which wins? 🤔",
+            "Remember the fruit you just cut — the half was a big piece, the quarter was small. Which wins? 🤔",
             "1/2 means cut into 2. 1/4 means cut into 4. More cuts = smaller pieces.",
           ],
-          rephrase: "Picture both pieces side by side. Which one is the bigger chunk of apple?",
+          rephrase: "Picture both pieces side by side. Which one is the bigger chunk?",
         },
         {
           id: 'c2', kind: 'compare',
-          prompt: "Which is bigger — 1/3 of a banana or 1/6 of a banana?",
+          prompt: "Which is bigger — 1/3 of {f} or 1/6 of {f}?",
           choices: [
             { id: 'a', label: '1/3 is bigger 🎯', correct: true  },
             { id: 'b', label: '1/6 is bigger',    correct: false },
             { id: 'c', label: 'Not sure',         correct: false },
           ],
-          cheer: "Right! Cut into 3 = bigger pieces. Cut into 6 = smaller. 🍌",
+          cheer: "Right! Cut into 3 = bigger pieces. Cut into 6 = smaller. 🍴",
           hints: [
-            "Would you rather share a banana with 2 friends or 5 friends? Fewer friends = bigger pieces! 🤔",
+            "Would you rather share a treat with 2 friends or 5 friends? Fewer friends = bigger pieces! 🤔",
             "6 is more cuts than 3. More cuts means each piece is smaller.",
           ],
           rephrase: "Bigger bottom number means smaller pieces. So which wins — 1/3 or 1/6?",
@@ -376,16 +376,48 @@
 
   const LESSON_ORDER = ['equivalence', 'comparing', 'adding'];
 
+  // ── Randomization helpers ──
+  // Fruit-name pool for the comparing lesson's word problems. Text-only
+  // flavor — the comparing aid stays apple-based (it illustrates the
+  // fruit-independent concept "more pieces = smaller").
+  const FRUIT_POOL = ['apple', 'banana', 'orange', 'watermelon', 'strawberry', 'pear', 'peach', 'mango'];
+
+  function shuffle(arr) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+  function randFruit() { return FRUIT_POOL[Math.floor(Math.random() * FRUIT_POOL.length)]; }
+  function withArticle(f) { return (/^[aeiou]/i.test(f) ? 'an ' : 'a ') + f; }
+
+  // Build the per-playthrough check list for a lesson:
+  //  - equivalence: SHUFFLE the order (each Q keeps its fruit+fraction)
+  //  - others: fill any "{f}" prompt placeholder with a random fruit
+  // Source LESSONS data is never mutated — we return fresh arrays/objects.
+  function buildActiveQuestions(id) {
+    const base = (LESSONS[id] && LESSONS[id].checkQuestions) || [];
+    if (id === 'equivalence') return shuffle(base);
+    return base.map((q) => {
+      if (!q.prompt.includes('{f}')) return q;
+      const f = withArticle(randFruit());
+      return { ...q, prompt: q.prompt.split('{f}').join(f) };
+    });
+  }
+
   // ── State ──
   let activeLessonId = null;
   let currentStage = 'idle';
   let questionIdx = 0;
   let attemptsByQ = {};
+  let activeQuestions = [];
   const completed = new Set();
 
   function lesson() { return activeLessonId ? LESSONS[activeLessonId] : null; }
   function stages() { return lesson()?.stages || {}; }
-  function questions() { return lesson()?.checkQuestions || []; }
+  function questions() { return activeQuestions; }
 
   function loadLesson(id) {
     if (!LESSONS[id]) return false;
@@ -393,6 +425,7 @@
     currentStage = 'idle';
     questionIdx = 0;
     attemptsByQ = {};
+    activeQuestions = buildActiveQuestions(id);
     return true;
   }
 
@@ -466,6 +499,8 @@
     currentStage = 'idle';
     questionIdx = 0;
     attemptsByQ = {};
+    // Re-shuffle / re-randomize on every Play Again so replays feel fresh.
+    if (activeLessonId) activeQuestions = buildActiveQuestions(activeLessonId);
   }
 
   function isCheckStage() {

@@ -185,6 +185,14 @@
   function renderCheckQuestion() {
     const { question, questionIdx, totalQuestions } = tutorScript.state();
     if (!question) return;
+    // Keep the workspace visual in sync with THIS question's fruit. Matters
+    // now that lesson 1's order is shuffled — the first check question may
+    // not be apple, so we can't rely on the post-smash state. (Questions
+    // with no fruit, e.g. comparing/adding, leave the current visual alone.)
+    if (question.fruit) {
+      const key = fruitKeyFromEmoji(question.fruit);
+      if (key && manipulative.getState() !== key) manipulative.showFruit(key);
+    }
     // IMPORTANT: the prompt is both displayed AND spoken by TTS. We must
     // NOT bake the progress count into it — "(3/7)" gets read aloud as a
     // fraction ("three sevenths"), which confuses the lesson. Progress
@@ -252,14 +260,12 @@
 
       const hadMore = tutorScript.nextQuestion();
       if (hadMore) {
-        // If the new question introduces a different fruit, mark the
-        // chapter change with a brief upward sweep AND swap the
-        // workspace visual so the right side follows the chat.
+        // If the next question is a different fruit, play the chapter-change
+        // sweep. The actual visual swap is handled by renderCheckQuestion
+        // (which keeps the workspace in sync regardless of shuffled order).
         const next = tutorScript.currentQuestion();
         if (next && next.fruit && next.fruit !== question.fruit) {
           manipulative.playSound('transition');
-          const newKey = fruitKeyFromEmoji(next.fruit);
-          if (newKey) manipulative.showFruit(newKey);
         }
         busy = false;
         renderStage();

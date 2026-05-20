@@ -14,9 +14,11 @@ Built for the Synthesis Tutor 1-week challenge (Week 4).
 
 ## Demo
 
-🍎 **Live app:** <https://web-production-44b1.up.railway.app>
+🍎 **Live app:** <http://fraction-fruit-lab-env.eba-vygaxiu3.us-east-2.elasticbeanstalk.com>
 
-Open the URL on an iPad in Safari (or Chrome DevTools → device mode → iPad) for the intended experience.
+Hosted on **AWS Elastic Beanstalk** (single-instance, Node.js 20 / Amazon Linux 2023). Open the URL on an iPad in Safari (or Chrome DevTools → device mode → iPad) for the intended experience.
+
+> Fallback mirror (Railway, auto-deploys `main`): <https://web-production-44b1.up.railway.app>
 
 ---
 

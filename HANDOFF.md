@@ -45,9 +45,16 @@ Last local eval: **26/26 cases, 156/156 rule checks (100%)**. Prod-mode boot sho
 
 ---
 
-## ⏳ WHERE WE ARE RIGHT NOW (the active thread)
+## ✅ HOSTING — DONE (resolved 2026-05-20)
 
-**Hosting migration, in progress.** The 3-lesson hub is built + pushed but **NOT live anywhere yet** — the live URL still serves the OLD 7-question build.
+**The 3-lesson hub is LIVE on AWS Elastic Beanstalk and verified.**
+- **Live URL:** <http://fraction-fruit-lab-env.eba-vygaxiu3.us-east-2.elasticbeanstalk.com>
+- Preflight against it: **9/9 green** (`/api/health` reports 17 questions, `hasApiKey: true`, ~49ms latency).
+- Full eval against it: **24/26 full passes, 98.7%** (2 yellows are live-Claude rephrase token-overlap, above threshold — PASS).
+- README "## Demo" updated to this URL; Railway kept as a fallback mirror.
+- **Note:** EB single-instance serves **HTTP only** (no load balancer). Functionally fine (TTS/Web Audio work over HTTP). For HTTPS later: add an ALB + ACM cert, or front it with CloudFront, or a custom domain. Not required for the demo.
+
+### Historical context (how we got here)
 
 ### Hosting history
 - **Railway** (`https://web-production-44b1.up.railway.app`) — original host. Went **down** mid-session (platform incident: 503 API / 404 app) and never deployed the 3-lesson hub. Still serving the old build OR down. **Decision: keep it as a fallback** — it auto-deploys `main` when it recovers.

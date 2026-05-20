@@ -143,10 +143,10 @@
     if (!text || text.length < 2) return;
 
     try {
-      // Cancel anything currently being spoken — keeps Pip's bubbles
-      // from piling up if the kid speeds through clicks.
-      window.speechSynthesis.cancel();
-
+      // Do NOT cancel in-progress speech here — that was cutting Pip's
+      // explanation off half-way when the next bubble appeared. Let each
+      // line finish; the browser queues the next one. (Hard resets —
+      // Play Again / back to hub — still call cancel() explicitly.)
       const utter = new SpeechSynthesisUtterance(text);
       const v = ensureVoice();
       if (v) utter.voice = v;

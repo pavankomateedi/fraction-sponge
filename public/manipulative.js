@@ -695,13 +695,33 @@
   function showFractionViz(spec) {
     if (!spec || !piecesArea) return;
     equation.classList.remove('show');
+    const k = skin();
     let html = '';
+
     if (spec.type === 'compare') {
+      // Separate bars (same total width) so 1/2 visibly fills more than 1/4.
       html = (spec.fractions || []).map(fractionBarHTML).join('');
+
     } else if (spec.type === 'add') {
-      const addends = (spec.fractions || []).map(fractionBarHTML).join('<div class="vizop">+</div>');
-      html = addends + (spec.result ? `<div class="vizop">=</div>${fractionBarHTML(spec.result)}` : '');
+      // ONE combined bar: addends colored in sequence, sum shown as a label.
+      // Avoids stacking multiple bars (which overlapped).
+      const fracs = spec.fractions || [];
+      const d = parseInt((fracs[0] || '0/1').split('/')[1], 10) || 1;
+      const ns = fracs.map((f) => parseInt(f.split('/')[0], 10) || 0);
+      const shadeA = `background:linear-gradient(135deg,${k.s0},${k.s1});`;
+      const shadeB = `background:linear-gradient(135deg,${k.s1},${k.s2});`;
+      const a0 = ns[0] || 0;
+      const a1 = ns[1] || 0;
+      const cells = Array.from({ length: d }, (_, i) => {
+        let style = '';
+        if (i < a0) style = shadeA;
+        else if (i < a0 + a1) style = shadeB;
+        return `<div class="vizcell${style ? ' fill' : ''}" style="${style}"></div>`;
+      }).join('');
+      const label = fracs.join('  +  ') + (spec.result ? `  =  ${spec.result}` : '');
+      html = `<div class="vizbar vizbar-wide">${cells}</div><div class="vizsum">${label}</div>`;
     }
+
     clearPieces();
     const wrap = document.createElement('div');
     wrap.className = 'viz anim-bounce';

@@ -31,19 +31,19 @@
       manipFruit: 'apple',
       stages: {
         idle: {
-          pip: "Hey! I'm Pip 🍎 — an apple seed. I've got half an apple. I wonder what's hiding inside it… 👀",
+          pip: "Hey! I'm Pip 🍎 — an apple seed. I've got half an apple. Let's peek inside — tap the Slice it button below! 👀",
           action: { type: 'advance', label: '🔪  Slice it!', ariaLabel: 'Slice the half-apple into two quarters', style: 'primary' },
           manip: 'split',
           next: 'split',
         },
         split: {
-          pip: "Whoa, two pieces! Each one is a quarter (1/4) of the apple. Hmm... do they still cover the same space as the half?",
+          pip: "Whoa, two pieces! Each one is a quarter (1/4) of the apple. Let's see if they still fill the same space — tap Squish them together!",
           action: { type: 'advance', label: '🤲  Squish them together!', ariaLabel: 'Squish the two quarter-pieces back into a half', style: 'primary' },
           manip: 'smash',
           next: 'smash',
         },
         smash: {
-          pip: "They fit back PERFECTLY! 1/2 of an apple = 2/4 of an apple. Same fruit, same space. 🤯",
+          pip: "They fit back together perfectly! Half an apple is the same as two-quarters of an apple. Same fruit, same space! 🤯 Tap Let's check what you got!",
           action: { type: 'advance', label: "Let's check what you got! ✨", ariaLabel: 'Continue to the check questions', style: 'green' },
           next: 'check',
         },
@@ -174,13 +174,13 @@
       manipFruit: 'orange',
       stages: {
         idle: {
-          pip: "New puzzle! 🍎 Here's half an apple — a nice big piece. What happens if we cut it even smaller?",
+          pip: "New puzzle! 🍊 Here's half an orange — a nice big piece. Let's cut it even smaller — tap the Cut it smaller button!",
           action: { type: 'advance', label: '🔪  Cut it smaller!', ariaLabel: 'Cut the half into a smaller quarter piece', style: 'primary' },
           manip: 'compareSizes',
           next: 'compare',
         },
         compare: {
-          pip: "See it? A quarter (1/4) is SMALLER than a half (1/2). More cuts = smaller pieces! 🔍",
+          pip: "See it? A quarter is smaller than a half. The more pieces you cut, the smaller each piece gets! 🔍 Tap Let's check what you got!",
           action: { type: 'advance', label: "Let's check what you got! ✨", ariaLabel: 'Continue to the check questions', style: 'green' },
           next: 'check',
         },
@@ -285,18 +285,18 @@
       manipFruit: 'watermelon',
       stages: {
         idle: {
-          pip: "Time to ADD! 🍎 Here are two quarter-pieces of apple. What do we get if we put them together?",
-          action: { type: 'advance', label: '➕  Add them together!', ariaLabel: 'Add the two quarter-pieces together', style: 'primary' },
+          pip: "Time to put pieces together! 🍉 Here are two quarter-pieces of watermelon. Let's push them into one — tap the Put them together button!",
+          action: { type: 'advance', label: '➕  Put them together!', ariaLabel: 'Put the two quarter-pieces together', style: 'primary' },
           manip: 'addingCombine',
           next: 'combine',
         },
         combine: {
-          pip: "1/4 + 1/4 = 2/4! ➕ Add the TOP numbers, keep the bottom the same. 🤯",
+          pip: "Look — two-quarters! Count the top numbers together: 1 and 1 make 2. The bottom number stays the same. So 1/4 and 1/4 make 2/4. 🤯 Tap Let's check what you got!",
           action: { type: 'advance', label: "Let's check what you got! ✨", ariaLabel: 'Continue to the check questions', style: 'green' },
           next: 'check',
         },
         win: {
-          pip: "Lesson complete! 🏆 You learned to add fractions: add the tops, keep the bottom. 🌟",
+          pip: "Lesson complete! 🏆 You learned to put fractions together: count the top numbers, and keep the bottom number the same. 🌟",
           action: { type: 'reset', label: '🔄  Play Again!', ariaLabel: 'Play this lesson again', style: 'primary' },
           next: 'idle',
         },
@@ -311,10 +311,10 @@
             { id: 'b', label: '2/8',    correct: false },
             { id: 'c', label: '1/4',    correct: false },
           ],
-          cheer: "YES! 1/4 + 1/4 = 2/4. Add the tops, keep the bottom. 🎯",
+          cheer: "Yes! 1/4 and 1/4 make 2/4. Count the top numbers; the bottom number stays the same. 🎯",
           hints: [
-            "You just squished two quarter-pieces together — how many quarters is that now? 🤔",
-            "Add the top numbers: 1 + 1 = 2. Keep the bottom: 4. So…?",
+            "You just pushed two quarter-pieces together — how many quarters is that now? 🤔",
+            "Count the top numbers: 1 and 1 make 2. The bottom number stays 4. So…?",
           ],
           rephrase: "One quarter plus one more quarter — how many quarters total?",
         },
@@ -332,7 +332,7 @@
             "Same rule as before — add the top numbers, keep the bottom number the same. 🤔",
             "1 third + 1 third. Tops: 1 + 1 = 2. Bottom stays 3.",
           ],
-          rephrase: "One third plus one third — add the tops, keep the 3 on the bottom. What is it?",
+          rephrase: "One third and one more third — count the top numbers, keep the 3 on the bottom. What is it?",
         },
         {
           id: 'a3', kind: 'add',
@@ -364,22 +364,22 @@
             "Tops: 1 + 2. Bottom: stays 5. What do you get? 🤔",
             "One fifth plus two fifths = three fifths.",
           ],
-          rephrase: "One fifth plus two fifths — add the tops, keep the 5. How many fifths?",
+          rephrase: "One fifth and two more fifths — count the top numbers, keep the 5. How many fifths?",
         },
         {
           id: 'a5', kind: 'concept',
-          prompt: "When you add fractions with the SAME bottom number, what stays the same?",
+          prompt: "When you put together two fractions that have the same bottom number, what stays the same?",
           choices: [
             { id: 'a', label: 'The bottom number 🎯', correct: true  },
             { id: 'b', label: 'The top number',       correct: false },
             { id: 'c', label: 'Both change',          correct: false },
           ],
-          cheer: "PERFECT! Bottom stays, tops add. That's the whole rule. 🌟",
+          cheer: "Perfect! The bottom number stays, and you count the top numbers together. That's the whole trick! 🌟",
           hints: [
-            "In every example you added the tops — but did the bottom number ever change? 🤔",
-            "1/4 + 1/4 = 2/4. The 4 stayed. The tops added.",
+            "In every one, you counted the top numbers — but did the bottom number ever change? 🤔",
+            "1/4 and 1/4 make 2/4. The bottom 4 stayed the same.",
           ],
-          rephrase: "Tops get added together. So which number stays exactly the same — top or bottom?",
+          rephrase: "You count the top numbers together. So which number stays exactly the same — the top or the bottom?",
         },
       ],
     },

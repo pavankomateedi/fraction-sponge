@@ -209,6 +209,28 @@
       if (text) speak(text);
     });
 
+    // iOS/Safari unlock: speechSynthesis stays blocked until a speak()
+    // call happens inside a real user gesture. Fire a near-silent priming
+    // utterance on the very first interaction anywhere on the page (e.g.
+    // tapping a hub lesson card) so later narration isn't swallowed.
+    let primed = false;
+    const primeSpeech = () => {
+      if (primed || !supported) return;
+      primed = true;
+      try {
+        const u = new SpeechSynthesisUtterance(' ');
+        u.volume = 0;
+        const v = ensureVoice();
+        if (v) u.voice = v;
+        window.speechSynthesis.resume();
+        window.speechSynthesis.speak(u);
+      } catch (_) {}
+      ['pointerdown', 'touchstart', 'click', 'keydown'].forEach((ev) =>
+        window.removeEventListener(ev, primeSpeech, true));
+    };
+    ['pointerdown', 'touchstart', 'click', 'keydown'].forEach((ev) =>
+      window.addEventListener(ev, primeSpeech, true));
+
     // Cancel speech on page hide so it doesn't keep talking when you
     // switch tabs.
     window.addEventListener('pagehide', cancel);

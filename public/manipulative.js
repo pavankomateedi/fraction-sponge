@@ -716,10 +716,48 @@
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
+  // ── Audio unlock primer ──
+  // Mobile browsers (and Chrome's autoplay policy) keep an AudioContext
+  // 'suspended' until it's created/resumed inside a real user gesture.
+  // The hub adds an extra screen before the first lesson button, so we
+  // prime audio on the VERY FIRST interaction anywhere on the page —
+  // pointerdown/touchstart/click — well before the kid taps Slice it.
+  // Also nudges speechSynthesis awake (iOS needs a gesture-bound call).
+  let _audioPrimed = false;
+  function primeAudioUnlock() {
+    if (_audioPrimed) return;
+    _audioPrimed = true;
+    try {
+      const ctx = ac();
+      if (ctx && ctx.state === 'suspended') ctx.resume().catch(() => {});
+      // Silent 1-sample blip to fully open the output on iOS.
+      const b = ctx.createBuffer(1, 1, 22050);
+      const src = ctx.createBufferSource();
+      src.buffer = b;
+      src.connect(ctx.destination);
+      src.start(0);
+    } catch (_) {}
+    try {
+      // Prime TTS within the gesture so later speak() calls aren't blocked.
+      if (window.speechSynthesis) window.speechSynthesis.resume();
+    } catch (_) {}
+  }
+
+  function attachUnlockOnce() {
+    const handler = () => {
+      primeAudioUnlock();
+      ['pointerdown', 'touchstart', 'click', 'keydown'].forEach((ev) =>
+        window.removeEventListener(ev, handler, true));
+    };
+    ['pointerdown', 'touchstart', 'click', 'keydown'].forEach((ev) =>
+      window.addEventListener(ev, handler, true));
+  }
+
   // ── Boot ──
   function init() {
     showHalf('anim-bounce');
     renderRefBar('half');
+    attachUnlockOnce();
   }
 
   // Expose

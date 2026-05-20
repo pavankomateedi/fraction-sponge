@@ -169,6 +169,66 @@ button {
   background: var(--green);
 }
 
+/* Buddy picker on the hub */
+.buddy-picker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.buddy-picker-label {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.9);
+  letter-spacing: 0.4px;
+}
+
+.buddy-options {
+  display: flex;
+  gap: 14px;
+}
+
+.buddy-opt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 3px solid transparent;
+  border-radius: 18px;
+  padding: 8px 14px 6px;
+  cursor: pointer;
+  transition: transform 0.12s, border-color 0.15s;
+  touch-action: manipulation;
+}
+.buddy-opt:active { transform: scale(0.96); }
+.buddy-opt.sel { border-color: var(--sponge); box-shadow: 0 0 0 4px rgba(255, 214, 77, 0.4); }
+
+.buddy-art svg { width: 56px; height: 68px; display: block; }
+.buddy-name { font-size: 0.9rem; font-weight: 900; color: var(--ink); }
+
+/* Buddy companion in the workspace corner */
+.buddy {
+  position: absolute;
+  bottom: 10px;
+  left: 12px;
+  width: 72px;
+  height: 88px;
+  pointer-events: none;
+  z-index: 5;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+}
+.buddy svg { width: 100%; height: 100%; display: block; }
+
+.buddy-cheer { animation: buddyHop 0.6s ease 2; }
+@keyframes buddyHop {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  30%      { transform: translateY(-16px) rotate(-6deg); }
+  60%      { transform: translateY(-4px)  rotate(4deg); }
+}
+
 /* Home / back-to-lessons button in the chat header */
 .hdr-home {
   width: 42px;

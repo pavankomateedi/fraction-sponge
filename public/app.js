@@ -317,6 +317,7 @@
   }
 
   async function goWin() {
+    if (window.buddy && typeof window.buddy.cheer === 'function') window.buddy.cheer();
     await manipulative.celebrate();
     busy = false;
     renderStage();
@@ -355,6 +356,7 @@
     tutorScript.resetActiveLesson();
     await manipulative.reset();
     manipulative.setup(tutorScript.manipInit(), tutorScript.lessonFruit());
+    if (window.buddy && typeof window.buddy.showInWorkspace === 'function') window.buddy.showInWorkspace();
     busy = false;
     renderStage();
   }
@@ -402,6 +404,7 @@
   function showHub() {
     if (window.voice && typeof window.voice.cancel === 'function') window.voice.cancel();
     renderHub();
+    if (window.buddy && typeof window.buddy.renderPicker === 'function') window.buddy.renderPicker();
     if (hubEl) hubEl.hidden = false;
     if (appEl) appEl.hidden = true;
   }
@@ -424,6 +427,7 @@
     clearChoices();
     hideProgress();
     manipulative.setup(tutorScript.manipInit(), tutorScript.lessonFruit());
+    if (window.buddy && typeof window.buddy.showInWorkspace === 'function') window.buddy.showInWorkspace();
     busy = false;
     renderStage();
   }

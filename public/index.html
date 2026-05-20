@@ -25,6 +25,8 @@
       <h1 class="hub-title">Fraction Fruit Lab</h1>
       <p class="hub-sub">Pick a lesson to play with Pip the seed</p>
     </div>
+    <div class="buddy-picker" id="buddyPicker" aria-label="Choose your buddy"></div>
+
     <div class="hub-cards" id="hubCards"></div>
   </div>
 </section>
@@ -83,6 +85,9 @@
     </div>
 
     <div class="pieces-area" id="piecesArea"></div>
+
+    <!-- Chosen cartoon buddy cheers the kid on from the corner -->
+    <div class="buddy" id="buddy" aria-hidden="true"></div>
 
     <!-- 1/2 = 2/4 equation, revealed after smash -->
     <div class="equation" id="equation">
@@ -154,6 +159,7 @@
 <script src="/tutorScript.js"></script>
 <script src="/captions.js"></script>
 <script src="/voice.js"></script>
+<script src="/buddy.js"></script>
 <script src="/app.js"></script>
 </body>
 </html>

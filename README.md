@@ -40,12 +40,14 @@ The app degrades gracefully if `ANTHROPIC_API_KEY` is missing: scripted fallback
 
 ## Technical approach
 
-| Layer    | Choice                                |
-| -------- | ------------------------------------- |
-| Frontend | Vanilla HTML/CSS/JS — no framework    |
-| Backend  | Node.js + Express                     |
-| AI       | Anthropic Claude (`claude-haiku-4-5`) |
-| Hosting  | Railway                               |
+| Layer    | Choice                                                        |
+| -------- | ------------------------------------------------------------- |
+| Frontend | Vanilla HTML/CSS/JS — no framework                            |
+| Backend  | Node.js + Express                                             |
+| AI       | Anthropic Claude (`claude-haiku-4-5`) — optional, hints only  |
+| Hosting  | AWS Elastic Beanstalk (single instance); Railway as fallback  |
+
+> Full diagrams — component flow **and** the AWS deployment flow — are in [ARCHITECTURE.md](ARCHITECTURE.md).
 
 ### How the pieces fit
 
@@ -86,8 +88,8 @@ The happy path is fully scripted — fast, predictable, and works offline. The C
    | --- | --------- | ------------------------------------------------- | -------------------------------- |
    | 1   | 🍎 apple  | Which is bigger, 1/2 or 2/4 of the apple?         | *compare*                        |
    | 2   | 🍎 apple  | How many quarters fit in one half?                | *count*                          |
-   | 3   | 🍕 pizza  | Is 3/6 of a pizza the same as 1/2?                | *apply* (new fruit)              |
-   | 4   | 🍕 pizza  | How many sixth-slices fit in half a pizza?        | *count* (applied)                |
+   | 3   | 🍉 melon  | Is 3/6 of a watermelon the same as 1/2?           | *apply* (new fruit)              |
+   | 4   | 🍉 melon  | How many sixth-wedges fit in half a watermelon?   | *count* (applied)                |
    | 5   | 🍌 banana | Is 1/3 of a banana the same as 2/6?               | *transfer* (new base fraction)   |
    | 6   | 🍎🍌      | Is 1/2 of an apple the same as 1/3 of a banana?   | *discriminate* (non-equivalent)  |
    | 7   | 🍊 orange | Is 4/8 of an orange the same as 1/2?              | *capstone* (larger denominator)  |
@@ -98,12 +100,16 @@ The question bank lives in `public/tutorScript.js` — each entry has a `fruit` 
 
 ---
 
-## Deploy to Railway
+## Deploy
 
-1. Push the repo to GitHub.
-2. Railway → New Project → Deploy from GitHub repo.
-3. Under **Settings → Variables**, set `ANTHROPIC_API_KEY`.
-4. Railway auto-deploys on `git push`. The app reads `PORT` from the environment.
+**Primary: AWS Elastic Beanstalk** (single instance, free-tier eligible). Full click-by-click steps in [aws-deploy.md](aws-deploy.md); deployment diagram in [ARCHITECTURE.md](ARCHITECTURE.md). In short:
+
+1. `git push` to GitHub.
+2. Rebuild the bundle: `git archive --format=zip -o ../fraction-fruit-lab-eb.zip HEAD`.
+3. EB console → environment → **Upload and deploy** → pick the zip.
+4. Set `ANTHROPIC_API_KEY` (+ `NODE_ENV=production`) under the environment's environment properties. The app reads `process.env.PORT` (EB injects it).
+
+**Fallback: Railway** (auto-deploys `main` when its platform is healthy). Push to GitHub → Railway picks it up; set `ANTHROPIC_API_KEY` under Settings → Variables. Config in `railway.json`.
 
 ---
 

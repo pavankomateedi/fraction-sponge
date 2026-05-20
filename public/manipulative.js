@@ -101,37 +101,48 @@
     } catch (_) { /* event dispatch is non-critical */ }
   }
 
-  // ── Apple SVG builders ──
-  // Cross-section view of an apple: red rim (skin), pale interior (flesh),
-  // dark seeds in the middle. Pieces are sized to fit the existing
-  // .frac-block container so we don't have to rewire the CSS layout.
+  // ── Fruit cross-section builders ──
+  // The half / quarter manipulative pieces are cross-section shapes that
+  // read as different round fruits just by swapping the color scheme:
+  //   apple      — red skin, cream flesh, brown seeds, green leaf
+  //   orange     — orange skin, pale flesh, no leaf
+  //   watermelon — green rind, pink flesh, black seeds, no leaf
+  // Each lesson picks one (set via setFruit) so the three lessons don't
+  // all start with an apple.
+  const FRUIT_SKIN = {
+    apple:      { s0: '#ef5350', s1: '#c62828', s2: '#7f0000', flesh: '#FFF8E1', core: '#fde6c8', seed: '#3e2723', leaf: '#66bb6a', label: '#8d1414' },
+    orange:     { s0: '#FFB74D', s1: '#FB8C00', s2: '#E65100', flesh: '#FFF3E0', core: '#FFE0B2', seed: '#C04C00', leaf: null,      label: '#8d4a00' },
+    watermelon: { s0: '#66BB6A', s1: '#388E3C', s2: '#1B5E20', flesh: '#FF6F8E', core: '#FF8FA3', seed: '#2b1a0e', leaf: null,      label: '#B71C3A' },
+  };
+  let manipFruit = 'apple';
+  function setFruit(f) { if (FRUIT_SKIN[f]) manipFruit = f; }
+  function skin() { return FRUIT_SKIN[manipFruit] || FRUIT_SKIN.apple; }
 
   function appleHalfSVG() {
-    // Half-apple = top half of cross-section: curved skin on top, flat cut face on bottom.
+    // Half cross-section: curved skin on top, flat cut face on bottom.
     // viewBox 240×130 to match landscape block sizing.
+    const k = skin();
+    const id = `skinHalf_${manipFruit}`;
+    const leaf = k.leaf
+      ? `<ellipse cx="138" cy="14" rx="14" ry="6" fill="${k.leaf}" transform="rotate(20 138 14)"/>`
+      : '';
     return `
 <svg viewBox="0 0 240 130" xmlns="http://www.w3.org/2000/svg" class="fruit-svg fruit-half" aria-hidden="true">
   <defs>
-    <linearGradient id="appleSkinHalf" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#ef5350"/>
-      <stop offset="60%" stop-color="#c62828"/>
-      <stop offset="100%" stop-color="#7f0000"/>
+    <linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="${k.s0}"/>
+      <stop offset="60%" stop-color="${k.s1}"/>
+      <stop offset="100%" stop-color="${k.s2}"/>
     </linearGradient>
   </defs>
-  <!-- Stem -->
   <rect x="116" y="6" width="8" height="14" rx="3" fill="#5d4037"/>
-  <!-- Leaf -->
-  <ellipse cx="138" cy="14" rx="14" ry="6" fill="#66bb6a" transform="rotate(20 138 14)"/>
-  <!-- Apple body (flesh - white) -->
+  ${leaf}
   <path d="M 20 115 Q 20 25 120 25 Q 220 25 220 115 Z"
-        fill="#FFF8E1" stroke="url(#appleSkinHalf)" stroke-width="10" stroke-linejoin="round"/>
-  <!-- Core silhouette (subtle) -->
-  <path d="M 120 38 Q 102 75 120 110 Q 138 75 120 38 Z"
-        fill="#fde6c8" opacity="0.7"/>
-  <!-- Seeds: star pattern at the heart of the cut face -->
-  <ellipse cx="105" cy="70" rx="4.5" ry="6" fill="#3e2723" transform="rotate(-25 105 70)"/>
-  <ellipse cx="135" cy="70" rx="4.5" ry="6" fill="#3e2723" transform="rotate(25 135 70)"/>
-  <ellipse cx="120" cy="92" rx="4.5" ry="6" fill="#3e2723"/>
+        fill="${k.flesh}" stroke="url(#${id})" stroke-width="10" stroke-linejoin="round"/>
+  <path d="M 120 38 Q 102 75 120 110 Q 138 75 120 38 Z" fill="${k.core}" opacity="0.7"/>
+  <ellipse cx="105" cy="70" rx="4.5" ry="6" fill="${k.seed}" transform="rotate(-25 105 70)"/>
+  <ellipse cx="135" cy="70" rx="4.5" ry="6" fill="${k.seed}" transform="rotate(25 135 70)"/>
+  <ellipse cx="120" cy="92" rx="4.5" ry="6" fill="${k.seed}"/>
 </svg>`;
   }
 
@@ -324,47 +335,36 @@
   }
 
   function appleQuarterSVG(variant) {
-    // Quarter-apple = 90° wedge of cross-section.
-    // variant 'a' = left-leaning, variant 'b' = right-leaning (mirror).
-    // viewBox 140×130 to match landscape quarter block sizing.
+    // Quarter = 90° wedge of cross-section, colored by the lesson fruit.
+    const k = skin();
     const isLeft = variant === 'a';
-    const skinId = `appleSkinQ${variant}`;
-    const stemX = isLeft ? 128 : 4;        // stem at outer (far) corner
+    const skinId = `skinQ_${manipFruit}_${variant}`;
+    const stemX = isLeft ? 128 : 4;
     const leafX = isLeft ? 116 : 16;
     const leafR = isLeft ? -30 : 30;
-    // Wedge path: tip at inner corner, curved arc on the outside.
-    // Left variant: tip at bottom-right (130,115); arc goes up-left.
-    // Right variant: tip at bottom-left (10,115); arc goes up-right.
     const wedge = isLeft
-      ? `M 130 115 L 10 115 A 130 130 0 0 1 130 25 Z`     // curved top-left
+      ? `M 130 115 L 10 115 A 130 130 0 0 1 130 25 Z`
       : `M 10 115 A 130 130 0 0 1 130 115 L 130 115 L 130 115 L 10 115 Z`;
-    // Right wedge actually needs: tip at bottom-left, curved going up-right, back along right edge.
     const wedgeRight = `M 10 115 L 10 25 A 130 130 0 0 1 130 115 Z`;
+    const leaf = k.leaf
+      ? `<ellipse cx="${leafX}" cy="14" rx="10" ry="4" fill="${k.leaf}" transform="rotate(${leafR} ${leafX} 14)"/>`
+      : '';
     return `
 <svg viewBox="0 0 140 130" xmlns="http://www.w3.org/2000/svg" class="fruit-svg fruit-quarter fruit-quarter-${variant}" aria-hidden="true">
   <defs>
     <linearGradient id="${skinId}" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#ef5350"/>
-      <stop offset="60%" stop-color="#c62828"/>
-      <stop offset="100%" stop-color="#7f0000"/>
+      <stop offset="0%" stop-color="${k.s0}"/>
+      <stop offset="60%" stop-color="${k.s1}"/>
+      <stop offset="100%" stop-color="${k.s2}"/>
     </linearGradient>
   </defs>
-  ${isLeft ? `
-  <!-- Stem at outer (right) corner -->
   <rect x="${stemX - 2}" y="6" width="6" height="12" rx="2" fill="#5d4037"/>
-  <ellipse cx="${leafX}" cy="14" rx="10" ry="4" fill="#66bb6a" transform="rotate(${leafR} ${leafX} 14)"/>
-  ` : `
-  <!-- Stem at outer (left) corner -->
-  <rect x="${stemX - 2}" y="6" width="6" height="12" rx="2" fill="#5d4037"/>
-  <ellipse cx="${leafX}" cy="14" rx="10" ry="4" fill="#66bb6a" transform="rotate(${leafR} ${leafX} 14)"/>
-  `}
-  <!-- Wedge body -->
+  ${leaf}
   <path d="${isLeft ? wedge : wedgeRight}"
-        fill="#FFF8E1" stroke="url(#${skinId})" stroke-width="9" stroke-linejoin="round"/>
-  <!-- Seed near inner corner -->
+        fill="${k.flesh}" stroke="url(#${skinId})" stroke-width="9" stroke-linejoin="round"/>
   ${isLeft
-    ? `<ellipse cx="100" cy="92" rx="4" ry="5.5" fill="#3e2723" transform="rotate(-30 100 92)"/>`
-    : `<ellipse cx="40"  cy="92" rx="4" ry="5.5" fill="#3e2723" transform="rotate(30 40 92)"/>`}
+    ? `<ellipse cx="100" cy="92" rx="4" ry="5.5" fill="${k.seed}" transform="rotate(-30 100 92)"/>`
+    : `<ellipse cx="40"  cy="92" rx="4" ry="5.5" fill="${k.seed}" transform="rotate(30 40 92)"/>`}
 </svg>`;
   }
 
@@ -391,10 +391,14 @@
     const BR  = 'border-right:2px solid rgba(255,255,255,0.35);';
     const BD  = 'border-right:2px dashed rgba(255,255,255,0.5);';
 
-    // Apple palette (original manipulative phase + Q1-Q2)
-    const APPLE_DARK   = 'background:linear-gradient(135deg,#c62828,#8d1414);';
-    const APPLE_BRIGHT = 'background:linear-gradient(135deg,#ef5350,#c62828);';
-    // Watermelon palette
+    // Explore-phase palette derives from the active lesson fruit, so the
+    // reference bar matches the apple/orange/watermelon pieces on screen.
+    const k = skin();
+    const FRUIT_EMOJI = { apple: '🍎', orange: '🍊', watermelon: '🍉' };
+    const emoji = FRUIT_EMOJI[manipFruit] || '🍎';
+    const APPLE_DARK   = `background:linear-gradient(135deg,${k.s1},${k.s2});`;
+    const APPLE_BRIGHT = `background:linear-gradient(135deg,${k.s0},${k.s1});`;
+    // Watermelon palette (check-phase Q3-Q4 visualization)
     const MELON_RED    = 'background:linear-gradient(135deg,#E63956,#B71C3A);';
     const MELON_LITE   = 'background:linear-gradient(135deg,#FF6F8E,#E63956);';
     // Banana palette
@@ -406,7 +410,7 @@
 
     if (mode === 'half') {
       refBar.innerHTML =
-        `<div class="ref-seg" style="width:50%;${APPLE_BRIGHT}${BR}">1/2 🍎</div>` +
+        `<div class="ref-seg" style="width:50%;${APPLE_BRIGHT}${BR}">1/2 ${emoji}</div>` +
         `<div class="ref-seg empty" style="width:50%;">1/2</div>`;
     } else if (mode === 'quarters') {
       refBar.innerHTML =
@@ -417,7 +421,7 @@
       refBar.innerHTML =
         `<div class="ref-seg" style="width:25%;${APPLE_DARK}${BR}">1/4</div>` +
         `<div class="ref-seg" style="width:25%;${APPLE_BRIGHT}${BD}">1/4</div>` +
-        `<div class="ref-seg" style="width:50%;${APPLE_BRIGHT}border-left:2px dashed rgba(255,255,255,0.5);">= 1/2 🍎</div>`;
+        `<div class="ref-seg" style="width:50%;${APPLE_BRIGHT}border-left:2px dashed rgba(255,255,255,0.5);">= 1/2 ${emoji}</div>`;
     } else if (mode === 'watermelon') {
       // 6 sixths total — left 3 deep-red, right 3 lighter pink-red
       refBar.innerHTML =
@@ -557,7 +561,10 @@
 
   // ── Lesson setup (called when a lesson loads) ──
   // mode: 'half' (equivalence/comparing start) | 'addingStart' (two quarters)
-  function setup(mode) {
+  // fruit: 'apple' | 'orange' | 'watermelon' — recolors the pieces so the
+  //        three lessons don't all start with an apple.
+  function setup(mode, fruit) {
+    if (fruit) setFruit(fruit);
     equation.classList.remove('show');
     winMsg.classList.remove('show');
     clearConfetti();
@@ -668,6 +675,42 @@
     emit('fruitChange', { key });
   }
 
+  // ── Per-question fraction bars (lessons 2 & 3 check phase) ──
+  // Renders fraction strips so the right side flows with each question.
+  // All bars share the same total width, so 1/2 visibly fills more than
+  // 1/4 (comparing), and addends + result read left-to-right (adding).
+  // Uses the active lesson fruit's color for filled cells.
+  function fractionBarHTML(frac) {
+    const parts = String(frac).split('/');
+    const n = parseInt(parts[0], 10) || 0;
+    const d = parseInt(parts[1], 10) || 1;
+    const k = skin();
+    const fill = `background:linear-gradient(135deg,${k.s0},${k.s1});`;
+    const cells = Array.from({ length: d }, (_, i) =>
+      `<div class="vizcell${i < n ? ' fill' : ''}" style="${i < n ? fill : ''}"></div>`
+    ).join('');
+    return `<div class="vizrow"><span class="vizlabel">${frac}</span><div class="vizbar">${cells}</div></div>`;
+  }
+
+  function showFractionViz(spec) {
+    if (!spec || !piecesArea) return;
+    equation.classList.remove('show');
+    let html = '';
+    if (spec.type === 'compare') {
+      html = (spec.fractions || []).map(fractionBarHTML).join('');
+    } else if (spec.type === 'add') {
+      const addends = (spec.fractions || []).map(fractionBarHTML).join('<div class="vizop">+</div>');
+      html = addends + (spec.result ? `<div class="vizop">=</div>${fractionBarHTML(spec.result)}` : '');
+    }
+    clearPieces();
+    const wrap = document.createElement('div');
+    wrap.className = 'viz anim-bounce';
+    wrap.innerHTML = html;
+    piecesArea.appendChild(wrap);
+    visualState = 'viz';
+    emit('fractionViz', { spec });
+  }
+
   function showEquation() {
     equation.classList.add('show');
   }
@@ -764,6 +807,7 @@
   window.manipulative = {
     init,
     setup,
+    setFruit,
     reset,
     split,
     smash,
@@ -771,6 +815,7 @@
     addingCombine,
     celebrate,
     showFruit,
+    showFractionViz,
     showEquation,
     hideEquationAndWin,
     playSound,

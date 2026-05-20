@@ -28,6 +28,7 @@
       emoji: '🍎',
       blurb: 'Discover that 1/2 and 2/4 are the same amount of fruit.',
       manipInit: 'half',
+      manipFruit: 'apple',
       stages: {
         idle: {
           pip: "Hey! I'm Pip 🍎 — an apple seed. I've got half an apple. I wonder what's hiding inside it… 👀",
@@ -170,6 +171,7 @@
       emoji: '⚖️',
       blurb: 'The more pieces you cut, the smaller each piece gets.',
       manipInit: 'half',
+      manipFruit: 'orange',
       stages: {
         idle: {
           pip: "New puzzle! 🍎 Here's half an apple — a nice big piece. What happens if we cut it even smaller?",
@@ -191,6 +193,7 @@
       checkQuestions: [
         {
           id: 'c1', kind: 'compare',
+          viz: { type: 'compare', fractions: ['1/2', '1/4'] },
           prompt: "Which is bigger — 1/2 of {f} or 1/4 of {f}?",
           choices: [
             { id: 'a', label: '1/2 is bigger 🎯', correct: true  },
@@ -206,6 +209,7 @@
         },
         {
           id: 'c2', kind: 'compare',
+          viz: { type: 'compare', fractions: ['1/3', '1/6'] },
           prompt: "Which is bigger — 1/3 of {f} or 1/6 of {f}?",
           choices: [
             { id: 'a', label: '1/3 is bigger 🎯', correct: true  },
@@ -221,6 +225,7 @@
         },
         {
           id: 'c3', kind: 'compare',
+          viz: { type: 'compare', fractions: ['1/2', '1/3'] },
           prompt: "Trickier — which is bigger: 1/2 or 1/3?",
           choices: [
             { id: 'a', label: '1/2 is bigger 🎯', correct: true  },
@@ -251,6 +256,7 @@
         },
         {
           id: 'c5', kind: 'capstone',
+          viz: { type: 'compare', fractions: ['1/2', '1/4', '1/8'] },
           prompt: "Last one! Which is the BIGGEST single piece: 1/2, 1/4, or 1/8?",
           choices: [
             { id: 'a', label: '1/2 🎯', correct: true  },
@@ -276,6 +282,7 @@
       emoji: '➕',
       blurb: 'Put pieces together: 1/4 + 1/4 = 2/4.',
       manipInit: 'addingStart',
+      manipFruit: 'watermelon',
       stages: {
         idle: {
           pip: "Time to ADD! 🍎 Here are two quarter-pieces of apple. What do we get if we put them together?",
@@ -297,6 +304,7 @@
       checkQuestions: [
         {
           id: 'a1', kind: 'add',
+          viz: { type: 'add', fractions: ['1/4', '1/4'], result: '2/4' },
           prompt: "What is 1/4 + 1/4?",
           choices: [
             { id: 'a', label: '2/4 🎯', correct: true  },
@@ -312,6 +320,7 @@
         },
         {
           id: 'a2', kind: 'add',
+          viz: { type: 'add', fractions: ['1/3', '1/3'], result: '2/3' },
           prompt: "What is 1/3 + 1/3?",
           choices: [
             { id: 'a', label: '2/3 🎯', correct: true  },
@@ -327,6 +336,7 @@
         },
         {
           id: 'a3', kind: 'add',
+          viz: { type: 'add', fractions: ['2/6', '1/6'], result: '3/6' },
           prompt: "What is 2/6 + 1/6?",
           choices: [
             { id: 'a', label: '3/6 🎯', correct: true  },
@@ -342,6 +352,7 @@
         },
         {
           id: 'a4', kind: 'add',
+          viz: { type: 'add', fractions: ['1/5', '2/5'], result: '3/5' },
           prompt: "What is 1/5 + 2/5?",
           choices: [
             { id: 'a', label: '3/5 🎯', correct: true  },
@@ -535,6 +546,10 @@
     return lesson()?.manipInit || 'half';
   }
 
+  function lessonFruit() {
+    return lesson()?.manipFruit || 'apple';
+  }
+
   // ── Expose ──
   window.tutorScript = {
     LESSONS,
@@ -553,6 +568,7 @@
     recordWrongAttempt,
     resetActiveLesson,
     correctCheerFor,
+    lessonFruit,
     activeLessonId: () => activeLessonId,
     // Back-compat aliases (some callers used resetAll / checkQuestions)
     resetAll: resetActiveLesson,

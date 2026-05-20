@@ -654,6 +654,51 @@ button {
 .frac-block.cmp-big   { width: 200px; height: 150px; }
 .frac-block.cmp-small { width: 110px; height: 90px;  align-self: center; }
 
+/* Per-question fraction bars (lessons 2 & 3 check phase) */
+.viz {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.vizrow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.vizlabel {
+  font-size: 1.3rem;
+  font-weight: 900;
+  color: var(--purple-dark);
+  min-width: 48px;
+  text-align: right;
+}
+
+.vizbar {
+  display: flex;
+  width: 260px;
+  height: 46px;
+  border: 3px solid var(--purple);
+  border-radius: 10px;
+  overflow: hidden;
+  background: rgba(102, 126, 234, 0.06);
+}
+
+.vizcell {
+  flex: 1;
+  border-right: 2px solid rgba(255, 255, 255, 0.7);
+}
+.vizcell:last-child { border-right: none; }
+
+.vizop {
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: var(--purple-dark);
+  text-align: center;
+}
+
 .frac-block.fruit-watermelon .fruit-svg,
 .frac-block.fruit-banana .fruit-svg,
 .frac-block.fruit-orange .fruit-svg,

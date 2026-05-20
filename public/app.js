@@ -185,13 +185,16 @@
   function renderCheckQuestion() {
     const { question, questionIdx, totalQuestions } = tutorScript.state();
     if (!question) return;
-    // Keep the workspace visual in sync with THIS question's fruit. Matters
-    // now that lesson 1's order is shuffled — the first check question may
-    // not be apple, so we can't rely on the post-smash state. (Questions
-    // with no fruit, e.g. comparing/adding, leave the current visual alone.)
+    // Keep the workspace visual in sync with THIS question.
+    //  - Lesson 1 questions carry a `fruit` emoji → swap the fruit visual
+    //    (matters now that the order is shuffled and the first may not be apple).
+    //  - Lessons 2 & 3 questions carry a `viz` (fraction bars) → render it so
+    //    the right side flows with each question instead of sitting static.
     if (question.fruit) {
       const key = fruitKeyFromEmoji(question.fruit);
       if (key && manipulative.getState() !== key) manipulative.showFruit(key);
+    } else if (question.viz) {
+      manipulative.showFractionViz(question.viz);
     }
     // IMPORTANT: the prompt is both displayed AND spoken by TTS. We must
     // NOT bake the progress count into it — "(3/7)" gets read aloud as a
@@ -351,7 +354,7 @@
     messagesEl.innerHTML = '';
     tutorScript.resetActiveLesson();
     await manipulative.reset();
-    manipulative.setup(tutorScript.manipInit());
+    manipulative.setup(tutorScript.manipInit(), tutorScript.lessonFruit());
     busy = false;
     renderStage();
   }
@@ -420,7 +423,7 @@
     messagesEl.innerHTML = '';
     clearChoices();
     hideProgress();
-    manipulative.setup(tutorScript.manipInit());
+    manipulative.setup(tutorScript.manipInit(), tutorScript.lessonFruit());
     busy = false;
     renderStage();
   }

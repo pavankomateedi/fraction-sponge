@@ -60,7 +60,7 @@
           choices: [
             { id: 'a', label: '1/2 is bigger',         correct: false },
             { id: 'b', label: '2/4 is bigger',         correct: false },
-            { id: 'c', label: "They're the same! 🎯", correct: true  },
+            { id: 'c', label: "They're the same!", correct: true  },
           ],
           cheer: "YES! Same apple, same space, different name. That's the whole trick. 🎯",
           hints: [
@@ -88,7 +88,7 @@
           id: 'q3', fruit: '🍉', kind: 'apply',
           prompt: "New fruit time! 🍉 Look at a watermelon cut into 6 wedges. Is 3/6 of the watermelon the same as 1/2?",
           choices: [
-            { id: 'a', label: 'Yes — same juicy half! ✨', correct: true  },
+            { id: 'a', label: 'Yes — same juicy half!', correct: true  },
             { id: 'b', label: 'No, totally different',     correct: false },
             { id: 'c', label: 'Not sure',                  correct: false },
           ],
@@ -118,7 +118,7 @@
           id: 'q5', fruit: '🍌', kind: 'transfer',
           prompt: "Banana time 🍌 — cut one into 3 chunks. Is 1/3 of the banana the same as 2/6?",
           choices: [
-            { id: 'a', label: 'Yes — same idea! 🎯', correct: true  },
+            { id: 'a', label: 'Yes — same idea!', correct: true  },
             { id: 'b', label: 'No way',              correct: false },
             { id: 'c', label: 'Maybe?',              correct: false },
           ],
@@ -148,7 +148,7 @@
           id: 'q7', fruit: '🍊', kind: 'capstone',
           prompt: "Last one! 🍊 An orange has 8 natural segments. Is 4/8 of the orange the same as 1/2?",
           choices: [
-            { id: 'a', label: 'Yes — half is half! 🎯', correct: true  },
+            { id: 'a', label: 'Yes — half is half!', correct: true  },
             { id: 'b', label: 'No, 4/8 is more',         correct: false },
             { id: 'c', label: 'No, 1/2 is more',         correct: false },
           ],
@@ -196,7 +196,7 @@
           viz: { type: 'compare', fractions: ['1/2', '1/4'] },
           prompt: "Which is bigger — 1/2 of {f} or 1/4 of {f}?",
           choices: [
-            { id: 'a', label: '1/2 is bigger 🎯', correct: true  },
+            { id: 'a', label: '1/2 is bigger', correct: true  },
             { id: 'b', label: '1/4 is bigger',    correct: false },
             { id: 'c', label: "They're equal",    correct: false },
           ],
@@ -212,7 +212,7 @@
           viz: { type: 'compare', fractions: ['1/3', '1/6'] },
           prompt: "Which is bigger — 1/3 of {f} or 1/6 of {f}?",
           choices: [
-            { id: 'a', label: '1/3 is bigger 🎯', correct: true  },
+            { id: 'a', label: '1/3 is bigger', correct: true  },
             { id: 'b', label: '1/6 is bigger',    correct: false },
             { id: 'c', label: 'Not sure',         correct: false },
           ],
@@ -228,7 +228,7 @@
           viz: { type: 'compare', fractions: ['1/2', '1/3'] },
           prompt: "Trickier — which is bigger: 1/2 or 1/3?",
           choices: [
-            { id: 'a', label: '1/2 is bigger 🎯', correct: true  },
+            { id: 'a', label: '1/2 is bigger', correct: true  },
             { id: 'b', label: '1/3 is bigger',    correct: false },
             { id: 'c', label: "They're equal",    correct: false },
           ],
@@ -244,7 +244,7 @@
           prompt: "When you cut a fruit into MORE pieces, does each piece get bigger or smaller?",
           choices: [
             { id: 'a', label: 'Bigger',          correct: false },
-            { id: 'b', label: 'Smaller 🎯',      correct: true  },
+            { id: 'b', label: 'Smaller',      correct: true  },
             { id: 'c', label: 'Stays the same',  correct: false },
           ],
           cheer: "That's the big idea! More pieces = smaller pieces. 🧠",
@@ -259,7 +259,7 @@
           viz: { type: 'compare', fractions: ['1/2', '1/4', '1/8'] },
           prompt: "Last one! Which is the BIGGEST single piece: 1/2, 1/4, or 1/8?",
           choices: [
-            { id: 'a', label: '1/2 🎯', correct: true  },
+            { id: 'a', label: '1/2', correct: true  },
             { id: 'b', label: '1/4',    correct: false },
             { id: 'c', label: '1/8',    correct: false },
           ],
@@ -307,7 +307,7 @@
           viz: { type: 'add', fractions: ['1/4', '1/4'], result: '2/4' },
           prompt: "What is 1/4 + 1/4?",
           choices: [
-            { id: 'a', label: '2/4 🎯', correct: true  },
+            { id: 'a', label: '2/4', correct: true  },
             { id: 'b', label: '2/8',    correct: false },
             { id: 'c', label: '1/4',    correct: false },
           ],
@@ -323,7 +323,7 @@
           viz: { type: 'add', fractions: ['1/3', '1/3'], result: '2/3' },
           prompt: "What is 1/3 + 1/3?",
           choices: [
-            { id: 'a', label: '2/3 🎯', correct: true  },
+            { id: 'a', label: '2/3', correct: true  },
             { id: 'b', label: '2/6',    correct: false },
             { id: 'c', label: '1/3',    correct: false },
           ],
@@ -339,7 +339,7 @@
           viz: { type: 'add', fractions: ['2/6', '1/6'], result: '3/6' },
           prompt: "What is 2/6 + 1/6?",
           choices: [
-            { id: 'a', label: '3/6 🎯', correct: true  },
+            { id: 'a', label: '3/6', correct: true  },
             { id: 'b', label: '3/12',   correct: false },
             { id: 'c', label: '2/6',    correct: false },
           ],
@@ -355,7 +355,7 @@
           viz: { type: 'add', fractions: ['1/5', '2/5'], result: '3/5' },
           prompt: "What is 1/5 + 2/5?",
           choices: [
-            { id: 'a', label: '3/5 🎯', correct: true  },
+            { id: 'a', label: '3/5', correct: true  },
             { id: 'b', label: '3/10',   correct: false },
             { id: 'c', label: '2/5',    correct: false },
           ],
@@ -370,7 +370,7 @@
           id: 'a5', kind: 'concept',
           prompt: "When you put together two fractions that have the same bottom number, what stays the same?",
           choices: [
-            { id: 'a', label: 'The bottom number 🎯', correct: true  },
+            { id: 'a', label: 'The bottom number', correct: true  },
             { id: 'b', label: 'The top number',       correct: false },
             { id: 'c', label: 'Both change',          correct: false },
           ],

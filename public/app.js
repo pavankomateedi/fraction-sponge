@@ -248,10 +248,17 @@
     renderStage();
   }
 
-  async function handleChoice(question, choice) {
+  async function handleChoice(question, choice, btn) {
     busy = true;
     setChoicesDisabled(true);
     studentBubble(choice.label);
+
+    // Reveal the result ON the picked button — only AFTER selection, so the
+    // 🎯 never spoils the answer at load time.
+    if (btn) {
+      btn.classList.add(choice.correct ? 'choice-correct' : 'choice-wrong');
+      if (choice.correct) btn.insertAdjacentHTML('beforeend', ' <span class="pick-mark" aria-hidden="true">🎯</span>');
+    }
 
     if (choice.correct) {
       // Soft positive chime — fires before Pip's text cheer for snappy feedback
@@ -405,6 +412,7 @@
     if (window.voice && typeof window.voice.cancel === 'function') window.voice.cancel();
     renderHub();
     if (window.buddy && typeof window.buddy.renderPicker === 'function') window.buddy.renderPicker();
+    if (window.voice && typeof window.voice.renderAccentPicker === 'function') window.voice.renderAccentPicker();
     if (hubEl) hubEl.hidden = false;
     if (appEl) appEl.hidden = true;
   }

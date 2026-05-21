@@ -17,7 +17,26 @@
   'use strict';
 
   const STORAGE_KEY = 'fraction-fruit-lab.voice';
+  const ACCENT_KEY = 'fraction-fruit-lab.accent';
   const DEFAULT_ENABLED = true;
+  const DEFAULT_ACCENT = 'en-GB';
+
+  // Accent options the kid can pick. The browser may not have a voice for
+  // every accent (varies by OS) — pickVoice() falls back to any English
+  // voice so narration always works.
+  const ACCENTS = {
+    'en-GB': { flag: '🇬🇧', label: 'British' },
+    'en-US': { flag: '🇺🇸', label: 'American' },
+    'en-AU': { flag: '🇦🇺', label: 'Australian' },
+  };
+
+  function currentAccent() {
+    try {
+      const v = window.localStorage?.getItem(ACCENT_KEY);
+      if (ACCENTS[v]) return v;
+    } catch (_) {}
+    return DEFAULT_ACCENT;
+  }
 
   // Spelled-out fractions for cleaner narration.
   const FRACTION_WORDS = {
@@ -95,26 +114,30 @@
   }
 
   // ── Voice picking ──
-  // Target a British (en-GB) voice with a young, friendly quality —
-  // think Peppa Pig. Order matters: most-specific British female voices
-  // first, then any en-GB, then any English as a last resort.
+  // Pick a friendly voice matching the chosen accent (British/American/
+  // Australian). Falls back to any English voice if the OS lacks that
+  // accent, so narration always works.
   function pickVoice() {
     if (!supported) return null;
     const voices = window.speechSynthesis.getVoices() || [];
     if (!voices.length) return null;
 
+    const acc = currentAccent();                       // e.g. 'en-GB'
+    const accRe = new RegExp(acc.replace('-', '[-_]?'), 'i');
+    // Friendly female-leaning voice names by accent (best-effort across OSes).
+    const niceNames = {
+      'en-GB': /(google uk english female|kate|serena|martha|hazel|stephanie|amelie|fiona)/i,
+      'en-US': /(google us english|samantha|allison|ava|susan|zoe|nicky)/i,
+      'en-AU': /(google.*australian|karen|catherine|matilda|olivia|lee)/i,
+    };
+    const nice = niceNames[acc] || /female/i;
+
     const preferences = [
-      // Named British voices known to be female / young-sounding
-      (v) => /en-GB/i.test(v.lang) && /(google uk english female)/i.test(v.name),
-      (v) => /en-GB/i.test(v.lang) && /(kate|serena|martha|hazel|stephanie|amelie|fiona)/i.test(v.name),
-      // Any female-flagged British voice
-      (v) => /en-GB/i.test(v.lang) && /female/i.test(v.name),
-      // Any British voice at all (keeps the accent even if male)
-      (v) => /en-GB/i.test(v.lang),
-      (v) => /en[-_]?gb/i.test(v.name),
-      // English fallback so narration still works where no en-GB exists
-      (v) => /en-US/i.test(v.lang) && /samantha|google us english/i.test(v.name),
-      (v) => /^en/i.test(v.lang),
+      (v) => accRe.test(v.lang) && nice.test(v.name),  // accent + friendly name
+      (v) => accRe.test(v.lang) && /female/i.test(v.name),
+      (v) => accRe.test(v.lang),                       // any voice of the accent
+      (v) => /^en/i.test(v.lang) && /female/i.test(v.name), // any English female
+      (v) => /^en/i.test(v.lang),                      // any English at all
     ];
 
     for (const pref of preferences) {
@@ -150,7 +173,7 @@
       const utter = new SpeechSynthesisUtterance(text);
       const v = ensureVoice();
       if (v) utter.voice = v;
-      utter.lang = (v && v.lang) || 'en-GB';
+      utter.lang = (v && v.lang) || currentAccent();
       utter.rate = 0.95;   // slightly slower than default for clarity
       utter.pitch = 1.25;  // higher + brighter — young, Peppa-Pig-ish quality
       utter.volume = 1.0;
@@ -185,6 +208,43 @@
     );
   }
 
+  // ── Accent picker (British / American / Australian) ──
+  function setAccent(code) {
+    if (!ACCENTS[code]) return;
+    try { window.localStorage?.setItem(ACCENT_KEY, code); } catch (_) {}
+    // Re-pick the voice for the new accent (and re-lock it).
+    voiceLocked = false;
+    chosenVoice = pickVoice();
+    voiceLocked = Boolean(chosenVoice);
+    renderAccentPicker();
+    // Preview the new accent so the kid hears the change immediately.
+    preview(`Hello! I'm Pip. Let's play with fractions.`);
+  }
+
+  function preview(text) {
+    if (!supported || !enabled) return;
+    try { window.speechSynthesis.cancel(); } catch (_) {}
+    speak(text);
+  }
+
+  function renderAccentPicker() {
+    const el = document.getElementById('accentPicker');
+    if (!el) return;
+    const cur = currentAccent();
+    el.innerHTML =
+      `<div class="accent-label">Pip's accent</div>` +
+      `<div class="accent-options">` +
+      Object.entries(ACCENTS).map(([code, a]) =>
+        `<button type="button" class="accent-opt${code === cur ? ' sel' : ''}" data-accent="${code}" aria-pressed="${code === cur}" aria-label="${a.label} English">` +
+          `<span class="accent-flag" aria-hidden="true">${a.flag}</span>` +
+          `<span class="accent-name">${a.label}</span>` +
+        `</button>`
+      ).join('') +
+      `</div>`;
+    el.querySelectorAll('.accent-opt').forEach((btn) =>
+      btn.addEventListener('click', () => setAccent(btn.dataset.accent)));
+  }
+
   // ── Boot ──
   function init() {
     toggleBtn = document.getElementById('voiceToggle');
@@ -192,6 +252,7 @@
       toggleBtn.addEventListener('click', () => setEnabled(!enabled));
     }
     syncToggleUI();
+    renderAccentPicker();
 
     // Browsers populate voices async. We pre-pick when the list arrives,
     // but ONLY until the voice is locked (first actual speak). After that
@@ -249,6 +310,9 @@
     setEnabled,
     isEnabled: () => enabled,
     isSupported: () => supported,
+    setAccent,
+    currentAccent,
+    renderAccentPicker,
     speechText, // exposed for tests / debugging
   };
 })();

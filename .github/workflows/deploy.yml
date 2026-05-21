@@ -1,0 +1,42 @@
+name: Deploy to AWS Elastic Beanstalk
+
+# MANUAL trigger only — this never auto-deploys on push. It runs when
+# someone (or Claude, via `gh workflow run deploy.yml`) explicitly fires it,
+# so deploys stay gated behind an intentional "deploy now" decision.
+on:
+  workflow_dispatch:
+    inputs:
+      label:
+        description: 'Short version label (e.g. spoiler-accents)'
+        required: false
+        default: 'manual'
+
+env:
+  AWS_REGION: us-east-2
+  EB_APPLICATION: fraction-fruit-lab
+  EB_ENVIRONMENT: fraction-fruit-lab-env
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build deploy bundle (tracked files only, at repo root)
+        run: git archive --format=zip -o deploy.zip HEAD
+
+      - name: Deploy to Elastic Beanstalk
+        uses: einaregilsson/beanstalk-deploy@v22
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          region: ${{ env.AWS_REGION }}
+          application_name: ${{ env.EB_APPLICATION }}
+          environment_name: ${{ env.EB_ENVIRONMENT }}
+          version_label: "gh-${{ github.run_number }}-${{ github.event.inputs.label }}"
+          deployment_package: deploy.zip
+          wait_for_deployment: true
+
+      - name: Done
+        run: echo "Deployed ${{ github.sha }} to $EB_ENVIRONMENT in $AWS_REGION"

@@ -38,6 +38,21 @@
     return DEFAULT_ACCENT;
   }
 
+  // Is there an actual installed voice for this accent in THIS browser?
+  // Voices load async, so before the list populates we return true
+  // (optimistic) — the picker re-renders accurately on voiceschanged.
+  function accentAvailable(code) {
+    if (!supported) return false;
+    const voices = window.speechSynthesis.getVoices() || [];
+    if (!voices.length) return true; // unknown yet — don't disable prematurely
+    const re = new RegExp(code.replace('-', '[-_]?'), 'i');
+    return voices.some((v) => re.test(v.lang));
+  }
+
+  function firstAvailableAccent() {
+    return Object.keys(ACCENTS).find(accentAvailable) || DEFAULT_ACCENT;
+  }
+
   // Spelled-out fractions for cleaner narration.
   const FRACTION_WORDS = {
     '1/2': 'one half',
@@ -211,6 +226,7 @@
   // ── Accent picker (British / American / Australian) ──
   function setAccent(code) {
     if (!ACCENTS[code]) return;
+    if (!accentAvailable(code)) return; // can't pick an accent the browser lacks
     try { window.localStorage?.setItem(ACCENT_KEY, code); } catch (_) {}
     // Re-pick the voice for the new accent (and re-lock it).
     voiceLocked = false;
@@ -230,19 +246,35 @@
   function renderAccentPicker() {
     const el = document.getElementById('accentPicker');
     if (!el) return;
+    // If the saved accent isn't installed in this browser, fall back to one
+    // that is, so there's always a valid highlighted choice.
+    if (!accentAvailable(currentAccent())) {
+      const fb = firstAvailableAccent();
+      try { window.localStorage?.setItem(ACCENT_KEY, fb); } catch (_) {}
+      voiceLocked = false;
+      chosenVoice = pickVoice();
+      voiceLocked = Boolean(chosenVoice);
+    }
     const cur = currentAccent();
     el.innerHTML =
       `<div class="accent-label">Pip's accent</div>` +
       `<div class="accent-options">` +
-      Object.entries(ACCENTS).map(([code, a]) =>
-        `<button type="button" class="accent-opt${code === cur ? ' sel' : ''}" data-accent="${code}" aria-pressed="${code === cur}" aria-label="${a.label} English">` +
+      Object.entries(ACCENTS).map(([code, a]) => {
+        const avail = accentAvailable(code);
+        const cls = 'accent-opt' + (code === cur ? ' sel' : '') + (avail ? '' : ' unavailable');
+        const attrs = avail
+          ? `aria-pressed="${code === cur}" aria-label="${a.label} English"`
+          : `disabled aria-disabled="true" title="Not available in this browser" aria-label="${a.label} English (not available in this browser)"`;
+        return `<button type="button" class="${cls}" data-accent="${code}" ${attrs}>` +
           `<span class="accent-flag" aria-hidden="true">${a.flag}</span>` +
           `<span class="accent-name">${a.label}</span>` +
-        `</button>`
-      ).join('') +
+        `</button>`;
+      }).join('') +
       `</div>`;
-    el.querySelectorAll('.accent-opt').forEach((btn) =>
-      btn.addEventListener('click', () => setAccent(btn.dataset.accent)));
+    el.querySelectorAll('.accent-opt').forEach((btn) => {
+      if (btn.disabled) return;
+      btn.addEventListener('click', () => setAccent(btn.dataset.accent));
+    });
   }
 
   // ── Boot ──
@@ -260,6 +292,9 @@
     if (supported && window.speechSynthesis.onvoiceschanged !== undefined) {
       window.speechSynthesis.onvoiceschanged = () => {
         if (!voiceLocked) chosenVoice = pickVoice();
+        // Voices just populated — re-render so unavailable accents disable
+        // (and the saved accent falls back to an available one if needed).
+        renderAccentPicker();
       };
     }
     chosenVoice = pickVoice();

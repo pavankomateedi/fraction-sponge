@@ -249,6 +249,14 @@ button {
 .accent-flag { font-size: 1.3rem; line-height: 1; }
 .accent-name { font-size: 0.92rem; color: var(--ink); }
 
+/* Accent not installed in this browser — greyed + not selectable */
+.accent-opt.unavailable,
+.accent-opt:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  filter: grayscale(0.7);
+}
+
 /* Buddy companion in the workspace corner */
 .buddy {
   position: absolute;
